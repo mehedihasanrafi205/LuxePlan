@@ -1,11 +1,16 @@
 import React from "react";
 import { Outlet } from "react-router";
+import Navbar from "../components/Shared/Navbar/Navbar";
+import Footer from "../components/Shared/Footer/Footer";
 
 const MainLayout = () => {
   return (
-    <div>
-        <h1>MainLayout</h1>
-      <Outlet />
+    <div className="flex flex-col h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 };
