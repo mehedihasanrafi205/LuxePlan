@@ -218,6 +218,7 @@ const Navbar = () => {
             </div>
           ) : (
             <Link
+
               to="/login"
               className="
     relative px-6 py-2.5 rounded-full overflow-hidden
@@ -229,6 +230,8 @@ const Navbar = () => {
     transition-all duration-300
   "
             >
+
+              
               <span className="relative z-10 flex items-center gap-2">
                 Book Now{" "}
                 <FiArrowRight
