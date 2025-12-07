@@ -10,7 +10,6 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-
 import { app } from "../firebase/firebase.config";
 import { AuthContext } from "./AuthContaxt";
 
@@ -37,7 +36,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const logOut = async () => {
-    setLoading(true);
     return signOut(auth);
   };
 
@@ -46,6 +44,13 @@ const AuthProvider = ({ children }) => {
       displayName: name,
       photoURL: photo,
     });
+  };
+
+  const refetchUser = async () => {
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      setUser({ ...auth.currentUser }); // update state
+    }
   };
 
   useEffect(() => {
@@ -69,6 +74,7 @@ const AuthProvider = ({ children }) => {
     signInWithGoogle,
     logOut,
     updateUserProfile,
+    refetchUser,
   };
 
   return (

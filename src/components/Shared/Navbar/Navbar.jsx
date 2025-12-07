@@ -13,43 +13,17 @@ import { Link, NavLink } from "react-router";
 
 import logo from "/logo.png";
 import useAuth from "../../../hooks/useAuth";
-
-// Dummy Auth Context
-// const useAuth = () => ({
-//   user: {
-//     displayName: "Client",
-//     email: "client@luxeplan.com",
-//     role: "user",
-//     photoURL:
-//       "https://api.dicebear.com/7.x/initials/svg?seed=LP&backgroundType=gradient",
-//   },
-//   isLoggedIn: true,
-//   logOut: () => console.log("Logged out"),
-// });
+import { useTheme } from "../../../providers/ThemeContext";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Load theme
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-
-  // Apply theme + save
-  useEffect(() => {
-    const html = document.querySelector("html");
-    html.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  const handleTheme = (checked) => {
-    setTheme(checked ? "dark" : "light");
-  };
-
+  const { theme, toggleTheme } = useTheme();
   // NAV LINKS
   const navLinks = (
     <>
       {[
-       
         ["Services", "/services"],
         ["Decorators", "/decorators"],
         ["About", "/about"],
@@ -155,7 +129,7 @@ const Navbar = () => {
             <input
               type="checkbox"
               checked={theme === "dark"}
-              onChange={(e) => handleTheme(e.target.checked)}
+              onChange={toggleTheme}
             />
             <FiSun className="swap-on w-5 h-5" />
             <FiMoon className="swap-off w-5 h-5" />
@@ -193,7 +167,7 @@ const Navbar = () => {
 
                 <li>
                   <Link
-                    to={"/profile"}
+                    to={"/dashboard/profile"}
                     className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-primary/10 transition-all duration-300"
                   >
                     <FiUser size={16} className="text-primary" /> Profile
@@ -218,7 +192,6 @@ const Navbar = () => {
             </div>
           ) : (
             <Link
-
               to="/login"
               className="
     relative px-6 py-2.5 rounded-full overflow-hidden
@@ -230,8 +203,6 @@ const Navbar = () => {
     transition-all duration-300
   "
             >
-
-              
               <span className="relative z-10 flex items-center gap-2">
                 Book Now{" "}
                 <FiArrowRight
