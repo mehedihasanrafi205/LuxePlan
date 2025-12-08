@@ -13,7 +13,6 @@ const ServiceDetail = () => {
   const { user } = useAuth();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const navigate = useNavigate();
-
   const {
     data: service,
     isLoading,
