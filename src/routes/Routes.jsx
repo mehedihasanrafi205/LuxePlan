@@ -11,6 +11,10 @@ import PrivateRoute from "./PrivateRoute";
 import Profile from "../pages/Dashboard/Profile/Profile";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AddService from "../pages/Dashboard/AddService/AddService";
+import ServicesDetail from "../pages/Services/ServicesDetail";
+import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
+import PaymentSuccess from "../pages/Payment/PaymentSuccess";
+import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +23,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "services", element: <Services /> },
+      { path: "/service/:id", element: <ServicesDetail /> },
+      { path: "/Payment-success", element: <PaymentSuccess /> },
       { path: "decorators", element: <Decorators /> },
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
@@ -34,6 +40,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <p>Dashboard Home</p> },
       { path: "profile", element: <Profile /> },
+      { path: "my-bookings", element: <MyBookings /> },
+      { path: "payment-history", element: <PaymentHistory /> },
       { path: "add-service", element: <AddService /> },
     ],
   },

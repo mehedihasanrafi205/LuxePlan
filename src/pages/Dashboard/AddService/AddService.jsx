@@ -9,13 +9,11 @@ import axios from "axios";
 
 const AddService = () => {
   const { user } = useAuth();
-
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState("");
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
 
-  // MUTATION
   const { mutateAsync } = useMutation({
     mutationFn: async (payload) => {
       return await axios.post(
@@ -48,9 +46,15 @@ const AddService = () => {
     name: "key_feature",
   });
 
-  const categories = ["home", "wedding", "office", "seminar", "meeting", "birthday"];
+  const categories = [
+    "home",
+    "wedding",
+    "office",
+    "seminar",
+    "meeting",
+    "birthday",
+  ];
 
-  //  Main Image Upload
   const handleMainImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -58,33 +62,23 @@ const AddService = () => {
     setMainPreview(URL.createObjectURL(file));
   };
 
-  // Multiple Gallery Uploads
   const handleGalleryImages = (e) => {
     const files = Array.from(e.target.files);
     setGalleryFiles(files);
     setGalleryPreviews(files.map((f) => URL.createObjectURL(f)));
   };
 
-  //  FORM SUBMIT
   const onSubmit = async (data) => {
     const toastId = toast.loading("Uploading...");
 
     try {
-      // Upload main image
-      let mainImageUrl = "";
-      if (mainImage) mainImageUrl = await imageUpload(mainImage);
-
-      // Upload gallery
+      const mainImageUrl = mainImage ? await imageUpload(mainImage) : "";
       const galleryUrls = [];
-      for (let file of galleryFiles) {
+
+      for (const file of galleryFiles) {
         const url = await imageUpload(file);
         galleryUrls.push(url);
       }
-
-      // Format Key Features
-      const keyServices = data.key_feature
-        .map((item) => item.name)
-        .filter(Boolean);
 
       const serviceData = {
         service_name: data.service_name,
@@ -97,7 +91,7 @@ const AddService = () => {
         ratings: Number(data.ratings) || 0,
         createdByEmail: user?.email || "admin@gmail.com",
         createdAt: new Date(),
-        key_feature: keyServices,
+        key_feature: data.key_feature.map((f) => f.name).filter(Boolean),
       };
 
       await mutateAsync(serviceData);
@@ -118,32 +112,33 @@ const AddService = () => {
       <h2 className="text-2xl font-bold text-primary mb-4">Add New Service</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        
-        {/* SERVICE NAME */}
         <input
           type="text"
           placeholder="Service Name"
           {...register("service_name", { required: true })}
-          className={`input input-bordered w-full ${errors.service_name && "input-error"}`}
+          className={`input input-bordered w-full ${
+            errors.service_name && "input-error"
+          }`}
         />
 
-        {/* COST */}
         <input
           type="number"
           placeholder="Cost (BDT)"
           {...register("cost", { required: true })}
-          className={`input input-bordered w-full ${errors.cost && "input-error"}`}
+          className={`input input-bordered w-full ${
+            errors.cost && "input-error"
+          }`}
         />
 
-        {/* UNIT */}
         <input
           type="text"
           placeholder="Unit (e.g., per event)"
           {...register("unit", { required: true })}
-          className={`input input-bordered w-full ${errors.unit && "input-error"}`}
+          className={`input input-bordered w-full ${
+            errors.unit && "input-error"
+          }`}
         />
 
-        {/* CATEGORY */}
         <select
           {...register("service_category", { required: true })}
           className={`select select-bordered w-full ${
@@ -158,7 +153,6 @@ const AddService = () => {
           ))}
         </select>
 
-        {/* DESCRIPTION */}
         <textarea
           placeholder="Description"
           {...register("description", { required: true })}
@@ -167,7 +161,6 @@ const AddService = () => {
           }`}
         />
 
-        {/* RATINGS */}
         <input
           type="number"
           step="0.1"
@@ -176,7 +169,7 @@ const AddService = () => {
           className="input input-bordered w-full"
         />
 
-        {/* MAIN IMAGE */}
+        {/* Main Image */}
         <div>
           <label className="label">
             <span className="label-text">Main Image</span>
@@ -187,7 +180,6 @@ const AddService = () => {
             onChange={handleMainImage}
             className="file-input file-input-bordered w-full"
           />
-
           {mainPreview && (
             <img
               src={mainPreview}
@@ -196,7 +188,7 @@ const AddService = () => {
           )}
         </div>
 
-        {/* GALLERY */}
+        {/* Gallery Images */}
         <div>
           <label className="label">
             <span className="label-text">Gallery Images</span>
@@ -208,7 +200,6 @@ const AddService = () => {
             onChange={handleGalleryImages}
             className="file-input file-input-bordered w-full"
           />
-
           <div className="flex gap-2 mt-2 flex-wrap">
             {galleryPreviews.map((url, idx) => (
               <img key={idx} src={url} className="w-24 h-24 rounded-lg" />
@@ -216,12 +207,11 @@ const AddService = () => {
           </div>
         </div>
 
-        {/* KEY FEATURES */}
+        {/* Key Features */}
         <div>
           <label className="label">
             <span className="label-text">Key Features</span>
           </label>
-
           {fields.map((field, index) => (
             <div key={field.id} className="flex gap-2 mb-2">
               <input
@@ -239,7 +229,6 @@ const AddService = () => {
               </button>
             </div>
           ))}
-
           <button
             type="button"
             className="btn btn-outline btn-sm"
@@ -249,7 +238,6 @@ const AddService = () => {
           </button>
         </div>
 
-        {/* SUBMIT */}
         <button type="submit" className="btn btn-primary flex gap-2">
           <FiSave /> Add Service
         </button>

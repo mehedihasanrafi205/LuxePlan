@@ -133,8 +133,12 @@ const Profile = () => {
       }
 
       // Call firebase update profile
-      await updateUserProfile(formData.displayName, imageURL);
-
+      await updateUserProfile(
+        formData.displayName,
+        imageURL,
+        formData.phone,
+        formData.location
+      );
       await refetchUser();
       // Update UI state
       setProfileData((prev) => ({
@@ -425,8 +429,8 @@ const Profile = () => {
 
   // ====== MAIN RENDER ======
   return (
-    <section className="bg-base-200">
-      <div className="min-h-screen py-15 px-4 sm:px-6 lg:px-8 ">
+    <section className="">
+      <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 ">
         <div className="max-w-6xl mx-auto space-y-10">
           {/* Profile Header Card */}
           <div className="bg-base-100 p-8 rounded-2xl shadow-xl border border-base-300 flex flex-col md:flex-row items-center md:items-start gap-6">

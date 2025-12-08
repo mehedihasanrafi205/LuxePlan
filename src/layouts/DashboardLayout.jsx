@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router";
+import { NavLink, Outlet, useLocation } from "react-router";
 import {
   FiHome,
   FiUser,
-  FiSettings,
   FiCreditCard,
   FiMenu,
   FiBell,
@@ -14,221 +13,185 @@ import {
   FiBarChart2,
   FiCheckCircle,
   FiClock,
+  FiSun,
+  FiMoon,
 } from "react-icons/fi";
-import { toast } from "react-hot-toast";
-
-import useAuth from "../hooks/useAuth";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { toast } from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
+import { useTheme } from "../providers/ThemeContext";
+
+
 
 const DashboardLayout = () => {
-  // ----------------------------------------------------
-  // Auth & State Management
-  // ----------------------------------------------------
-  const { user, logOut, role = "admin", loading } = useAuth(); // Assume role is provided by useAuth
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { user, logOut, role, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
-  // ----------------------------------------------------
-  // Role-Based Menu Generation (LuxePlan Requirements)
-  // ----------------------------------------------------
-  const getDashboardLinks = (userRole) => {
-    const baseRoute = `/dashboard`;
+  // ===============================
+  // Role-based menu
+  // ===============================
+  const getMenu = (role) => {
+    const base = "/dashboard";
 
-    if (userRole === "admin") {
+    if (role === "admin") {
       return [
-        { label: "My Profile", icon: FiUser, path: `${baseRoute}/profile` },
-        {
-          label: "Manage Services & Packages",
-          icon: FiBriefcase,
-          path: `${baseRoute}/manage-services`,
-        },
-        {
-          label: "Add Service",
-          icon: IoMdAddCircleOutline,
-          path: `${baseRoute}/add-service`,
-        },
-
-        {
-          label: "Manage Decorators",
-          icon: FiCheckCircle,
-          path: `${baseRoute}/manage-decorators`,
-        },
-        {
-          label: "Manage Bookings",
-          icon: FiCalendar,
-          path: `${baseRoute}/manage-bookings`,
-        },
-        {
-          label: "Revenue Monitoring & Analytics",
-          icon: FiBarChart2,
-          path: `${baseRoute}/analytics`,
-        },
-      ];
-    } else if (userRole === "decorator") {
-      return [
-        { label: "My Profile", icon: FiUser, path: `${baseRoute}/profile` },
-        {
-          label: "My Assigned Projects",
-          icon: FiBriefcase,
-          path: `${baseRoute}/assigned-projects`,
-        },
-        {
-          label: "Today's Schedule",
-          icon: FiClock,
-          path: `${baseRoute}/schedule`,
-        },
-        {
-          label: "Earnings Summary",
-          icon: FiDollarSign,
-          path: `${baseRoute}/earnings`,
-        },
-      ];
-    } else {
-      // 'user' role
-      return [
-        { label: "My Profile", icon: FiUser, path: `${baseRoute}/profile` },
-        {
-          label: "My Bookings",
-          icon: FiCalendar,
-          path: `${baseRoute}/my-bookings`,
-        },
-        {
-          label: "Payment History",
-          icon: FiCreditCard,
-          path: `${baseRoute}/payment-history`,
-        },
+        { label: "My Profile", icon: FiUser, path: `${base}/profile` },
+        { label: "Manage Services", icon: FiBriefcase, path: `${base}/manage-services` },
+        { label: "Add Service", icon: IoMdAddCircleOutline, path: `${base}/add-service` },
+        { label: "Manage Decorators", icon: FiCheckCircle, path: `${base}/manage-decorators` },
+        { label: "Manage Bookings", icon: FiCalendar, path: `${base}/manage-bookings` },
+        { label: "Analytics", icon: FiBarChart2, path: `${base}/analytics` },
       ];
     }
+
+    if (role === "decorator") {
+      return [
+        { label: "My Profile", icon: FiUser, path: `${base}/profile` },
+        { label: "Assigned Projects", icon: FiBriefcase, path: `${base}/assigned-projects` },
+        { label: "Today's Schedule", icon: FiClock, path: `${base}/schedule` },
+        { label: "Earnings", icon: FiDollarSign, path: `${base}/earnings` },
+      ];
+    }
+
+    return [
+      { label: "My Profile", icon: FiUser, path: `${base}/profile` },
+      { label: "My Bookings", icon: FiCalendar, path: `${base}/my-bookings` },
+      { label: "Payment History", icon: FiCreditCard, path: `${base}/payment-history` },
+    ];
   };
 
-  const dashboardLinks = useMemo(() => getDashboardLinks(role), [role]);
+  const menu = useMemo(() => getMenu(role), [role]);
 
-  // Determine current active page for the Header title
-  const currentPath = location.pathname;
-  const activeLink = dashboardLinks.find((link) =>
-    currentPath.startsWith(link.path)
-  );
-  const headerTitle = activeLink ? activeLink.label : "Dashboard Overview";
+  const active = menu.find((m) => location.pathname.startsWith(m.path));
+  const headerTitle = active ? active.label : "Dashboard";
 
-  // ----------------------------------------------------
-  // Loading and Error Handling
-  // ----------------------------------------------------
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-base-200">
+      <div className="flex justify-center items-center h-screen">
         <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
   }
-  // Optional: Redirect to login if user is not authenticated, handled in main router setup usually
-  // if (!user) return <Navigate to="/login" replace />;
 
-  // ----------------------------------------------------
-  // Component Render
-  // ----------------------------------------------------
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
-    <div className="flex h-screen bg-base-200">
+    <div className="flex h-screen">
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+
       {/* Sidebar */}
-      <div
-        className={`bg-base-100 border-r border-base-300 transition-all duration-300 z-30 ${
-          sidebarOpen ? "w-64" : "w-16"
-        } flex flex-col`}
+      <aside
+        className={`
+          fixed md:static z-30 top-0 left-0 h-full bg-base-100 border-r border-base-300
+          transition-all duration-300
+          ${sidebarOpen ? "w-64" : "w-0"} md:w-64
+          flex flex-col justify-between
+          overflow-hidden
+        `}
       >
-        <div className="flex items-center justify-between p-4 border-b border-base-300">
-          <span
-            className={`text-xl font-bold text-primary transition-opacity duration-150 ${
-              sidebarOpen ? "opacity-100" : "opacity-0 hidden"
-            }`}
-          >
-            {role?.toUpperCase()} Dashboard
-          </span>
-          <button
-            className="btn btn-ghost btn-sm"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            <FiMenu size={20} />
-          </button>
+        <div>
+          <div className="p-4 border-b border-base-300 flex items-center justify-between">
+            <h1 className="text-xl font-bold text-primary hidden md:block">
+              {role?.toUpperCase()} Dashboard
+            </h1>
+            <button
+              className="btn btn-ghost btn-sm md:hidden"
+              onClick={() => setSidebarOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <nav className="p-3 space-y-2 overflow-y-auto h-[calc(100%-5rem)]">
+            <h2 className="text-sm text-gray-500 font-semibold px-2">Menu</h2>
+
+            {menu.map((item) => (
+              <NavLink
+                key={item.label}
+                to={item.path}
+                onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-3 rounded-lg 
+                  transition-colors duration-150
+                  ${
+                    isActive
+                      ? "bg-primary text-white font-semibold shadow"
+                      : "hover:bg-base-300 hover:text-primary"
+                  }`
+                }
+              >
+                <item.icon size={20} /> {item.label}
+              </NavLink>
+            ))}
+
+            <div className="divider" />
+
+            <NavLink
+              to="/"
+              className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 hover:text-primary"
+            >
+              <FiHome size={20} />
+              Back to Site
+            </NavLink>
+          </nav>
         </div>
 
-        <nav className="flex-1 overflow-y-auto mt-4 px-2">
-          {/* Dynamic Dashboard Links */}
-          <h2
-            className={`text-sm font-semibold text-gray-500 mb-2 ${
-              sidebarOpen ? "px-3" : "px-0 text-center"
-            }`}
-          >
-            {sidebarOpen ? "Menu" : "•••"}
-          </h2>
-          {dashboardLinks.map((item) => (
-            <NavLink
-              key={item.label}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center gap-3 w-full p-3 rounded-lg text-left transition-colors duration-150 ${
-                  isActive
-                    ? "bg-primary text-white font-semibold shadow-md"
-                    : "hover:bg-base-300 hover:text-primary"
-                } ${!sidebarOpen && "justify-center"}`
-              }
-            >
-              <item.icon size={20} />
-              <span className={`${sidebarOpen ? "inline" : "hidden"}`}>
-                {item.label}
-              </span>
-            </NavLink>
-          ))}
-
-          {/* General Navigation Links */}
-          <div className="divider my-4"></div>
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `flex items-center gap-3 w-full p-3 rounded-lg text-left transition-colors duration-150 hover:bg-base-300 hover:text-primary ${
-                !sidebarOpen && "justify-center"
-              }`
-            }
-          >
-            <FiHome size={20} />
-            <span className={`${sidebarOpen ? "inline" : "hidden"}`}>
-              Back to Site
-            </span>
-          </NavLink>
-        </nav>
-
-        <div className="p-4 border-t border-base-300">
+        {/* Fixed Logout & Theme Switch at bottom */}
+        <div className="p-4 border-t border-base-300 space-y-2">
           <button
-            className="flex items-center gap-2 btn btn-error w-full"
+            className="btn btn-error w-full flex items-center gap-2"
             onClick={() =>
               toast.promise(logOut(), {
                 loading: "Logging out...",
-                success: "Logged out successfully!",
-                error: "Logout failed!",
+                success: "Logged out!",
+                error: "Logout failed",
               })
             }
           >
-            <FiLogOut size={20} />
-            <span className={`${sidebarOpen ? "inline" : "hidden"}`}>
-              Log Out
-            </span>
+            <FiLogOut size={20} /> Log Out
+          </button>
+
+          <button
+            className="btn btn-ghost w-full flex items-center justify-center gap-2 mt-2"
+            onClick={toggleTheme}
+          >
+            {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
+            {theme === "light" ? "Dark Mode" : "Light Mode"}
           </button>
         </div>
-      </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Header */}
-        <header className="flex items-center justify-between p-4 bg-base-100 border-b border-base-300 shadow-sm z-20">
-          <h1 className="text-2xl font-bold text-primary capitalize">
-            {headerTitle}
-          </h1>
-          <div className="flex items-center gap-4">
+      <div className="flex-1 flex flex-col">
+
+        <header className="flex items-center justify-between p-4 bg-base-100 border-b border-base-300 shadow-sm">
+          <button
+            className="btn btn-ghost md:hidden"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <FiMenu size={22} />
+          </button>
+
+          <h1 className="text-xl md:text-2xl font-bold text-primary">{headerTitle}</h1>
+
+          <div className="flex items-center gap-3">
             <button className="btn btn-ghost btn-circle relative">
               <FiBell size={20} />
               <span className="badge badge-xs badge-primary absolute -top-1 -right-1"></span>
             </button>
-            <div className="flex items-center gap-2">
+
+            <div className="hidden md:flex items-center gap-2">
               <div className="avatar">
-                <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
+                <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
                     src={
                       user?.photoURL ||
@@ -236,18 +199,16 @@ const DashboardLayout = () => {
                         user?.displayName || user?.email
                       }`
                     }
-                    alt="Avatar"
+                    alt="User"
                   />
                 </div>
               </div>
-              <span className="hidden md:block font-semibold">
-                {user?.displayName || user?.email}
-              </span>
+              <span>{user?.displayName || user?.email}</span>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>

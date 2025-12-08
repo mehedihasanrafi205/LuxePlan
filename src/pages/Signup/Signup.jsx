@@ -41,7 +41,6 @@ const Signup = () => {
 
     const imageURL = await imageUpload(imageFile);
 
-
     try {
       const result = await createUser(email, password);
       await updateUserProfile(
@@ -94,6 +93,7 @@ const Signup = () => {
               <div className="w-14 h-14 rounded-2xl overflow-hidden border border-primary/40 bg-base-100 flex items-center justify-center shadow-inner relative">
                 {preview ? (
                   <img
+                    referrerPolicy="no-referrer"
                     src={preview}
                     alt="Preview"
                     className="w-full h-full object-cover"

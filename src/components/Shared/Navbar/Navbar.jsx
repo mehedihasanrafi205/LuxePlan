@@ -24,6 +24,7 @@ const Navbar = () => {
   const navLinks = (
     <>
       {[
+        ["Home", "/"],
         ["Services", "/services"],
         ["Decorators", "/decorators"],
         ["About", "/about"],
@@ -147,7 +148,7 @@ const Navbar = () => {
       "
               >
                 <div className="w-10 rounded-full overflow-hidden">
-                  <img src={user.photoURL} alt="avatar" />
+                  <img referrerPolicy="no-referrer" src={user.photoURL} alt="avatar" />
                 </div>
               </label>
 
