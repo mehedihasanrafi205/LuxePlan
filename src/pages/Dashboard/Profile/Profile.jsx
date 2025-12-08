@@ -470,8 +470,8 @@ const Profile = () => {
               </span>
             </div>
           </div>
-
           <hr />
+          
 
           {/* Tabs Section */}
           <div className="bg-base-100 p-6 rounded-2xl shadow-xl border border-base-300">
