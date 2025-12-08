@@ -45,6 +45,7 @@ const PaymentSuccess = () => {
       </div>
     );
 
+    
   if (!paymentInfo)
     return (
       <div className="min-h-screen flex items-center justify-center text-red-500">

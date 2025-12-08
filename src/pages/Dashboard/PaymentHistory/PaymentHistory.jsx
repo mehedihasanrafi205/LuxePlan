@@ -64,7 +64,6 @@ const PaymentHistory = () => {
             </div>
           ))}
         </div>
-
         {/* Desktop table */}
         <div className="hidden md:block bg-white/5 border border-[#d4af37]/20 rounded-xl backdrop-blur-sm overflow-x-auto">
           <table className="w-full min-w-[700px]">
