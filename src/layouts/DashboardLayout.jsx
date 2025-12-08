@@ -188,7 +188,6 @@ const DashboardLayout = () => {
               <FiBell size={20} />
               <span className="badge badge-xs badge-primary absolute -top-1 -right-1"></span>
             </button>
-
             <div className="hidden md:flex items-center gap-2">
               <div className="avatar">
                 <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
