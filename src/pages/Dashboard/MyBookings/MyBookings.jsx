@@ -51,7 +51,6 @@ const MyBookings = () => {
       deleteMutation.mutate(deleteBooking._id);
     }
   };
-
   // Payment handler
   const handlePayment = async (b) => {
     try {
