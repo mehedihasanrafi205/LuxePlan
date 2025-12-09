@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { imageUpload } from "../../utils";
+import { imageUpload, saveOrUpdateUser } from "../../utils";
 
 const Signup = () => {
   const { createUser, updateUserProfile, signInWithGoogle, loading } =
@@ -43,6 +43,9 @@ const Signup = () => {
 
     try {
       const result = await createUser(email, password);
+
+      await saveOrUpdateUser({ name, email, image: imageURL });
+
       await updateUserProfile(
         name,
         imageURL || "https://www.w3schools.com/howto/img_avatar.png"
@@ -59,7 +62,13 @@ const Signup = () => {
   const handleGoogleSignIn = async () => {
     try {
       //User Registration using google
-      await signInWithGoogle();
+      const { user } = await signInWithGoogle();
+
+      await saveOrUpdateUser({
+        name: user?.displayName,
+        email: user?.email,
+        image: user.photoURL,
+      });
 
       navigate(from, { replace: true });
       toast.success("Signup Successful");

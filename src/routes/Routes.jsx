@@ -16,6 +16,7 @@ import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import ManageServices from "../pages/Dashboard/ManageServices/ManageServices";
+import AssignedProjects from "../pages/Dashboard/AssignedProjects/AssignedProjects";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "my-bookings", element: <MyBookings /> },
       { path: "payment-history", element: <PaymentHistory /> },
+      { path: "assigned-projects", element: <AssignedProjects /> },
       { path: "add-service", element: <AddService /> },
       { path: "manage-services", element: <ManageServices /> },
     ],

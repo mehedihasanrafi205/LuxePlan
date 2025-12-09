@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import logo from "/logo.png";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import { saveOrUpdateUser } from "../../utils";
 
 const Login = () => {
   const { signIn, signInWithGoogle, loading, setLoading } = useAuth();
@@ -24,7 +25,12 @@ const Login = () => {
   const handleLogin = async (data) => {
     const { email, password } = data;
     try {
-      await signIn(email, password);
+      const { user } = await signIn(email, password);
+      await saveOrUpdateUser({
+        name: user?.displayName,
+        email: user?.email,
+        image: user.photoURL,
+      });
       toast.success("Login Successful");
       navigate(from, { replace: true });
     } catch (err) {
@@ -36,7 +42,14 @@ const Login = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithGoogle();
+      const { user } = await signInWithGoogle();
+
+      await saveOrUpdateUser({
+        name: user?.displayName,
+        email: user?.email,
+        image: user.photoURL,
+      });
+
       toast.success("Login Successful");
       navigate(from, { replace: true });
     } catch (err) {
