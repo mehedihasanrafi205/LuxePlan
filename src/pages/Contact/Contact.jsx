@@ -7,7 +7,6 @@ const ContactPage = () => {
     <main className="bg-background-dark text-white font-display flex flex-col items-center w-full px-4 pb-15 pt-35 space-y-24">
 
       <div className="max-w-6xl w-full flex flex-col gap-16">
-
         {/* Hero Section */}
         <section className="flex flex-col items-center text-center gap-6">
           <div className="w-12 h-12 text-primary">
