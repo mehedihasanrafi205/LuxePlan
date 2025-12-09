@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import DeleteConfirmationModal from "../../../components/Shared/Modal/DeleteConfirmationModal";
+import EditBookingModal from "../../../components/Shared/Modal/EditBookingModal";
 
 const MyBookings = () => {
   const API_URL = import.meta.env.VITE_API_URL;

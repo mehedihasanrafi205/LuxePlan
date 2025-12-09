@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { DayPicker } from "react-day-picker";
@@ -9,6 +9,7 @@ import {
   FiClock,
   FiMapPin,
   FiCheck,
+  FiLayers,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 
@@ -19,17 +20,19 @@ const EditBookingModal = ({ booking, onClose }) => {
     booking?.date ? new Date(booking.date) : new Date()
   );
   const [selectedTime, setSelectedTime] = useState(booking?.time || "");
-  const [location, setLocation] = useState(booking?.location || "");
+  const [location, setLocation] = useState(
+    booking?.type === "on_site" ? booking.location : ""
+  );
+  const [type, setType] = useState(booking?.type || "on_site");
+
   const queryClient = useQueryClient();
   const API_URL = import.meta.env.VITE_API_URL;
 
   if (!booking) return null;
 
-  const formattedDate = selectedDate
-    ? selectedDate.toISOString().split("T")[0]
-    : null;
+  const formattedDate = selectedDate?.toISOString().split("T")[0];
 
-  // Fetch booked slots for the selected date
+  // Fetch booked slots for selected date
   const { data: bookedSlots = [] } = useQuery({
     queryKey:
       formattedDate && booking.serviceId
@@ -60,13 +63,19 @@ const EditBookingModal = ({ booking, onClose }) => {
   });
 
   const handleUpdate = () => {
-    if (!selectedTime || !location) {
-      return toast.error("Select time and location!");
+    if (!selectedTime || !type) {
+      return toast.error("Please fill all fields!");
     }
+
+    if (type === "on_site" && !location) {
+      return toast.error("Venue location is required for On-Site service!");
+    }
+
     mutation.mutate({
       date: formattedDate,
       time: selectedTime,
-      location,
+      location: type === "on_site" ? location : "In-Studio Consultation",
+      type,
     });
   };
 
@@ -77,9 +86,10 @@ const EditBookingModal = ({ booking, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
       <div className="bg-[#1A1A1A]/80 backdrop-blur-xl border border-[#d4af37]/40 rounded-xl shadow-2xl max-w-4xl w-full overflow-hidden flex flex-col lg:flex-row relative">
-        {/* Left side: Booking Info */}
+        {/* Left Side */}
         <div className="flex-1 p-6 lg:p-8 flex flex-col gap-4">
-          <div className="text-white/80 font-semibold flex items-center gap-2">
+          {/* Service */}
+          <div className="flex items-center gap-2 text-white/80 font-semibold">
             <FiCheck /> Service
           </div>
           <input
@@ -89,16 +99,51 @@ const EditBookingModal = ({ booking, onClose }) => {
             className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
           />
 
-          <div className="text-white/80 font-semibold flex items-center gap-2 mt-4">
-            <FiMapPin /> Venue Address
+          {/* Service Type */}
+          <div className="flex items-center gap-2 text-white/80 font-semibold mt-4">
+            <FiLayers /> Service Type
           </div>
-          <input
-            type="text"
-            placeholder="Enter venue address"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
-          />
+          <div className="flex flex-col gap-2 mt-1 text-white">
+            <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
+              <input
+                type="radio"
+                name="serviceType"
+                value="in_studio"
+                checked={type === "in_studio"}
+                onChange={(e) => setType(e.target.value)}
+                className="accent-[#d4af37] w-4 h-4"
+              />
+              <span>In-Studio Consultation</span>
+            </label>
+
+            <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
+              <input
+                type="radio"
+                name="serviceType"
+                value="on_site"
+                checked={type === "on_site"}
+                onChange={(e) => setType(e.target.value)}
+                className="accent-[#d4af37] w-4 h-4"
+              />
+              <span>On-Site Decoration</span>
+            </label>
+          </div>
+
+          {/* Venue — only for on_site */}
+          {type === "on_site" && (
+            <>
+              <div className="flex items-center gap-2 text-white/80 font-semibold">
+                <FiMapPin /> Venue Address
+              </div>
+              <input
+                type="text"
+                placeholder="Enter venue address"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
+              />
+            </>
+          )}
 
           <button
             onClick={handleUpdate}
@@ -108,9 +153,9 @@ const EditBookingModal = ({ booking, onClose }) => {
           </button>
         </div>
 
-        {/* Right side: Date & Time */}
+        {/* Right Side */}
         <div className="flex-1 p-6 lg:p-8 border-t lg:border-t-0 lg:border-l border-[#d4af37]/20 flex flex-col gap-4">
-          <div className="text-white/80 font-semibold flex items-center gap-2">
+          <div className="flex items-center gap-2 text-white/80 font-semibold">
             <FiCalendar /> Select Date
           </div>
           <DayPicker
@@ -120,7 +165,7 @@ const EditBookingModal = ({ booking, onClose }) => {
             className="bg-[#2a2a2a] rounded-lg p-2"
             classNames={{
               today: `text-[#e9c03c]`,
-              selected: `bg-[#e9c03c] border-[#e9c03c] rounded-full text-white`,
+              selected: `bg-[#e9c03c] rounded-full text-white`,
             }}
           />
 
@@ -133,21 +178,21 @@ const EditBookingModal = ({ booking, onClose }) => {
                 key={slot}
                 disabled={!availableSlots.includes(slot)}
                 onClick={() => setSelectedTime(slot)}
-                className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-medium ${
+                className={`p-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1 ${
                   selectedTime === slot
-                    ? "bg-[#d4af37] text-[#1A1A1A] border border-[#d4af37] ring-2 ring-offset-2 ring-[#1A1A1A] ring-[#d4af37]"
+                    ? "bg-[#d4af37] text-black"
                     : !availableSlots.includes(slot)
-                    ? "bg-[#2a2a2a] text-white/40 cursor-not-allowed border border-[#d4af37]/20"
-                    : "bg-[#2a2a2a] text-white/90 border border-[#d4af37]/20 hover:bg-[#d4af37]/20 hover:border-[#d4af37]/50 transition-colors"
+                    ? "bg-[#2a2a2a] text-white/40 cursor-not-allowed"
+                    : "bg-[#2a2a2a] text-white hover:bg-[#d4af37]/20"
                 }`}
               >
-                {slot}
+                <FiClock /> {slot}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Close Button */}
+        {/* Close */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-white/70 hover:text-white"

@@ -24,7 +24,7 @@ import { useTheme } from "../providers/ThemeContext";
 
 
 const DashboardLayout = () => {
-  const { user, logOut, role, loading } = useAuth();
+  const { user, logOut, role='admin', loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
