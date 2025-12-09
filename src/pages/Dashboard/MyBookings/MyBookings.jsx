@@ -30,7 +30,6 @@ const MyBookings = () => {
     },
     enabled: !!user?.email,
   });
-
   // Delete booking mutation
   const deleteMutation = useMutation({
     mutationFn: async (id) => axios.delete(`${API_URL}/bookings/${id}`),
