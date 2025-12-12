@@ -244,8 +244,13 @@ const ManageBookings = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        </div>        
+         
 
+
+
+
+         
         {/* Modal */}
         <AssignDecoratorModal
           isOpen={isModalOpen}
