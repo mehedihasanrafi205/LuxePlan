@@ -270,6 +270,9 @@ export const scrollFadeIn = (target, options = {}) => {
   });
 };
 
+
+
+
 /**
  * Scroll-triggered slide in animation
  * @param {string|Element} target - Selector or element
