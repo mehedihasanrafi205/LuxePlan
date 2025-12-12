@@ -85,7 +85,10 @@ const AssignedProjects = () => {
       <LoadingSpinner/>
     );
   }
+ 
 
+
+  
   return (
     <div className="min-h-screen px-4 md:px-6 py-10 ">
       <h1 className="text-3xl font-bold mb-6">Assigned Projects</h1>
