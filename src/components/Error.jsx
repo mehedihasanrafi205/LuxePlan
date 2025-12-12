@@ -140,6 +140,9 @@ const Error = () => {
         </motion.p>
       </div>
 
+
+      
+
       {/* Decorative Footer */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -29,6 +29,9 @@ const LoadingSpinner = () => {
             ease: "linear",
           }}
         />
+
+
+        
         
         {/* Center dot */}
         <div className="absolute inset-0 flex items-center justify-center">
