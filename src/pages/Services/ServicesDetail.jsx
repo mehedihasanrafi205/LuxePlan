@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import BookingModal from "../../components/Shared/Modal/BookingModal";
 import useAuth from "../../hooks/useAuth";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const ServiceDetail = () => {
   const { id } = useParams();
@@ -27,9 +28,7 @@ const ServiceDetail = () => {
 
   if (isLoading)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
+     <LoadingSpinner/>
     );
 
   if (isError || !service)

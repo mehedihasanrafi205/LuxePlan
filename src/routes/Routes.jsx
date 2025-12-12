@@ -17,11 +17,24 @@ import PaymentSuccess from "../pages/Payment/PaymentSuccess";
 import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import ManageServices from "../pages/Dashboard/ManageServices/ManageServices";
 import AssignedProjects from "../pages/Dashboard/AssignedProjects/AssignedProjects";
+import ApplyDecorator from "../pages/Dashboard/ApplyDecorator/ApplyDecorator";
+import ManageDecorators from "../pages/Dashboard/ManageDecorators/ManageDecorators";
+import ManageBookings from "../pages/Dashboard/ManageBookings/ManageBookings";
+import DecoratorRoute from "./DecoratorRoute";
+import AdminRoute from "./AdminRoute";
+import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
+import Earnings from "../pages/Dashboard/Earnings/Earnings";
+import TodaysSchedule from "../pages/Dashboard/TodaysSchedule/TodaysSchedule";
+import Error from "../components/Error";
+import LoadingSpinner from "../components/LoadingSpinner";
+import DecoratorDetail from "../components/DecoratorDetail";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <Error />,
+    hydrateFallbackElement: <LoadingSpinner />,
     children: [
       { index: true, element: <Home /> },
       { path: "services", element: <Services /> },
@@ -30,6 +43,14 @@ export const router = createBrowserRouter([
       { path: "decorators", element: <Decorators /> },
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
+      {
+        path: "decorator/:id",
+        element: (
+          <PrivateRoute>
+            <DecoratorDetail />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
   {
@@ -40,15 +61,91 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
-      { index: true, element: <p>Dashboard Home</p> },
+      {
+        index: true,
+        element: <p>Dashboard Home</p>,
+        errorElement: <Error />,
+        hydrateFallbackElement: <LoadingSpinner />,
+      },
       { path: "profile", element: <Profile /> },
       { path: "my-bookings", element: <MyBookings /> },
       { path: "payment-history", element: <PaymentHistory /> },
-      { path: "assigned-projects", element: <AssignedProjects /> },
-      { path: "add-service", element: <AddService /> },
-      { path: "manage-services", element: <ManageServices /> },
+      { path: "apply-decorator", element: <ApplyDecorator /> },
+
+      //* Decorator Route *//
+
+      {
+        path: "assigned-projects",
+        element: (
+          <DecoratorRoute>
+            <AssignedProjects />
+          </DecoratorRoute>
+        ),
+      },
+      {
+        path: "todays-schedule",
+        element: (
+          <DecoratorRoute>
+            <TodaysSchedule />
+          </DecoratorRoute>
+        ),
+      },
+      {
+        path: "earnings",
+        element: (
+          <DecoratorRoute>
+            <Earnings />
+          </DecoratorRoute>
+        ),
+      },
+
+      //* Admin Route *//
+      {
+        path: "manage-users",
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "add-service",
+        element: (
+          <AdminRoute>
+            <AddService />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-decorators",
+        element: (
+          <AdminRoute>
+            <ManageDecorators />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-services",
+        element: (
+          <AdminRoute>
+            <ManageServices />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-bookings",
+        element: (
+          <AdminRoute>
+            <ManageBookings />
+          </AdminRoute>
+        ),
+      },
     ],
   },
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <Signup /> },
+  {
+    path: "*",
+    element: <Error />,
+  },
 ]);

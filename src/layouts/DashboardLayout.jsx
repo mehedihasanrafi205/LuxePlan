@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { NavLink, Outlet, useLocation } from "react-router";
+import { Link, NavLink, Outlet, useLocation } from "react-router";
 import {
   FiHome,
   FiUser,
@@ -15,16 +15,21 @@ import {
   FiClock,
   FiSun,
   FiMoon,
+  FiUserPlus,
 } from "react-icons/fi";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import useAuth from "../hooks/useAuth";
 import { useTheme } from "../providers/ThemeContext";
-
-
+import useRole from "../hooks/useRole";
+import { VscRequestChanges } from "react-icons/vsc";
+import { MdOutlineManageAccounts } from "react-icons/md";
+import logo from "/logo.png";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const DashboardLayout = () => {
-  const { user, logOut, role='decorator', loading } = useAuth();
+  const { user, logOut, loading } = useAuth();
+  const { role, isRoleLoading } = useRole();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
@@ -38,10 +43,31 @@ const DashboardLayout = () => {
     if (role === "admin") {
       return [
         { label: "My Profile", icon: FiUser, path: `${base}/profile` },
-        { label: "Manage Services", icon: FiBriefcase, path: `${base}/manage-services` },
-        { label: "Add Service", icon: IoMdAddCircleOutline, path: `${base}/add-service` },
-        { label: "Manage Decorators", icon: FiCheckCircle, path: `${base}/manage-decorators` },
-        { label: "Manage Bookings", icon: FiCalendar, path: `${base}/manage-bookings` },
+        {
+          label: "Manage Users",
+          icon: MdOutlineManageAccounts,
+          path: `${base}/manage-users`,
+        },
+        {
+          label: "Manage Services",
+          icon: FiBriefcase,
+          path: `${base}/manage-services`,
+        },
+        {
+          label: "Add Service",
+          icon: IoMdAddCircleOutline,
+          path: `${base}/add-service`,
+        },
+        {
+          label: "Manage Decorators",
+          icon: FiCheckCircle,
+          path: `${base}/manage-decorators`,
+        },
+        {
+          label: "Manage Bookings",
+          icon: FiCalendar,
+          path: `${base}/manage-bookings`,
+        },
         { label: "Analytics", icon: FiBarChart2, path: `${base}/analytics` },
       ];
     }
@@ -49,8 +75,16 @@ const DashboardLayout = () => {
     if (role === "decorator") {
       return [
         { label: "My Profile", icon: FiUser, path: `${base}/profile` },
-        { label: "Assigned Projects", icon: FiBriefcase, path: `${base}/assigned-projects` },
-        { label: "Today's Schedule", icon: FiClock, path: `${base}/schedule` },
+        {
+          label: "Assigned Projects",
+          icon: FiBriefcase,
+          path: `${base}/assigned-projects`,
+        },
+        {
+          label: "Today's Schedule",
+          icon: FiClock,
+          path: `${base}/todays-schedule`,
+        },
         { label: "Earnings", icon: FiDollarSign, path: `${base}/earnings` },
       ];
     }
@@ -58,32 +92,33 @@ const DashboardLayout = () => {
     return [
       { label: "My Profile", icon: FiUser, path: `${base}/profile` },
       { label: "My Bookings", icon: FiCalendar, path: `${base}/my-bookings` },
-      { label: "Payment History", icon: FiCreditCard, path: `${base}/payment-history` },
+      {
+        label: "Payment History",
+        icon: FiCreditCard,
+        path: `${base}/payment-history`,
+      },
+      {
+        label: "Apply For Decorator",
+        icon: FiUserPlus,
+        path: `${base}/apply-decorator`,
+      },
     ];
   };
 
   const menu = useMemo(() => getMenu(role), [role]);
 
-  const active = menu.find((m) => location.pathname.startsWith(m.path));
-  const headerTitle = active ? active.label : "Dashboard";
-
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
     <div className="flex h-screen">
-
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+          className="fixed inset-0  bg-opacity-50 z-20 md:hidden"
           onClick={closeSidebar}
         />
       )}
@@ -100,9 +135,12 @@ const DashboardLayout = () => {
       >
         <div>
           <div className="p-4 border-b border-base-300 flex items-center justify-between">
-            <h1 className="text-xl font-bold text-primary hidden md:block">
-              {role?.toUpperCase()} Dashboard
-            </h1>
+            <Link to={"/"} className="flex items-center gap-2">
+              <img src={logo} alt="Logo" className="w-10 h-10 object-contain" />
+              <h1 className="text-xl md:text-2xl font-bold text-primary font-serif">
+                LuxePlan
+              </h1>
+            </Link>
             <button
               className="btn btn-ghost btn-sm md:hidden"
               onClick={() => setSidebarOpen(false)}
@@ -145,8 +183,15 @@ const DashboardLayout = () => {
           </nav>
         </div>
 
-        {/* Fixed Logout & Theme Switch at bottom */}
-        <div className="p-4 border-t border-base-300 space-y-2">
+        {/* Logout & Theme Switch at bottom */}
+        <div className="p-4 border-t border-base-300 space-y-3">
+          <button
+            className="btn  w-full flex items-center justify-center gap-2 mt-2"
+            onClick={toggleTheme}
+          >
+            {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
+            {theme === "light" ? "Dark Mode" : "Light Mode"}
+          </button>
           <button
             className="btn btn-error w-full flex items-center gap-2"
             onClick={() =>
@@ -159,29 +204,26 @@ const DashboardLayout = () => {
           >
             <FiLogOut size={20} /> Log Out
           </button>
-
-          <button
-            className="btn btn-ghost w-full flex items-center justify-center gap-2 mt-2"
-            onClick={toggleTheme}
-          >
-            {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
-            {theme === "light" ? "Dark Mode" : "Light Mode"}
-          </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative">
+        {/* Blur Overlay When Sidebar Open */}
+        {sidebarOpen && (
+          <div className="fixed inset-0  backdrop-blur-sm z-10 md:hidden"></div>
+        )}
 
-        <header className="flex items-center justify-between p-4 bg-base-100 border-b border-base-300 shadow-sm">
+        <header className="flex items-center justify-between p-4 bg-base-100 border-b border-base-300 shadow-sm relative z-20">
           <button
             className="btn btn-ghost md:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <FiMenu size={22} />
           </button>
-
-          <h1 className="text-xl md:text-2xl font-bold text-primary">{headerTitle}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-primary ">
+            {role?.toUpperCase()} Dashboard
+          </h1>
 
           <div className="flex items-center gap-3">
             <button className="btn btn-ghost btn-circle relative">
@@ -206,7 +248,8 @@ const DashboardLayout = () => {
             </div>
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto relative z-20">
           <Outlet />
         </main>
       </div>

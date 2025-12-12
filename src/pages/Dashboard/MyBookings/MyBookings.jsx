@@ -9,6 +9,8 @@ import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import DeleteConfirmationModal from "../../../components/Shared/Modal/DeleteConfirmationModal";
 import EditBookingModal from "../../../components/Shared/Modal/EditBookingModal";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const MyBookings = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -20,19 +22,20 @@ const MyBookings = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   // Fetch user bookings
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["myBookings", user?.email],
     queryFn: async () => {
-      const res = await axios.get(`${API_URL}/bookings?email=${user.email}`);
+      const res = await axiosSecure(`/bookings?email=${user.email}`);
       return res.data;
     },
     enabled: !!user?.email,
   });
   // Delete booking mutation
   const deleteMutation = useMutation({
-    mutationFn: async (id) => axios.delete(`${API_URL}/bookings/${id}`),
+    mutationFn: async (id) => axiosSecure.delete(`/bookings/${id}`),
     onSuccess: () => {
       toast.success("Booking deleted");
       queryClient.invalidateQueries(["myBookings", user.email]);
@@ -50,8 +53,8 @@ const MyBookings = () => {
     if (deleteBooking) {
       deleteMutation.mutate(deleteBooking._id);
     }
-  }; 
-  
+  };
+
   // Payment handler
   const handlePayment = async (b) => {
     try {
@@ -59,7 +62,7 @@ const MyBookings = () => {
         bookingId: b._id,
         serviceId: b.serviceId,
         service_name: b.service_name,
-        userEmail: b.userEmail,
+        userEmail: user.email,
         userName: b.userName,
         date: b.date,
         time: b.time,
@@ -97,17 +100,12 @@ const MyBookings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white px-4 md:px-6 py-10">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-serif font-bold mb-2">My Bookings</h1>
-        <p className="text-white/60 mb-8">
-          Track bookings, payments, and project progress.
-        </p>
+    <div className="min-h-screen   px-4 md:px-6 py-10">
+      <div className="container mx-auto">
+        <h1 className="text-3xl text-primary font-bold mb-2">My Bookings</h1>
 
         {isLoading && (
-          <div className="flex justify-center py-20">
-            <FiLoader className="animate-spin text-4xl text-[#d4af37]" />
-          </div>
+          <LoadingSpinner/>
         )}
 
         {/* Mobile Cards */}
@@ -116,10 +114,15 @@ const MyBookings = () => {
             {bookings.map((b) => (
               <div
                 key={b._id}
-                className="bg-white/5 border border-[#d4af37]/20 rounded-xl p-4 backdrop-blur-sm"
+                className="bg-base-200 border border-[#d4af37]/20 rounded-xl p-4 backdrop-blur-sm"
               >
                 <h2 className="text-lg font-semibold">{b.service_name}</h2>
-                <p className="text-white/60 text-sm mt-1">Date: {b.date}</p>
+                <p className="text-sm mt-1">Date: {b.date}</p>
+                <p className="text-sm mt-1">Time: {b.time}</p>
+                <p className="text-sm mt-1">Location: {b.location}</p>
+                <p className="text-sm mt-1">Category: {b.service_category}</p>
+                <p className="text-sm mt-1">Cost: {b.cost} BDT</p>
+
                 <span
                   className={`inline-block mt-3 rounded-full px-3 py-1 text-xs font-semibold ${
                     statusColors[b.status]
@@ -146,7 +149,7 @@ const MyBookings = () => {
                 <div className="flex justify-between mt-4">
                   <IoMdEye
                     onClick={() => handleView(b.serviceId)}
-                    className="text-white/80 hover:text-white text-xl cursor-pointer"
+                    className="text-xl cursor-pointer"
                   />
                   <FiEdit
                     onClick={() => handleEdit(b)}
@@ -164,33 +167,49 @@ const MyBookings = () => {
 
         {/* Desktop Table */}
         {!isLoading && (
-          <div className="hidden md:block bg-white/5 border border-[#d4af37]/20 rounded-xl backdrop-blur-sm overflow-x-auto">
-            <table className="w-full min-w-[950px]">
+          <div className="hidden md:block  rounded-xl backdrop-blur-sm overflow-x-auto shadow-xl border border-base-300">
+            <table className="w-full table min-w-[1050px]">
               <thead>
                 <tr className="border-b border-b-white/10">
-                  <th className="px-6 py-4 text-left text-white/70 text-sm uppercase">
+                  <th className="px-6 py-4 text-left text-sm uppercase">
                     Service
                   </th>
-                  <th className="px-6 py-4 text-left text-white/70 text-sm uppercase">
+                  <th className="px-6 py-4 text-left text-sm uppercase">
                     Date
                   </th>
-                  <th className="px-6 py-4 text-left text-white/70 text-sm uppercase">
+                  <th className="px-6 py-4 text-left text-sm uppercase">
+                    Time
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm uppercase">
+                    Location
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm uppercase">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm uppercase">
+                    Cost
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm uppercase">
                     Status
                   </th>
-                  <th className="px-6 py-4 text-left text-white/70 text-sm uppercase">
+                  <th className="px-6 py-4 text-left text-sm uppercase">
                     Payment
                   </th>
-                  <th className="px-6 py-4 text-left text-white/70 text-sm uppercase">
+                  <th className="px-6 py-4 text-left text-sm uppercase">
                     Actions
                   </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-white/10">
+              <tbody>
                 {bookings.map((b) => (
                   <tr key={b._id}>
-                    <td className="px-6 py-4 text-white">{b.service_name}</td>
-                    <td className="px-6 py-4 text-white/70">{b.date}</td>
+                    <td className="px-6 py-4">{b.service_name}</td>
+                    <td className="px-6 py-4">{b.date}</td>
+                    <td className="px-6 py-4">{b.time}</td>
+                    <td className="px-6 py-4">{b.location}</td>
+                    <td className="px-6 py-4">{b.service_category}</td>
+                    <td className="px-6 py-4">{b.cost} BDT</td>
                     <td className="px-6 py-4">
                       <span
                         className={`inline-flex items-center rounded-full h-7 px-3 text-xs font-semibold ${
@@ -217,7 +236,7 @@ const MyBookings = () => {
                     <td className="px-6 py-4 text-sm flex gap-3">
                       <IoMdEye
                         onClick={() => handleView(b.serviceId)}
-                        className="text-white/80 hover:text-white text-xl cursor-pointer"
+                        className="text-xl cursor-pointer"
                       />
                       <FiEdit
                         onClick={() => handleEdit(b)}

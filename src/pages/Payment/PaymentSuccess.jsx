@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router";
 import axios from "axios";
 import { FiCheckCircle, FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -40,9 +41,7 @@ const PaymentSuccess = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center text-[#d4af37]">
-        <FiLoader className="animate-spin text-6xl" />
-      </div>
+      <LoadingSpinner/>
     );
 
     

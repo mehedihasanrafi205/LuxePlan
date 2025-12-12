@@ -17,6 +17,8 @@ import {
 import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import { imageUpload } from "../../../utils";
+import useRole from "../../../hooks/useRole";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 // Helper function to format dates nicely
 const formatDate = (dateString) => {
@@ -32,7 +34,8 @@ const formatDate = (dateString) => {
 
 const Profile = () => {
   // Get user data from auth hook
-  const { user, loading, logOut, updateUserProfile, refetchUser } = useAuth();
+  const { user, loading, updateUserProfile, refetchUser } = useAuth();
+  const { role, isRoleLoading } = useRole();
 
   console.log("user?.photoURL", user?.photoURL);
 
@@ -51,7 +54,7 @@ const Profile = () => {
     photoURL: user?.photoURL || "",
     phone: user?.phoneNumber || "+1 XXX XXX XXXX",
     location: "Address Not Set",
-    role: "Client",
+    role: role,
   });
 
   // Store selected image file
@@ -77,25 +80,24 @@ const Profile = () => {
   // Update profile data when user data changes
   useEffect(() => {
     if (user) {
-      const newData = {
+      setProfileData((prev) => ({
+        ...prev,
         displayName: user.displayName || "User Name",
         photoURL: user.photoURL || "",
         phone: user.phoneNumber || "+1 XXX XXX XXXX",
-        location: profileData.location,
-        role: profileData.role,
-      };
-      setProfileData(newData);
-      setPreviewURL(user.photoURL || "");
+        location: prev.location,
+        role: role || prev.role || "client",
+      }));
 
-      // Reset form with new values
       reset({
-        displayName: newData.displayName,
-        phone: newData.phone,
-        location: newData.location,
+        displayName: user.displayName || "User Name",
+        phone: user.phoneNumber || "+1 XXX XXX XXXX",
+        location: profileData.location,
       });
-    }
-  }, [user, reset]);
 
+      setPreviewURL(user.photoURL || "");
+    }
+  }, [user, role, reset]);
   // Handle image selection from file picker
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
@@ -163,11 +165,9 @@ const Profile = () => {
   };
 
   // Show loading spinner while checking auth
-  if (loading) {
+  if (loading && isRoleLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
+     <LoadingSpinner/>
     );
   }
 
@@ -200,7 +200,7 @@ const Profile = () => {
         <InfoCard
           icon={<FiUser />}
           label="Account Role"
-          value={profileData.role}
+          value={profileData?.role}
         />
         <InfoCard
           icon={<FiCalendar />}
@@ -221,20 +221,6 @@ const Profile = () => {
           onClick={() => setIsEditing(true)}
         >
           <FiEdit2 size={16} /> Edit Profile
-        </button>
-
-        {/* Logout button */}
-        <button
-          className="btn btn-error btn-outline flex items-center gap-2"
-          onClick={() =>
-            toast.promise(logOut(), {
-              loading: "Logging out...",
-              success: "Logged out successfully!",
-              error: "Logout failed!",
-            })
-          }
-        >
-          <FiLogOut size={16} /> Log Out
         </button>
       </div>
     </div>
@@ -455,7 +441,7 @@ const Profile = () => {
               <h1 className="text-4xl font-bold text-base-content">
                 {profileData.displayName}
               </h1>
-              <p className="text-lg text-primary font-medium mt-1">
+              <p className="text-lg text-primary font-semibold mt-1">
                 {profileData.role}
               </p>
               <p className="text-sm text-base-content/70 mt-2">
@@ -471,7 +457,6 @@ const Profile = () => {
             </div>
           </div>
           <hr />
-          
 
           {/* Tabs Section */}
           <div className="bg-base-100 p-6 rounded-2xl shadow-xl border border-base-300">

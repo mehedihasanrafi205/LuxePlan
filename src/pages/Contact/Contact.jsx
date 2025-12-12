@@ -1,123 +1,161 @@
 import React from "react";
-import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
+import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 import { FaFacebookF, FaInstagram, FaPinterestP, FaLinkedinIn } from "react-icons/fa";
+import Map from "../../components/Map";
 
-const ContactPage = () => {
+const Contact = () => {
+  // Simple handler to prevent default form submission in this static example
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Contact form submitted!");
+    // In a real app, you would handle form validation and API submission here
+  };
+
   return (
-    <main className="bg-background-dark text-white font-display flex flex-col items-center w-full px-4 pb-15 pt-35 space-y-24">
-
-      <div className="max-w-6xl w-full flex flex-col gap-16">
-        {/* Hero Section */}
+    // Use standard DaisyUI bg/text classes for dark theme consistency
+    <main className="bg-base-200 text-base-content flex flex-col items-center w-full px-4 py-16 md:py-24 space-y-24">
+      <div className="max-w-6xl w-full flex flex-col gap-16 mt-18">
+        
+        {/* === 1. Hero Section === */}
         <section className="flex flex-col items-center text-center gap-6">
-          <div className="w-12 h-12 text-primary">
-            <svg fill="none" viewBox="0 0 48 48" className="w-full h-full">
-              <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor" />
-            </svg>
+          <div className="p-3 rounded-full bg-primary/20 text-primary">
+            {/* Using a simple envelope icon from Feather for cleaner visual */}
+            <FiMail size={36} />
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white">
-            Get in Touch with LuxePlan
+          <h1 className="text-4xl md:text-6xl font-extrabold text-primary font-serif  leading-tight">
+            Begin Your LuxePlan Experience
           </h1>
-          <p className="max-w-3xl text-gray-300 text-lg">
-            Have questions, ideas, or requests? We’d love to hear from you. Fill out the form below or use the contact info to reach us directly.
+          <p className="max-w-4xl text-base-content/70 text-lg">
+            Have questions, ideas, or complex project requests? We’re dedicated to crafting bespoke solutions. Reach out to our specialized team directly.
           </p>
         </section>
 
-        {/* Contact Form & Info */}
-        <section className="grid md:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div className="bg-white/5 p-8 rounded-xl border border-primary/30 backdrop-blur-lg flex flex-col gap-6 shadow-lg hover:shadow-primary/50 transition-shadow">
-            <h2 className="text-2xl font-bold font-serif text-primary">Send Us a Message</h2>
-            <form className="flex flex-col gap-4">
+        {/* === 2. Contact Form & Info Grid === */}
+        <section className="grid md:grid-cols-2 gap-12 items-start">
+          
+          {/* Contact Form - Enhanced DaisyUI Card */}
+          <div className="card bg-base-100 p-8 shadow-2xl border border-base-300/50 transition-shadow duration-300 hover:shadow-primary/30">
+            <h2 className="text-3xl font-bold text-primary mb-6">Send Us a Message</h2>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              
+              {/* Name Input */}
               <input
                 type="text"
                 placeholder="Your Name"
-                className="p-3 rounded-lg bg-background-dark/50 text-white border border-primary/20 focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                className="input input-bordered input-lg bg-base-300 text-base-content border-primary/20 focus:border-primary transition-colors"
+                required
               />
+              
+              {/* Email Input */}
               <input
                 type="email"
                 placeholder="Your Email"
-                className="p-3 rounded-lg bg-background-dark/50 text-white border border-primary/20 focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                className="input input-bordered input-lg bg-base-300 text-base-content border-primary/20 focus:border-primary transition-colors"
+                required
               />
+              
+              {/* Subject Input */}
               <input
                 type="text"
                 placeholder="Subject"
-                className="p-3 rounded-lg bg-background-dark/50 text-white border border-primary/20 focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                className="input input-bordered input-lg bg-base-300 text-base-content border-primary/20 focus:border-primary transition-colors"
+                required
               />
+              
+              {/* Message Textarea */}
               <textarea
-                placeholder="Your Message"
+                placeholder="Your Message (Project details, questions, etc.)"
                 rows="5"
-                className="p-3 rounded-lg bg-background-dark/50 text-white border border-primary/20 focus:border-primary focus:ring-1 focus:ring-primary outline-none resize-none"
+                className="textarea textarea-bordered textarea-lg bg-base-300 text-base-content border-primary/20 focus:border-primary resize-none transition-colors"
+                required
               ></textarea>
+              
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="mt-2 px-6 py-3 bg-primary text-background-dark rounded-full font-bold hover:scale-105 transition-transform"
+                className="mt-4 btn btn-primary btn-lg shadow-xl shadow-primary/40 hover:scale-[1.02] transition-transform duration-300 flex items-center gap-2"
               >
+                <FiSend size={20} />
                 Send Message
               </button>
             </form>
           </div>
 
-          {/* Contact Info */}
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold font-serif text-primary">Contact Info</h2>
-            <div className="flex flex-col gap-4 text-gray-300">
-              <div className="flex items-center gap-3">
-                <FiMail className="text-primary text-xl" />
+          {/* Contact Info & Socials - Structured for Visual Impact */}
+          <div className="flex flex-col gap-8 p-4">
+            
+            <h2 className="text-3xl font-bold text-primary mb-4">Direct Information</h2>
+            
+            {/* Contact Details Grid */}
+            <div className="space-y-6">
+              
+              {/* Email Card */}
+              <div className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300">
+                <FiMail size={24} className="text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-white">Email</p>
-                  <p>info@luxeplan.com</p>
+                  <p className="font-semibold text-xl text-accent">Email</p>
+                  <a href="mailto:info@luxeplan.com" className="text-base-content/80 hover:text-primary transition-colors">
+                    info@luxeplan.com
+                  </a>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <FiPhone className="text-primary text-xl" />
+              
+              {/* Phone Card */}
+              <div className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300">
+                <FiPhone size={24} className="text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-white">Phone</p>
-                  <p>+880 123 456 789</p>
+                  <p className="font-semibold text-xl text-accent">Phone</p>
+                  <a href="tel:+880123456789" className="text-base-content/80 hover:text-primary transition-colors">
+                    +880 123 456 789 (Bangladesh)
+                  </a>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <FiMapPin className="text-primary text-xl" />
+              
+              {/* Address Card */}
+              <div className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300">
+                <FiMapPin size={24} className="text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold text-white">Address</p>
-                  <p>Banani, Dhaka, Bangladesh</p>
+                  <p className="font-semibold text-xl text-accent">Visit Us</p>
+                  <p className="text-base-content/80">
+                    Banani DOHS, Dhaka, Bangladesh <br/>
+                    (Appointment Required)
+                  </p>
                 </div>
               </div>
+
             </div>
 
-            {/* Social Media */}
-            <div className="flex items-center gap-4 mt-6">
-              <a href="#" className="p-3 rounded-full bg-white/10 hover:bg-primary transition-colors">
-                <FaFacebookF className="text-white hover:text-background-dark transition-colors" />
-              </a>
-              <a href="#" className="p-3 rounded-full bg-white/10 hover:bg-primary transition-colors">
-                <FaInstagram className="text-white hover:text-background-dark transition-colors" />
-              </a>
-              <a href="#" className="p-3 rounded-full bg-white/10 hover:bg-primary transition-colors">
-                <FaPinterestP className="text-white hover:text-background-dark transition-colors" />
-              </a>
-              <a href="#" className="p-3 rounded-full bg-white/10 hover:bg-primary transition-colors">
-                <FaLinkedinIn className="text-white hover:text-background-dark transition-colors" />
-              </a>
+            {/* Social Media Links */}
+            <div className="mt-8">
+              <h3 className="text-lg font-bold text-primary mb-4">Connect with Our Community</h3>
+              <div className="flex items-center gap-3">
+                {/* Social Icon Styling: Larger, more prominent, and consistent hover */}
+                <a href="#" aria-label="Facebook" className="btn btn-circle btn-lg bg-base-200  hover:bg-primary hover:text-base-100 transition-all duration-300 shadow-md">
+                  <FaFacebookF size={20} />
+                </a>
+                <a href="#" aria-label="Instagram" className="btn btn-circle btn-lg bg-base-200  hover:bg-primary hover:text-base-100 transition-all duration-300 shadow-md">
+                  <FaInstagram size={20} />
+                </a>
+                <a href="#" aria-label="Pinterest" className="btn btn-circle btn-lg bg-base-200  hover:bg-primary hover:text-base-100 transition-all duration-300 shadow-md">
+                  <FaPinterestP size={20} />
+                </a>
+                <a href="#" aria-label="LinkedIn" className="btn btn-circle btn-lg bg-base-200  hover:bg-primary hover:text-base-100 transition-all duration-300 shadow-md">
+                  <FaLinkedinIn size={20} />
+                </a>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Optional: Map */}
-        <section className="w-full h-64 rounded-xl overflow-hidden border border-primary/30">
-          <iframe
-            title="LuxePlan Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.902904032096!2d90.4014212154318!3d23.7928863924702!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7fbd92d8e45%3A0x9c56d1bbdc3e0e7e!2sBanani%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd"
-            width="100%"
-            height="100%"
-            className="border-0"
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        {/* === 3. Map Section (Placeholder) === */}
+        <section className="w-full pt-16">
+          <h2 className="text-4xl font-bold text-primary text-center mb-8">Our Location</h2>
+            <Map></Map>
         </section>
+        
       </div>
     </main>
   );
 };
 
-export default ContactPage;
+export default Contact;

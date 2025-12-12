@@ -15,6 +15,12 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  modalAnimation,
+  staggerContainer,
+  staggerItem,
+} from "../../../utils/animations";
 
 const ALL_SLOTS = ["10:00 AM", "12:00 PM", "02:00 PM", "04:00 PM", "06:00 PM"];
 
@@ -88,156 +94,209 @@ const BookingModal = ({ service, user, onClose }) => {
   );
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
-      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl border border-[#d4af37]/40 rounded-xl shadow-2xl max-w-4xl w-full overflow-hidden flex flex-col lg:flex-row relative">
-
-        {/* Left Side */}
-        <div className="flex-1 p-6 lg:p-8 flex flex-col gap-4">
-
-          {/* Name */}
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiUser /> Name
-          </div>
-          <input
-            readOnly
-            value={user.displayName || ""}
-            className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
-          />
-
-          {/* Email */}
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiMail /> Email
-          </div>
-          <input
-            readOnly
-            value={user.email || ""}
-            className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
-          />
-
-          {/* Service */}
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiCheck /> Service
-          </div>
-          <input
-            readOnly
-            value={service.service_name}
-            className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
-          />
-
-          {/* Service Type (Radio) */}
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiLayers /> Service Type
-          </div>
-
-          <div className="flex flex-col gap-2 mt-1 text-white">
-
-            {/* In-Studio */}
-            <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
-              <input
-                type="radio"
-                name="serviceType"
-                value="in_studio"
-                checked={type === "in_studio"}
-                onChange={(e) => setType(e.target.value)}
-                className="accent-[#d4af37] w-4 h-4"
-              />
-              <span>In-Studio Consultation</span>
-            </label>
-
-            {/* On-Site */}
-            <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
-              <input
-                type="radio"
-                name="serviceType"
-                value="on_site"
-                checked={type === "on_site"}
-                onChange={(e) => setType(e.target.value)}
-                className="accent-[#d4af37] w-4 h-4"
-              />
-              <span>On-Site Decoration</span>
-            </label>
-          </div>
-
-          {/* Venue Address — SHOW ONLY IF on_site */}
-          {type === "on_site" && (
-            <>
+    <AnimatePresence>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={modalAnimation.backdrop}
+        onClick={onClose}
+        className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+      >
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={modalAnimation.modal}
+          onClick={(e) => e.stopPropagation()}
+          className="
+  bg-[#1A1A1A]/90 
+  backdrop-blur-xl 
+  border border-[#d4af37]/40 
+  rounded-xl 
+  shadow-2xl 
+  w-full 
+  max-w-4xl 
+  max-h-[90vh]
+  overflow-hidden 
+  flex 
+  flex-col 
+  lg:flex-row 
+  relative
+"
+        >
+          {/* Left Side */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="flex-1 p-5 sm:p-6 lg:p-8 flex flex-col gap-4 overflow-y-auto"
+          >
+            {/* Name */}
+            <motion.div variants={staggerItem}>
               <div className="flex items-center gap-2 text-white/80 font-semibold">
-                <FiMapPin /> Venue Address
+                <FiUser /> Name
               </div>
               <input
-                type="text"
-                placeholder="Enter venue address"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                readOnly
+                value={user.displayName || ""}
                 className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
               />
-            </>
-          )}
+            </motion.div>
 
-          {/* Cost */}
-          <div className="mt-2 text-white/80 font-semibold">
-            Cost: <span className="text-[#d4af37] font-bold">৳ {service.cost}</span>
+            {/* Email */}
+            <motion.div variants={staggerItem}>
+              <div className="flex items-center gap-2 text-white/80 font-semibold">
+                <FiMail /> Email
+              </div>
+              <input
+                readOnly
+                value={user.email || ""}
+                className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
+              />
+            </motion.div>
+
+            {/* Service */}
+            <div className="flex items-center gap-2 text-white/80 font-semibold">
+              <FiCheck /> Service
+            </div>
+            <input
+              readOnly
+              value={service.service_name}
+              className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
+            />
+
+            {/* Service Type (Radio) */}
+            <div className="flex items-center gap-2 text-white/80 font-semibold">
+              <FiLayers /> Service Type
+            </div>
+
+            <div className="flex flex-col gap-2 mt-1 text-white">
+              {/* In-Studio */}
+              <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
+                <input
+                  type="radio"
+                  name="serviceType"
+                  value="in_studio"
+                  checked={type === "in_studio"}
+                  onChange={(e) => setType(e.target.value)}
+                  className="accent-[#d4af37] w-4 h-4"
+                />
+                <span>In-Studio Consultation</span>
+              </label>
+
+              {/* On-Site */}
+              <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
+                <input
+                  type="radio"
+                  name="serviceType"
+                  value="on_site"
+                  checked={type === "on_site"}
+                  onChange={(e) => setType(e.target.value)}
+                  className="accent-[#d4af37] w-4 h-4"
+                />
+                <span>On-Site Decoration</span>
+              </label>
+            </div>
+
+            {/* Venue Address — SHOW ONLY IF on_site */}
+            {type === "on_site" && (
+              <>
+                <div className="flex items-center gap-2 text-white/80 font-semibold">
+                  <FiMapPin /> Venue Address
+                </div>
+                <input
+                  type="text"
+                  placeholder="Enter venue address"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
+                />
+              </>
+            )}
+
+            {/* Cost */}
+            <div className="mt-2 text-white/80 font-semibold">
+              Cost:{" "}
+              <span className="text-[#d4af37] font-bold">৳ {service.cost}</span>
+            </div>
+
+            <motion.button
+              variants={staggerItem}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleBooking}
+              className="mt-auto bg-[#d4af37] text-[#1A1A1A] p-4 rounded-lg font-bold hover:brightness-110 transition"
+            >
+              Confirm Booking
+            </motion.button>
+          </motion.div>
+
+          {/* Right Side */}
+          <div className="flex-1 p-6 lg:p-8 border-t lg:border-t-0 lg:border-l border-[#d4af37]/20 flex flex-col gap-4 overflow-y-auto">
+            <div className="flex items-center gap-2 text-white/80 font-semibold">
+              <FiCalendar /> Select Date
+            </div>
+
+            <DayPicker
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              className="bg-[#2a2a2a] rounded-lg p-2"
+              classNames={{
+                today: `text-[#e9c03c]`,
+                selected: `bg-[#e9c03c] rounded-full text-white`,
+              }}
+            />
+
+            <div className="flex items-center gap-2 text-white/80 font-semibold mt-4">
+              <FiClock /> Select Time
+            </div>
+
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              className="grid grid-cols-2 sm:grid-cols-3 gap-3"
+            >
+              {ALL_SLOTS.map((slot) => (
+                <motion.button
+                  key={slot}
+                  variants={staggerItem}
+                  whileHover={
+                    availableSlots.includes(slot) ? { scale: 1.05 } : {}
+                  }
+                  whileTap={
+                    availableSlots.includes(slot) ? { scale: 0.95 } : {}
+                  }
+                  disabled={!availableSlots.includes(slot)}
+                  onClick={() => setSelectedTime(slot)}
+                  className={`p-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition ${
+                    selectedTime === slot
+                      ? "bg-[#d4af37] text-black"
+                      : !availableSlots.includes(slot)
+                      ? "bg-[#2a2a2a] text-white/40 cursor-not-allowed"
+                      : "bg-[#2a2a2a] text-white hover:bg-[#d4af37]/20"
+                  }`}
+                >
+                  <FiClock /> {slot}
+                </motion.button>
+              ))}
+            </motion.div>
           </div>
 
-          <button
-            onClick={handleBooking}
-            className="mt-auto bg-[#d4af37] text-[#1A1A1A] p-4 rounded-lg font-bold hover:brightness-110 active:scale-[0.98]"
+          {/* Close */}
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 90 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={onClose}
+            className="absolute top-4 right-4 text-white/70 hover:text-white transition cursor-pointer"
           >
-            Confirm Booking
-          </button>
-        </div>
-
-        {/* Right Side */}
-        <div className="flex-1 p-6 lg:p-8 border-t lg:border-t-0 lg:border-l border-[#d4af37]/20 flex flex-col gap-4">
-
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiCalendar /> Select Date
-          </div>
-
-          <DayPicker
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="bg-[#2a2a2a] rounded-lg p-2"
-            classNames={{
-              today: `text-[#e9c03c]`,
-              selected: `bg-[#e9c03c] rounded-full text-white`,
-            }}
-          />
-
-          <div className="flex items-center gap-2 text-white/80 font-semibold mt-4">
-            <FiClock /> Select Time
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {ALL_SLOTS.map((slot) => (
-              <button
-                key={slot}
-                disabled={!availableSlots.includes(slot)}
-                onClick={() => setSelectedTime(slot)}
-                className={`p-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1 ${
-                  selectedTime === slot
-                    ? "bg-[#d4af37] text-black"
-                    : !availableSlots.includes(slot)
-                    ? "bg-[#2a2a2a] text-white/40 cursor-not-allowed"
-                    : "bg-[#2a2a2a] text-white hover:bg-[#d4af37]/20"
-                }`}
-              >
-                <FiClock /> {slot}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-white/70 hover:text-white"
-        >
-          <FiX size={20} />
-        </button>
-      </div>
-    </div>
+            <FiX size={20} />
+          </motion.button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

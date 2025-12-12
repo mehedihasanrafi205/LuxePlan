@@ -26,7 +26,7 @@ const Navbar = () => {
       {[
         ["Home", "/"],
         ["Services", "/services"],
-        ["Decorators", "/decorators"],
+        ["Dashboard", "/dashboard"],
         ["About", "/about"],
         ["Contact", "/contact"],
       ].map(([name, path]) => (
@@ -142,13 +142,17 @@ const Navbar = () => {
               <label
                 tabIndex={0}
                 className="
-        btn btn-ghost btn-circle avatar 
-        border border-primary/40 hover:border-primary/70
-        transition-all duration-300 p-0.5
-      "
+                btn btn-ghost btn-circle avatar 
+                 border border-primary/40 hover:border-primary/70
+                   transition-all duration-300 p-0.5
+                    "
               >
                 <div className="w-10 rounded-full overflow-hidden">
-                  <img referrerPolicy="no-referrer" src={user.photoURL} alt="avatar" />
+                  <img
+                    referrerPolicy="no-referrer"
+                    src={user.photoURL}
+                    alt="avatar"
+                  />
                 </div>
               </label>
 

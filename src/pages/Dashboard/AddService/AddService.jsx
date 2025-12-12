@@ -5,10 +5,13 @@ import toast from "react-hot-toast";
 import { imageUpload } from "../../../utils";
 import useAuth from "../../../hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useNavigate } from "react-router";
 
 const AddService = () => {
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState("");
   const [galleryFiles, setGalleryFiles] = useState([]);
@@ -16,13 +19,11 @@ const AddService = () => {
 
   const { mutateAsync } = useMutation({
     mutationFn: async (payload) => {
-      return await axios.post(
-        `${import.meta.env.VITE_API_URL}/service`,
-        payload
-      );
+      return await axiosSecure.post(`/service`, payload);
     },
     onSuccess: () => {
       toast.dismiss();
+      navigate("/dashboard/manage-services");
       toast.success("Service added successfully!");
     },
     onError: () => {
@@ -95,7 +96,6 @@ const AddService = () => {
       };
 
       await mutateAsync(serviceData);
-
       reset();
       setMainImage(null);
       setMainPreview("");
@@ -108,7 +108,7 @@ const AddService = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-2xl shadow-lg">
+    <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-2xl  shadow-xl border border-base-300">
       <h2 className="text-2xl font-bold text-primary mb-4">Add New Service</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

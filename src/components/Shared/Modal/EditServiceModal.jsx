@@ -5,21 +5,22 @@ import toast from "react-hot-toast";
 import { imageUpload } from "../../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const EditServiceModal = ({ service, onClose }) => {
   const queryClient = useQueryClient();
+  const axiosSecure = useAxiosSecure();
 
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState(service.image || "");
   const [galleryFiles, setGalleryFiles] = useState([]);
-  const [galleryPreviews, setGalleryPreviews] = useState(service.gallery_image || []);
+  const [galleryPreviews, setGalleryPreviews] = useState(
+    service.gallery_image || []
+  );
 
   const { mutateAsync } = useMutation({
     mutationFn: async (payload) => {
-      return await axios.put(
-        `${import.meta.env.VITE_API_URL}/service/${service._id}`,
-        payload
-      );
+      return await axiosSecure.put(`/service/${service._id}`, payload);
     },
     onSuccess: () => {
       toast.dismiss();
@@ -37,7 +38,6 @@ const EditServiceModal = ({ service, onClose }) => {
     register,
     handleSubmit,
     control,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -56,7 +56,14 @@ const EditServiceModal = ({ service, onClose }) => {
     name: "key_feature",
   });
 
-  const categories = ["home", "wedding", "office", "seminar", "meeting", "birthday"];
+  const categories = [
+    "home",
+    "wedding",
+    "office",
+    "seminar",
+    "meeting",
+    "birthday",
+  ];
 
   const handleMainImage = (e) => {
     const file = e.target.files[0];
@@ -75,7 +82,9 @@ const EditServiceModal = ({ service, onClose }) => {
     const toastId = toast.loading("Updating...");
 
     try {
-      const mainImageUrl = mainImage ? await imageUpload(mainImage) : service.image;
+      const mainImageUrl = mainImage
+        ? await imageUpload(mainImage)
+        : service.image;
       const galleryUrls = galleryFiles.length
         ? await Promise.all(galleryFiles.map((f) => imageUpload(f)))
         : service.gallery_image;
@@ -104,7 +113,7 @@ const EditServiceModal = ({ service, onClose }) => {
       <div className="bg-[#1A1A1A]/90 border border-[#d4af37]/40 rounded-xl shadow-2xl max-w-3xl w-full p-6 relative overflow-y-auto max-h-[90vh]">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white/70 hover:text-white"
+          className="absolute top-4 right-4 text-white/70 hover:text-white cursor-pointer"
         >
           <FiX size={20} />
         </button>
@@ -114,6 +123,7 @@ const EditServiceModal = ({ service, onClose }) => {
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <label className="label">Service Name</label>
           <input
             type="text"
             placeholder="Service Name"
@@ -122,21 +132,25 @@ const EditServiceModal = ({ service, onClose }) => {
               errors.service_name && "input-error"
             }`}
           />
-
+          <label className="label">Cost (BDT)</label>
           <input
             type="number"
             placeholder="Cost (BDT)"
             {...register("cost", { required: true })}
-            className={`input input-bordered w-full ${errors.cost && "input-error"}`}
+            className={`input input-bordered w-full ${
+              errors.cost && "input-error"
+            }`}
           />
-
+          <label className="label">Unit (e.g., per event)</label>
           <input
             type="text"
             placeholder="Unit (e.g., per event)"
             {...register("unit", { required: true })}
-            className={`input input-bordered w-full ${errors.unit && "input-error"}`}
+            className={`input input-bordered w-full ${
+              errors.unit && "input-error"
+            }`}
           />
-
+          <label className="label">Service Category</label>
           <select
             {...register("service_category", { required: true })}
             className={`select select-bordered w-full ${
@@ -150,7 +164,7 @@ const EditServiceModal = ({ service, onClose }) => {
               </option>
             ))}
           </select>
-
+          <label className="label">Description</label>
           <textarea
             placeholder="Description"
             {...register("description", { required: true })}
@@ -158,7 +172,7 @@ const EditServiceModal = ({ service, onClose }) => {
               errors.description && "textarea-error"
             }`}
           />
-
+          <label className="label">Ratings (e.g., 4.9)</label>
           <input
             type="number"
             step="0.1"
