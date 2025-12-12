@@ -47,7 +47,7 @@ const TodaysSchedule = () => {
         <>
           {/* Mobile Cards */}
           <div className="space-y-4 md:hidden">
-            {projects.map((project, idx) => (
+            {projects.map((project) => (
               <div
                 key={project._id}
                 className="bg-base-200 border border-primary/20 rounded-xl p-4 shadow-sm"
@@ -67,7 +67,9 @@ const TodaysSchedule = () => {
               </div>
             ))}
           </div>
+  
 
+  
           {/* Desktop Table */}
           <div className="hidden md:block bg-white/5 rounded-xl overflow-x-auto shadow-xl border border-base-300">
             <table className="table w-full min-w-[900px]">
