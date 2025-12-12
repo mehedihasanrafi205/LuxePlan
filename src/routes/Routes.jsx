@@ -28,7 +28,7 @@ import TodaysSchedule from "../pages/Dashboard/TodaysSchedule/TodaysSchedule";
 import Error from "../components/Error";
 import LoadingSpinner from "../components/LoadingSpinner";
 import DecoratorDetail from "../components/DecoratorDetail";
-
+ 
 export const router = createBrowserRouter([
   {
     path: "/",
