@@ -14,10 +14,9 @@ import {
 } from "recharts";
 import { FiPieChart, FiBarChart2, FiDollarSign } from "react-icons/fi";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { useMemo } from "react"; // Import useMemo for performance optimization
+import { useMemo } from "react"; 
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-// Utility function to format status names
 const formatStatus = (status) => {
   const statusMap = {
     assigned: "Assigned",
@@ -31,7 +30,6 @@ const formatStatus = (status) => {
   return statusMap[status] || status.charAt(0).toUpperCase() + status.slice(1);
 };
 
-// Utility function for large number formatting (for Y-axis)
 const formatLargeNumber = (value) => {
   if (value >= 1000000) {
     return `${(value / 1000000).toFixed(1)}M`;
@@ -52,25 +50,21 @@ const COLORS = [
   "#FF6666",
 ];
 
-// --- Data Fetching Hooks (Enhanced) ---
 const useAdminCharts = () => {
   const axiosSecure = useAxiosSecure();
 
-  // 1. Fetch Bookings Status
   const { data: statusStats = [], isLoading: isLoadingStatus } = useQuery({
     queryKey: ["adminBookingsStatus"],
     queryFn: async () =>
       (await axiosSecure.get("/dashboard/admin/bookings-status")).data,
   });
 
-  // 2. Fetch Services Demand (Count)
   const { data: demandData = [], isLoading: isLoadingDemand } = useQuery({
     queryKey: ["adminServiceDemand"],
     queryFn: async () =>
       (await axiosSecure.get("/dashboard/admin/services-demand")).data,
   });
 
-  // 3. Fetch Revenue by Service (Financial Data)
   const { data: revenueByServiceData = [], isLoading: isLoadingRevenue } =
     useQuery({
       queryKey: ["adminRevenueByService"],
@@ -78,7 +72,6 @@ const useAdminCharts = () => {
         (await axiosSecure.get("/dashboard/admin/revenue-by-service")).data,
     });
 
-  // --- Data processing ---
   const statusChartData = useMemo(
     () =>
       statusStats.map((item) => ({
@@ -88,13 +81,11 @@ const useAdminCharts = () => {
     [statusStats]
   );
 
-  // Service Demand data for Chart (Top 10 by count)
   const demandChartData = useMemo(
     () => demandData.sort((a, b) => b.count - a.count).slice(0, 10),
     [demandData]
   );
 
-  // Revenue data for Chart (Top 10 by revenue)
   const revenueChartData = useMemo(
     () =>
       revenueByServiceData
@@ -115,7 +106,6 @@ const useAdminCharts = () => {
   };
 };
 
-// --- New Chart Component: Revenue by Service ---
 const RevenueBarChart = ({ data }) => (
   <div className="bg-base-200 p-6 rounded-xl shadow-xl">
     <h3 className="text-xl font-semibold mb-4 text-accent flex items-center gap-2">
@@ -125,7 +115,6 @@ const RevenueBarChart = ({ data }) => (
       <ResponsiveContainer width="100%" height={350}>
         <BarChart
           data={data}
-          // Adjusted margin for better mobile fit
           margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -135,13 +124,10 @@ const RevenueBarChart = ({ data }) => (
             textAnchor="end"
             height={60}
             stroke="#a0a0a0"
-            // Hide X-Axis labels on very small screens if necessary, though angle helps a lot
-            // interval={0}
           />
           <YAxis
             stroke="#a0a0a0"
             allowDecimals={false}
-            // Use the new utility function for better large number formatting
             tickFormatter={formatLargeNumber}
           />
           <Tooltip
@@ -151,7 +137,6 @@ const RevenueBarChart = ({ data }) => (
               borderRadius: "8px",
             }}
             labelStyle={{ color: "#ffffff" }}
-            // Format tooltip value as currency
             formatter={(value) => [`${value.toLocaleString()} BDT`, "Revenue"]}
           />
           <Legend />
@@ -166,7 +151,6 @@ const RevenueBarChart = ({ data }) => (
   </div>
 );
 
-// --- Main Analytics Component ---
 const AdminAnalytics = () => {
   const { statusChartData, demandChartData, revenueChartData, isLoading } =
     useAdminCharts();
@@ -175,8 +159,7 @@ const AdminAnalytics = () => {
     return <LoadingSpinner></LoadingSpinner>;
   }
 
-  // Function to check if we should display the complex pie chart label
-  const shouldDisplayLabel = () => window.innerWidth > 600; // Example breakpoint
+  const shouldDisplayLabel = () => window.innerWidth > 600; 
 
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
@@ -188,7 +171,7 @@ const AdminAnalytics = () => {
     percent,
     name,
   }) => {
-    if (!shouldDisplayLabel()) return null; // Hide labels on small screens
+    if (!shouldDisplayLabel()) return null; 
 
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -219,9 +202,7 @@ const AdminAnalytics = () => {
         allocation.
       </p>
 
-      {/* --- Charts Grid --- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-8">
-        {/* Bookings Status Chart (Pie Chart) */}
         <div className="bg-base-200 p-4 md:p-6 rounded-xl shadow-xl">
           <h3 className="text-lg md:text-xl font-semibold mb-4 text-accent flex items-center gap-2">
             <FiPieChart /> Bookings Status Distribution
@@ -234,7 +215,7 @@ const AdminAnalytics = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={shouldDisplayLabel() ? 140 : 100} // Smaller radius on mobile
+                outerRadius={shouldDisplayLabel() ? 140 : 100} 
                 fill="#8884d8"
                 labelLine={false}
                 label={renderCustomizedLabel}
@@ -255,7 +236,6 @@ const AdminAnalytics = () => {
                 }}
                 itemStyle={{ color: "#ffffff" }}
               />
-              {/* Force legend below chart on smaller screens by using a wrapper style */}
               <Legend
                 layout={shouldDisplayLabel() ? "vertical" : "horizontal"}
                 align={shouldDisplayLabel() ? "right" : "center"}
@@ -269,7 +249,6 @@ const AdminAnalytics = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Services Demand Chart (Bar Chart / Histogram) */}
         <div className="bg-base-200 p-4 md:p-6 rounded-xl shadow-xl">
           <h3 className="text-lg md:text-xl font-semibold mb-4 text-accent flex items-center gap-2">
             <FiBarChart2 /> Top Service Demand (Bookings Count)
@@ -306,7 +285,6 @@ const AdminAnalytics = () => {
 
       <hr className="my-6 md:my-8 border-base-300" />
 
-      {/* --- Revenue Chart Section --- */}
       <h3 className="text-xl md:text-2xl font-bold text-primary/90 mb-4 md:mb-6 flex items-center gap-2">
         <FiDollarSign /> Financial Performance
       </h3>

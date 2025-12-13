@@ -43,7 +43,6 @@ const ServiceDetail = () => {
 
   const handleBookingClick = () => {
     if (!user) {
-      // Redirect to login if user is not logged in
       navigate("/login");
     } else {
       setIsBookingOpen(true);
@@ -68,7 +67,7 @@ const ServiceDetail = () => {
           alt={service.service_name}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent"></div>
       </div>
 
       <div className="mt-8 flex flex-col lg:flex-row gap-12">

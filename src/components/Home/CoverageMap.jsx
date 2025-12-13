@@ -1,5 +1,5 @@
 import React from "react";
-import Map from "../Map"; // Assuming this path is correct
+import Map from "../Map"; 
 import { FiMapPin } from "react-icons/fi";
 
 const CoverageMap = () => {

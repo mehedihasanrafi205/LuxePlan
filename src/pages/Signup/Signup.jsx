@@ -14,7 +14,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+
 import { imageUpload, saveOrUpdateUser } from "../../utils";
 
 const Signup = () => {
@@ -32,7 +32,7 @@ const Signup = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  //   console.log(errors);
+ 
 
   const handleSignup = async (data) => {
     const { name, email, password, image } = data;
@@ -61,7 +61,7 @@ const Signup = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      //User Registration using google
+      
       const { user } = await signInWithGoogle();
 
       await saveOrUpdateUser({
@@ -210,7 +210,7 @@ const Signup = () => {
 
             <button
               type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-primary/70"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-primary/70 cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
@@ -227,7 +227,7 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center items-center gap-2 py-3 rounded-2xl btn-gold text-black font-semibold shadow-xl transition-all duration-300 disabled:opacity-50"
+            className="w-full flex justify-center items-center gap-2 py-3 rounded-2xl btn-gold text-black font-semibold shadow-xl transition-all duration-300 disabled:opacity-50 cursor-pointer"
           >
             {loading && <span className="loading loading-spinner"></span>}
             <FiUserPlus size={18} /> Sign Up
@@ -247,12 +247,6 @@ const Signup = () => {
             <FaGoogle size={18} /> Google
           </button>
 
-          <button
-            // onClick={() => handleSocialLogin("Facebook")}
-            className="flex-1 btn btn-outline btn-primary flex items-center justify-center gap-2 rounded-xl hover:bg-base-200 hover:text-primary transition-all duration-300"
-          >
-            <FaFacebook size={18} /> Facebook
-          </button>
         </div>
 
         {/* Login Link */}

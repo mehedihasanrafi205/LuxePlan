@@ -13,7 +13,7 @@ import moment from "moment";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
-/* ===================== DATA HOOK ===================== */
+/* DATA HOOK */
 const useAdminOverview = () => {
   const axiosSecure = useAxiosSecure();
 
@@ -80,7 +80,6 @@ const AdminDashboardHome = () => {
   const {
     totalRevenue,
     totalUsers,
-    totalServices,
     totalBookings,
     pendingDecoratorCount,
     pendingBookings,
@@ -100,7 +99,7 @@ const AdminDashboardHome = () => {
         Admin Dashboard Overview 👑
       </h2>
 
-      {/* ===== METRICS ===== */}
+      {/*  METRICS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         <MetricCard
           icon={<FiDollarSign />}
@@ -128,7 +127,7 @@ const AdminDashboardHome = () => {
         />
       </div>
 
-      {/* ===== QUICK ACTIONS ===== */}
+      {/* QUICK ACTIONS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
         <QuickLink
           to="/dashboard/manage-services"
@@ -163,7 +162,6 @@ const AdminDashboardHome = () => {
         </Link>
       </div>
 
-      {/* ===== PENDING BOOKINGS (TABLE FOR DESKTOP, CARDS FOR MOBILE) ===== */}
       {/* Mobile cards */}
       <div className="grid grid-cols-1 gap-4 md:hidden mb-6">
         {pendingBookings.length === 0 ? (
@@ -217,7 +215,7 @@ const AdminDashboardHome = () => {
                 {pendingBookings.map((b) => (
                   <tr key={b._id}>
                     <td className="font-semibold">{b.service_name}</td>
-                    <td className="truncate max-w-[160px]">{b.userEmail}</td>
+                    <td className="truncate max-w-40">{b.userEmail}</td>
                     <td>{moment(b.date).format("MMM DD")}</td>
                     <td>{b.cost.toLocaleString()} BDT</td>
                     <td>
@@ -250,7 +248,7 @@ const AdminDashboardHome = () => {
   );
 };
 
-/* ===================== SMALL COMPONENTS ===================== */
+/*  SMALL COMPONENTS  */
 const MetricCard = ({ icon, title, value, color }) => (
   <div
     className={`min-w-[200px] card bg-base-200 shadow-xl p-5 border-l-4 border-${color}`}

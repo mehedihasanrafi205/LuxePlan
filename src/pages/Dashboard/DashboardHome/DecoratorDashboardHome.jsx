@@ -5,7 +5,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
-// --- Data Hook ---
+//  Data Hook -
 const useUserDashboard = (userEmail) => {
   const axiosSecure = useAxiosSecure();
 
@@ -40,7 +40,7 @@ const useUserDashboard = (userEmail) => {
   };
 };
 
-// --- Main Component ---
+//  Main Component 
 const UserDashboardHome = () => {
   const { user } = useAuth();
   const userEmail = user?.email;
@@ -77,7 +77,7 @@ const UserDashboardHome = () => {
 
       <hr className="my-8 border-base-300" />
 
-      {/* --- Booking Status Summary --- */}
+      {/*Booking Status Summary  */}
       <h3 className="text-2xl font-semibold mb-6 text-primary/90">
         Your Activity Summary
       </h3>
@@ -104,7 +104,7 @@ const UserDashboardHome = () => {
 
       <hr className="my-8 border-base-300" />
 
-      {/* --- Recent Payments --- */}
+      {/* Recent Payments */}
       <h3 className="text-2xl font-semibold mb-4 text-primary/90">
         Recent Payment History
       </h3>
@@ -167,7 +167,7 @@ const UserDashboardHome = () => {
   );
 };
 
-// --- Metric Card Component ---
+//  Metric Card Component 
 const MetricCard = ({ icon, title, value, color }) => (
   <div
     className={`min-w-[200px] card bg-base-200 shadow-xl p-5 border-l-4 border-${color}`}

@@ -205,7 +205,6 @@ const About = () => {
                 className="card bg-base-100 group shadow-lg transition-transform duration-300 hover:scale-[1.05] hover:shadow-2xl"
               >
                 <figure className="px-5 pt-5">
-                  {/* Using mask and aspect ratio for professional look */}
                   <img
                     src={member.image}
                     alt={member.name}

@@ -33,22 +33,17 @@ const formatDate = (dateString) => {
 };
 
 const Profile = () => {
-  // Get user data from auth hook
   const { user, loading, updateUserProfile, refetchUser } = useAuth();
   const { role, isRoleLoading } = useRole();
 
   console.log("user?.photoURL", user?.photoURL);
 
-  // Track which tab is active (profile, settings, or billing)
   const [activeTab, setActiveTab] = useState("profile");
 
-  // Track if edit modal is open
   const [isEditing, setIsEditing] = useState(false);
 
-  // Reference to hidden file input
   const fileInputRef = useRef(null);
 
-  // Store profile data
   const [profileData, setProfileData] = useState({
     displayName: user?.displayName || "User Name",
     photoURL: user?.photoURL || "",
@@ -57,13 +52,10 @@ const Profile = () => {
     role: role,
   });
 
-  // Store selected image file
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Store preview URL for selected image
   const [previewURL, setPreviewURL] = useState("");
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -77,7 +69,6 @@ const Profile = () => {
     },
   });
 
-  // Update profile data when user data changes
   useEffect(() => {
     if (user) {
       setProfileData((prev) => ({
@@ -164,16 +155,13 @@ const Profile = () => {
     }
   };
 
-  // Show loading spinner while checking auth
   if (loading && isRoleLoading) {
     return (
      <LoadingSpinner/>
     );
   }
 
-  // ====== TAB CONTENT COMPONENTS ======
 
-  // Profile tab - shows user information
   const ProfileContent = () => (
     <div className="space-y-6">
       <h3 className="text-2xl font-semibold text-primary">
@@ -215,7 +203,6 @@ const Profile = () => {
       </div>
 
       <div className="pt-4 flex gap-4">
-        {/* Button to open edit modal */}
         <button
           className="btn btn-primary flex items-center gap-2"
           onClick={() => setIsEditing(true)}
@@ -265,9 +252,7 @@ const Profile = () => {
     </div>
   );
 
-  // ====== EDIT PROFILE MODAL ======
   const ProfileEditModal = () => {
-    // Don't show modal if not editing
     if (!isEditing) return null;
 
     return (
@@ -413,7 +398,6 @@ const Profile = () => {
     );
   };
 
-  // ====== MAIN RENDER ======
   return (
     <section className="">
       <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 ">
@@ -451,7 +435,7 @@ const Profile = () => {
 
             {/* Member Badge */}
             <div className="md:ml-auto md:self-center">
-              <span className="badge text-xs font-semibold px-4 py-3 rounded-full bg-gradient-to-r from-yellow-600 to-yellow-400 text-black shadow-[0_0_10px_rgba(212,175,55,0.4)]">
+              <span className="badge text-xs font-semibold px-4 py-3 rounded-full bg-linear-to-r from-yellow-600 to-yellow-400 text-black shadow-[0_0_10px_rgba(212,175,55,0.4)]">
                 LUXEPLAN MEMBER
               </span>
             </div>
@@ -507,7 +491,6 @@ const Profile = () => {
   );
 };
 
-// ====== INFO CARD COMPONENT ======
 // Reusable card for displaying user information
 const InfoCard = ({ icon, label, value }) => (
   <div className="bg-base-200 p-4 rounded-xl border border-base-300">

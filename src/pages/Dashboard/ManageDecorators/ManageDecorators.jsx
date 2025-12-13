@@ -13,7 +13,6 @@ const ManageDecorators = () => {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("pending");
 
-  // Fetch decorators
   const { data: decorators = [], isLoading } = useQuery({
     queryKey: ["decorators", statusFilter],
     queryFn: async () => {
@@ -22,7 +21,6 @@ const ManageDecorators = () => {
     },
   });
 
-  // Accept / Reject mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }) => {
       return await axiosSecure.patch(`/decorators/${id}`, { status });
@@ -44,20 +42,15 @@ const ManageDecorators = () => {
     navigate(`/decorator/${decorator._id}`, { state: decorator });
 
   if (isLoading) {
-    return (
-      <LoadingSpinner/>
-    );
+    return <LoadingSpinner />;
   }
-  
 
-
-
-
-  
   return (
     <div className="min-h-screen bg-background-dark  px-4 md:px-6 py-10">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl text-primary font-bold mb-4">Manage Decorator</h1>
+        <h1 className="text-3xl text-primary font-bold mb-4">
+          Manage Decorator
+        </h1>
         {/* Status Filter */}
         <div className="mb-4 flex gap-2">
           {["pending", "accepted", "rejected"].map((status) => (
@@ -82,13 +75,9 @@ const ManageDecorators = () => {
             >
               <div className="flex items-center mb-2">
                 <div className="flex-1">
-                  <p className="font-semibold ">
-                    {decorator.fullName}
-                  </p>
+                  <p className="font-semibold ">{decorator.fullName}</p>
                   <p className=" text-sm">{decorator.email}</p>
-                  <p className=" text-sm">
-                    {decorator.phoneNumber}
-                  </p>
+                  <p className=" text-sm">{decorator.phoneNumber}</p>
                 </div>
                 <IoMdEye
                   onClick={() => handleView(decorator)}
@@ -124,12 +113,8 @@ const ManageDecorators = () => {
           <table className="w-full table min-w-[900px]">
             <thead>
               <tr className="border-b border-b-white/10">
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Name
-                </th>
-                <th className="px-6 py-4 text-left text-sm uppercase">
-                  Email
-                </th>
+                <th className="px-6 py-4 text-left  text-sm uppercase">Name</th>
+                <th className="px-6 py-4 text-left text-sm uppercase">Email</th>
                 <th className="px-6 py-4 text-left  text-sm uppercase">
                   Phone
                 </th>
@@ -149,12 +134,8 @@ const ManageDecorators = () => {
                 <tr key={decorator._id}>
                   <td className="px-6 py-4 ">{decorator.fullName}</td>
                   <td className="px-6 py-4">{decorator.email}</td>
-                  <td className="px-6 py-4">
-                    {decorator.phoneNumber}
-                  </td>
-                  <td className="px-6 py-4 ">
-                    {decorator.status}
-                  </td>
+                  <td className="px-6 py-4">{decorator.phoneNumber}</td>
+                  <td className="px-6 py-4 ">{decorator.status}</td>
                   <td className="px-6 py-4 ">
                     {decorator.specialties.join(", ")}
                   </td>

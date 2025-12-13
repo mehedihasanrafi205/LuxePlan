@@ -4,11 +4,9 @@ import { FaFacebookF, FaInstagram, FaPinterestP, FaLinkedinIn } from "react-icon
 import Map from "../../components/Map";
 
 const Contact = () => {
-  // Simple handler to prevent default form submission in this static example
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Contact form submitted!");
-    // In a real app, you would handle form validation and API submission here
   };
 
   return (
@@ -129,7 +127,6 @@ const Contact = () => {
             <div className="mt-8">
               <h3 className="text-lg font-bold text-primary mb-4">Connect with Our Community</h3>
               <div className="flex items-center gap-3">
-                {/* Social Icon Styling: Larger, more prominent, and consistent hover */}
                 <a href="#" aria-label="Facebook" className="btn btn-circle btn-lg bg-base-200  hover:bg-primary hover:text-base-100 transition-all duration-300 shadow-md">
                   <FaFacebookF size={20} />
                 </a>

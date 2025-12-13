@@ -113,7 +113,7 @@ const FilterSidebarContent = ({
   </>
 );
 
-// --- Main Component ---
+//  Main Component 
 const Services = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");

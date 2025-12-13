@@ -6,22 +6,19 @@ import ServiceCard from "../ServiceCard";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-// Utility component for rendering stars based on rating
-const RatingStars = ({ rating }) => {
-  const fullStars = Math.floor(rating);
-  const starsArray = [];
+const ServiceSkeleton = () => {
+  return (
+    <div className="card bg-base-100 shadow-xl animate-pulse overflow-hidden">
+      <div className="h-48 bg-base-300"></div>
 
-  for (let i = 0; i < fullStars; i++) {
-    starsArray.push(<FaStar key={i} className="text-yellow-400" />);
-  }
-  // Add an empty/half star if the rating is not a whole number (optional)
-  if (rating % 1 !== 0) {
-    starsArray.push(
-      <FaStar key="half" className="text-yellow-400 opacity-50" />
-    );
-  }
-
-  return <div className="flex items-center gap-1">{starsArray}</div>;
+      <div className="card-body p-6">
+        <div className="h-6 bg-base-300 rounded w-3/4 mb-3"></div>
+        <div className="h-4 bg-base-300 rounded w-full mb-2"></div>
+        <div className="h-4 bg-base-300 rounded w-5/6 mb-4"></div>
+        <div className="h-8 bg-primary/20 rounded w-1/3 mt-4"></div>
+      </div>
+    </div>
+  );
 };
 
 const TopServices = () => {
@@ -42,9 +39,7 @@ const TopServices = () => {
         setServices(data);
       } catch (err) {
         console.error("Fetch error:", err);
-        setError(
-          "Failed to load top services. Please check the API connection."
-        );
+        setError("Failed to load top services. ");
       } finally {
         setLoading(false);
       }
@@ -55,12 +50,21 @@ const TopServices = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-20">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-        <p className="mt-4 text-base-content/70">
-          Loading top-rated luxury services...
-        </p>
-      </div>
+      <section className="bg-base-200 text-base-content pt-20 md:pt-32">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-pulse">
+            <div className="h-4 bg-base-300 w-40 mx-auto mb-4 rounded"></div>
+            <div className="h-10 bg-base-300 w-2/3 mx-auto rounded mb-4"></div>
+            <div className="h-5 bg-base-300 w-3/4 mx-auto rounded"></div>
+          </div>
+
+          <div className="grid lg:grid-cols-4 gap-10">
+            {[...Array(4)].map((_, index) => (
+              <ServiceSkeleton key={index} />
+            ))}
+          </div>
+        </div>
+      </section>
     );
   }
 
@@ -70,7 +74,6 @@ const TopServices = () => {
     );
   }
 
-  // Ensure the section only renders if services are available
   if (services.length === 0) {
     return (
       <div className="text-center py-20 text-base-content/70">
@@ -96,14 +99,12 @@ const TopServices = () => {
           </p>
         </div>
 
-        {/* Services Grid (Limited to 3 by your API endpoint) */}
         <div className="grid lg:grid-cols-4 gap-10">
           {services.map((service) => (
             <ServiceCard key={service._id} service={service}></ServiceCard>
           ))}
         </div>
 
-        {/* Footer CTA */}
         <div className="text-center mt-20">
           <p className="text-xl text-base-content/70 mb-6">
             Explore the full range of our high-end design and technology
@@ -111,7 +112,6 @@ const TopServices = () => {
           </p>
           <Link
             to="/services"
-
             className="btn btn-lg btn-primary shadow-xl shadow-primary/40 transition-all duration-300 hover:scale-[1.03] group"
           >
             Explore All Services

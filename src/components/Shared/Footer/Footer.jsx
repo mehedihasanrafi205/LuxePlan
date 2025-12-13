@@ -18,49 +18,53 @@ const Footer = () => {
 
   const socialLinks = [
     {
+      id: "facebook",
       Icon: FiFacebook,
       href: "#",
       label: "Facebook",
-      color: "from-yellow-400 to-yellow-500", // gold gradient
+      color: "from-yellow-400 to-yellow-500",
     },
     {
+      id: "instagram",
       Icon: FiInstagram,
       href: "#",
       label: "Instagram",
-      color: "from-yellow-400 to-orange-400", // warm gold-orange
+      color: "from-yellow-400 to-orange-400",
     },
     {
+      id: "twitter",
       Icon: FiTwitter,
       href: "#",
       label: "Twitter",
-      color: "from-yellow-300 to-yellow-500", // subtle gold gradient
+      color: "from-yellow-300 to-yellow-500",
     },
     {
+      id: "email",
       Icon: FiMail,
       href: "mailto:info@luxeplan.com",
       label: "Email",
-      color: "from-yellow-400 to-yellow-500", // same gold gradient as Facebook
+      color: "from-yellow-400 to-yellow-500",
     },
   ];
 
   const quickLinks = [
-    { name: "Home", path: "/" },
-    { name: "Services", path: "/services" },
-    { name: "Decorators", path: "/decorators" },
-    { name: "About Us", path: "/about" },
-    { name: "Contact", path: "/contact" },
-    { name: "FAQ", path: "/faq" },
+    { id: "home", name: "Home", path: "/" },
+    { id: "services", name: "Services", path: "/services" },
+    { id: "decorators", name: "Decorators", path: "/decorators" },
+    { id: "about", name: "About Us", path: "/about" },
+    { id: "contact", name: "Contact", path: "/contact" },
+    { id: "faq", name: "FAQ", path: "/faq" },
   ];
 
   const services = [
-    { name: "Home Decoration", path: "/services" },
-    { name: "Wedding Events", path: "/services" },
-    { name: "Office Setup", path: "/services" },
-    { name: "Birthday Parties", path: "/services" },
+    { id: "home-decor", name: "Home Decoration", path: "/services" },
+    { id: "wedding", name: "Wedding Events", path: "/services" },
+    { id: "office", name: "Office Setup", path: "/services" },
+    { id: "birthday", name: "Birthday Parties", path: "/services" },
   ];
 
   return (
-    <footer className="relative bg-base-200/80 border-t border-secondary/10 shadow-2xl overflow-hidden rounded-2xl ">
+    <footer className="relative bg-base-200/80 border-t border-secondary/10 shadow-2xl overflow-hidden rounded-2xl">
       {/* Animated Background Gold Blobs */}
       <div className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
         <motion.div
@@ -75,7 +79,7 @@ const Footer = () => {
         />
       </div>
 
-      {/* Footer Main Content */}
+      {/* Footer Content */}
       <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Logo & Description */}
@@ -84,26 +88,16 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-1"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 "></div>
-                <img
-                  src={logo}
-                  alt="LuxePlan"
-                  className="w-10 h-10 relative z-10"
-                />
-              </div>
+              <img src={logo} alt="LuxePlan" className="w-10 h-10" />
               <div>
-                <div>
-                  <span className="text-2xl font-serif text-gold-gradient">
-                    LuxePlan
-                  </span>
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-primary/70 ">
-                    Decoration Concierge
-                  </p>
-                </div>
+                <span className="text-2xl font-serif text-gold-gradient">
+                  LuxePlan
+                </span>
+                <p className="text-[10px] uppercase tracking-[0.25em] text-primary/70">
+                  Decoration Concierge
+                </p>
               </div>
             </div>
 
@@ -114,9 +108,9 @@ const Footer = () => {
 
             {/* Social Links */}
             <div className="flex gap-3 mt-5">
-              {socialLinks.map(({ Icon, href, label, color }) => (
+              {socialLinks.map(({ id, Icon, href, label, color }) => (
                 <motion.a
-                  key={label}
+                  key={id}
                   href={href}
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
@@ -140,12 +134,12 @@ const Footer = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <h3 className="text-lg font-bold mb-6 text-yellow-400 flex items-center gap-2">
-              <span className="w-1 h-6 bg-linear-to-b from-yellow-400 to-yellow-300 rounded-full"></span>
+              <span className="w-1 h-6 bg-gradient-to-b from-yellow-400 to-yellow-300 rounded-full"></span>
               Quick Links
             </h3>
             <ul className="space-y-3">
-              {quickLinks.map(({ name, path }) => (
-                <li key={path}>
+              {quickLinks.map(({ id, name, path }) => (
+                <li key={id}>
                   <Link
                     to={path}
                     className="text-gray-400 hover:text-yellow-400 transition-colors flex items-center gap-2 group"
@@ -170,8 +164,8 @@ const Footer = () => {
               Our Services
             </h3>
             <ul className="space-y-3">
-              {services.map(({ name, path }) => (
-                <li key={path}>
+              {services.map(({ id, name, path }) => (
+                <li key={id}>
                   <Link
                     to={path}
                     className="text-gray-400 hover:text-yellow-400 transition-colors flex items-center gap-2 group"
@@ -192,78 +186,39 @@ const Footer = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <h3 className="text-lg font-bold mb-6 text-yellow-400 flex items-center gap-2">
-              <span className="w-1 h-6 bg-gradient-to-b from-yellow-400 to-yellow-300 rounded-full"></span>
+              <span className="w-1 h-6 bg-linear-to-b from-yellow-400 to-yellow-300 rounded-full"></span>
               Get In Touch
             </h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
-                <FiMail
-                  className="mt-1 flex-shrink-0 group-hover:scale-110 transition-transform"
-                  size={18}
-                />
-                <a href="mailto:info@luxeplan.com" className="text-sm">
-                  info@luxeplan.com
-                </a>
+                <FiMail size={18} />
+                info@luxeplan.com
               </li>
               <li className="flex items-start gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
-                <FiPhone
-                  className="mt-1 flex-shrink-0 group-hover:scale-110 transition-transform"
-                  size={18}
-                />
-                <a href="tel:+8801234567890" className="text-sm">
-                  +880 123 456 7890
-                </a>
+                <FiPhone size={18} />
+                +880 123 456 7890
               </li>
               <li className="flex items-start gap-3 text-gray-400">
-                <FiMapPin className="mt-1 flex-shrink-0" size={18} />
-                <span className="text-sm">
-                  123 Luxe Street, Gulshan, Dhaka 1212, Bangladesh
-                </span>
+                <FiMapPin size={18} />
+                Gulshan, Dhaka, Bangladesh
               </li>
               <li className="flex items-start gap-3 text-gray-400">
-                <FiClock className="mt-1 flex-shrink-0" size={18} />
-                <span className="text-sm">
-                  Mon - Sat: 9:00 AM - 8:00 PM
-                  <br />
-                  Sunday: Closed
-                </span>
+                <FiClock size={18} />
+                Mon - Sat: 9:00 AM - 8:00 PM
               </li>
             </ul>
           </motion.div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 mt-12 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm text-center md:text-left">
-              &copy; {currentYear} LuxePlan. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6 text-sm">
-              <Link
-                to="/privacy"
-                className="text-gray-400 hover:text-yellow-400 transition-colors"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/terms"
-                className="text-gray-400 hover:text-yellow-400 transition-colors"
-              >
-                Terms of Service
-              </Link>
-              <Link
-                to="/cookies"
-                className="text-gray-400 hover:text-yellow-400 transition-colors"
-              >
-                Cookie Policy
-              </Link>
-            </div>
-            <p className="text-gray-400 text-sm flex items-center gap-2">
-              Made with{" "}
-              <FiHeart className="text-red-500 animate-pulse" size={16} /> in
-              Bangladesh
-            </p>
-          </div>
+        <div className="border-t border-gray-700 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-sm">
+            © {currentYear} LuxePlan. All rights reserved.
+          </p>
+          <p className="text-gray-400 text-sm flex items-center gap-2">
+            Made with <FiHeart className="text-red-500 animate-pulse" /> in
+            Bangladesh
+          </p>
         </div>
       </div>
     </footer>

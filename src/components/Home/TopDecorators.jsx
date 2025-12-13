@@ -8,6 +8,41 @@ import LoadingSpinner from "../LoadingSpinner";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+const DecoratorSkeleton = () => {
+  return (
+    <div className="card bg-base-100 shadow-xl p-6 animate-pulse text-center">
+      <div className="card-body p-0 items-center">
+        {/* Avatar */}
+        <div className="w-32 h-32 rounded-full bg-base-300 mb-6 mt-4"></div>
+
+        {/* Name */}
+        <div className="h-7 bg-base-300 rounded w-2/3 mb-2"></div>
+
+        {/* Role */}
+        <div className="h-5 bg-primary/20 rounded w-1/2 mb-4"></div>
+
+        <div className="divider my-2 opacity-10"></div>
+
+        {/* Stats */}
+        <div className="flex justify-around w-full mb-4">
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-5 w-12 bg-base-300 rounded"></div>
+            <div className="h-3 w-16 bg-base-300 rounded"></div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-5 w-12 bg-base-300 rounded"></div>
+            <div className="h-3 w-16 bg-base-300 rounded"></div>
+          </div>
+        </div>
+
+        {/* Specialty */}
+        <div className="h-4 bg-base-300 rounded w-4/5 mt-2 mb-6"></div>
+      </div>
+    </div>
+  );
+};
+
 const TopDecorators = () => {
   const {
     data: decorators = [],
@@ -22,7 +57,25 @@ const TopDecorators = () => {
   });
 
   if (isLoading) {
-    return <LoadingSpinner></LoadingSpinner>;
+    return (
+      <section className="bg-base-200 text-base-content pt-20 md:pt-32">
+        <div className="container mx-auto px-4 max-w-7xl">
+          {/* Header Skeleton */}
+          <div className="text-center mb-16 animate-pulse">
+            <div className="h-4 bg-base-300 w-40 mx-auto mb-4 rounded"></div>
+            <div className="h-10 bg-base-300 w-2/3 mx-auto rounded mb-4"></div>
+            <div className="h-5 bg-base-300 w-3/4 mx-auto rounded"></div>
+          </div>
+
+          {/* Skeleton Cards */}
+          <div className="grid lg:grid-cols-4 gap-10">
+            {[...Array(4)].map((_, i) => (
+              <DecoratorSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
   }
 
   if (isError) {
@@ -114,8 +167,6 @@ const TopDecorators = () => {
                       : decorator.specialties}
                   </span>
                 </p>
-
-               
               </div>
             </div>
           ))}

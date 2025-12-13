@@ -9,7 +9,6 @@ const TodaysSchedule = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth(); 
 
-  // Fetch today's projects
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["todaysSchedule", user?.email],
     queryFn: async () => {

@@ -14,7 +14,6 @@ const ManageUsers = () => {
   const [newRole, setNewRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch users
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
@@ -23,7 +22,6 @@ const ManageUsers = () => {
     },
   });
 
-  // Update role
   const { mutateAsync } = useMutation({
     mutationFn: async ({ id, role }) =>
       await axiosSecure.patch(`/users/${id}`, { role }),
@@ -39,7 +37,7 @@ const ManageUsers = () => {
   });
 
   const handleRoleChangeClick = (user, role) => {
-    if (user.role === role) return; // no change needed
+    if (user.role === role) return; 
 
     setSelectedUser(user);
     setNewRole(role);

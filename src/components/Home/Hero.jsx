@@ -1,19 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FiArrowRight, FiZap, FiPenTool } from "react-icons/fi";
-// 🚨 FIX: Ensure Link is imported from 'react-router-dom' for proper routing
 import { Link } from "react-router";
 
-// NOTE: Image URLs are kept as requested.
 const IMAGE_URLS = {
-  main: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLLUDPisZFj5AwBPFA6yCse_EcuKvMvwSY6VjDIy94VZ343DVTeZr-ewRsrvhTXngUCmBqsly_uHp3Qb-SU1eRMZm-Y_diQ3yAUsngCoz9K0SiGdTcCy22T9wlMzjrEnQB6Pg7TH6Gs5K-yJ5KiTVGMQ9DR9NHW-df4wJjUDga3Xe_7Jr4u3l5T3UVmF7jwnl6b9QFJRqRFMP0Gy0k9uH73wZTMWfDroPHyHUQmXLcZo9atx8B5duGG-J7a3PgEIe-esLcfb-vb9E", // Luxurious Interior
+  main: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLLUDPisZFj5AwBPFA6yCse_EcuKvMvwSY6VjDIy94VZ343DVTeZr-ewRsrvhTXngUCmBqsly_uHp3Qb-SU1eRMZm-Y_diQ3yAUsngCoz9K0SiGdTcCy22T9wlMzjrEnQB6Pg7TH6Gs5K-yJ5KiTVGMQ9DR9NHW-df4wJjUDga3Xe_7Jr4u3l5T3UVmF7jwnl6b9QFJRqRFMP0Gy0k9uH73wZTMWfDroPHyHUQmXLcZo9atx8B5duGG-J7a3PgEIe-esLcfb-vb9E",
   accent1:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCCJWXWFiFBj3351ssN3FC6AQiBFGxG8xlW2vPCYToTosGVwdJhkdi8OSYs4vJvbcwqFGy6fYh03ahqeL1YibozuuRJNiYdZn-TJ4ZdvvixhX53R4gG3Az9oXNwkrMH1c_qL_FzPCsyLf2o_BooXeP_zCeMJs7NenibLyCoajYMRsg6YxTsGuYCIwc-zGd-C5Gp_SR2Mf3pcmmyOBFZotuYFDMAyeXQPK03Lfp-TrLxg0_kWZ0z_ft8sSs67xcB9jz0wpfKb0e8arA", // Floral/Decor closeup
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuCCJWXWFiFBj3351ssN3FC6AQiBFGxG8xlW2vPCYToTosGVwdJhkdi8OSYs4vJvbcwqFGy6fYh03ahqeL1YibozuuRJNiYdZn-TJ4ZdvvixhX53R4gG3Az9oXNwkrMH1c_qL_FzPCsyLf2o_BooXeP_zCeMJs7NenibLyCoajYMRsg6YxTsGuYCIwc-zGd-C5Gp_SR2Mf3pcmmyOBFZotuYFDMAyeXQPK03Lfp-TrLxg0_kWZ0z_ft8sSs67xcB9jz0wpfKb0e8arA",
   accent2:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuD8BfzgguLsA9vTuhmJ4rKKCo4IFXB-TUJRM_ekekrwIZ8KmklCFgno2WUR24uiIR20LoNqLpi21L0XnYl_n88LdaOTTozuKiV-lWhYLiYPz_b4Fwsf0SODuIaPKHOj5JPbWVxEroI8aHRR2R0ga2I6z-8h46sw7MAAgIZOoqfUqFECIt56pIUrOprF1HqZH8DeJe7cJEnFHwPQY1WlXYoOcXvNI0q4-Ir_A13gZAXDOrxi4TSs37EUhIQCfwOAqgAykV8xzMmpsOc", // Smart device/Tech closeup
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuD8BfzgguLsA9vTuhmJ4rKKCo4IFXB-TUJRM_ekekrwIZ8KmklCFgno2WUR24uiIR20LoNqLpi21L0XnYl_n88LdaOTTozuKiV-lWhYLiYPz_b4Fwsf0SODuIaPKHOj5JPbWVxEroI8aHRR2R0ga2I6z-8h46sw7MAAgIZOoqfUqFECIt56pIUrOprF1HqZH8DeJe7cJEnFHwPQY1WlXYoOcXvNI0q4-Ir_A13gZAXDOrxi4TSs37EUhIQCfwOAqgAykV8xzMmpsOc",
 };
 
-// Animation Variants (Kept largely the same, assuming the easing fix [0.05] is working)
 const container = {
   hidden: { opacity: 0 },
   visible: {
@@ -25,24 +22,24 @@ const container = {
 };
 
 const item = {
-  hidden: { y: 30, opacity: 0 }, // Increased Y for more noticeable slide-up
+  hidden: { y: 30, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.7, // Slightly longer duration
+      duration: 0.7,
       ease: "easeOut",
     },
   },
 };
 
 const imageGroup = {
-  hidden: { opacity: 0, scale: 0.95 }, // Reduced scale for subtlety
+  hidden: { opacity: 0, scale: 0.95 },
   visible: {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 1.5, // Longer duration for the whole image group
+      duration: 1.5,
       ease: [0.6, 0.01, 0.05, 0.9],
       staggerChildren: 0.2,
     },
@@ -50,8 +47,8 @@ const imageGroup = {
 };
 
 const imageChild = {
-  hidden: { opacity: 0, y: 50, rotate: 2 }, // Added subtle initial rotation
-  visible: { opacity: 1, y: 0, rotate: 0, transition: { duration: 0.9 } }, // Added rotation transition
+  hidden: { opacity: 0, y: 50, rotate: 2 },
+  visible: { opacity: 1, y: 0, rotate: 0, transition: { duration: 0.9 } },
 };
 
 const Hero = () => {
@@ -62,16 +59,13 @@ const Hero = () => {
       animate="visible"
       variants={container}
     >
-      {/* Background Texture/Overlay - Enhanced Gradient */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-15"
         style={{ backgroundImage: `url(${IMAGE_URLS.main})` }}
       ></div>
-      {/* Stronger Dark Overlay with a subtle vertical gradient for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-base-100/65 via-base-100/50 to-base-100/65 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-linear-to-t from-base-100/65 via-base-100/50 to-base-100/65 backdrop-blur-sm"></div>
 
       <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-        {/* === Left Side: Text and CTA === */}
         <div className="flex flex-col gap-8 pt-20 lg:pt-0">
           <motion.div variants={item}>
             <h2 className="text-lg font-semibold text-primary/80 uppercase tracking-[0.25em] mb-2">
@@ -80,7 +74,6 @@ const Hero = () => {
           </motion.div>
 
           <motion.div variants={item}>
-            {/* Title: Used a brighter gradient for better contrast */}
             <h1 className="text-4xl md:text-6xl font-black! font-serif leading-tight  text-gold-gradient">
               Bespoke <br /> Luxury Living.
             </h1>
@@ -93,7 +86,6 @@ const Hero = () => {
             </p>
           </motion.div>
 
-          {/* Features Badges - Adjusted styling for a cleaner look */}
           <motion.div variants={item} className="flex flex-wrap gap-4 mt-6">
             <span className="badge badge-lg badge-outline badge-primary p-4 gap-2 bg-primary/10 ">
               <FiPenTool size={18} /> Artistic Decor
@@ -103,7 +95,6 @@ const Hero = () => {
             </span>
           </motion.div>
 
-          {/* CTA Button - Added hover depth and shadow refinement */}
           <motion.div variants={item}>
             <Link
               to="/services"
@@ -118,12 +109,10 @@ const Hero = () => {
           </motion.div>
         </div>
 
-        {/* === Right Side: Animated Image Collage === */}
         <motion.div
-          className="relative hidden lg:block aspect-[4/3] rounded-2xl"
+          className="relative hidden lg:block aspect-4/3 rounded-2xl"
           variants={imageGroup}
         >
-          {/* Main Image - Added a subtle white ring/shadow for emphasis */}
           <motion.img
             src={IMAGE_URLS.main}
             alt="Luxury Interior Design"
@@ -131,7 +120,6 @@ const Hero = () => {
             variants={imageChild}
           />
 
-          {/* Accent Image 1 - Top-right floating card (Enhanced hover effect) */}
           <motion.div
             className="absolute -top-10 right-0 w-64 h-40 bg-cover bg-center rounded-xl shadow-2xl border-4 border-primary/50"
             style={{ backgroundImage: `url(${IMAGE_URLS.accent1})` }}
@@ -148,7 +136,6 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          {/* Accent Image 2 - Bottom-left floating card (Enhanced hover effect) */}
           <motion.div
             className="absolute -bottom-10 left-0 w-64 h-40 bg-cover bg-center rounded-xl shadow-2xl border-4 border-info/50"
             style={{ backgroundImage: `url(${IMAGE_URLS.accent2})` }}

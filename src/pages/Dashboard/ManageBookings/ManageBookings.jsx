@@ -15,7 +15,7 @@ const ManageBookings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [assigning, setAssigning] = useState(false);
 
-  // === Fetch Bookings ===
+  // Fetch Bookings 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["bookings"],
     queryFn: async () => {
@@ -58,7 +58,6 @@ const ManageBookings = () => {
 
       toast.success("Decorator assigned successfully!");
 
-      // Refresh bookings manually
       const res = await axiosSecure("/bookings");
       queryClient.setQueryData(["bookings"], res.data);
 

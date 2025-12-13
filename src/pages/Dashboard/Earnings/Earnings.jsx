@@ -9,7 +9,6 @@ const EarningsPage = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
-  // Fetch earnings
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["completed", user?.email],
     queryFn: async () => {
@@ -20,13 +19,11 @@ const EarningsPage = () => {
     },
   });
 
-  // Calculate total earnings (sum of completed bookings)
   const totalEarnings = projects.reduce(
     (sum, project) => sum + project.cost,
     0
   );
 
-  // Calculate payout per project (80% of cost)
   const calculatePayout = (project) => project.cost * 0.8;
 
   if (isLoading) {

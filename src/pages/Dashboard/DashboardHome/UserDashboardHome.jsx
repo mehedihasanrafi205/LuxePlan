@@ -10,7 +10,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
-// --- Data Hook ---
+// Data Hook
 const useUserDashboard = (userEmail) => {
   const axiosSecure = useAxiosSecure();
 
@@ -45,7 +45,7 @@ const useUserDashboard = (userEmail) => {
   };
 };
 
-// --- Main Component ---
+// Main Component 
 const UserDashboardHome = () => {
   const { user } = useAuth();
   const userEmail = user?.email;
@@ -82,7 +82,7 @@ const UserDashboardHome = () => {
 
       <hr className="my-8 border-base-300" />
 
-      {/* --- Booking Status Summary --- */}
+      {/*  Booking Status Summary  */}
       <h3 className="text-2xl font-semibold mb-6 text-primary/90">
         Your Activity Summary
       </h3>
@@ -109,12 +109,11 @@ const UserDashboardHome = () => {
 
       <hr className="my-8 border-base-300" />
 
-      {/* --- Recent Payments --- */}
+      {/*  Recent Payments  */}
       <h3 className="text-2xl font-semibold mb-4 text-primary/90">
         Recent Payment History
       </h3>
 
-      {/* --- Mobile view (sm:hidden -> show only on mobile) --- */}
       <div className="grid grid-cols-1 gap-4 md:hidden mb-6">
         {payments.slice(0, 5).map((p) => (
           <div key={p._id} className="card bg-base-200 p-4 shadow rounded-xl">
@@ -137,7 +136,6 @@ const UserDashboardHome = () => {
         )}
       </div>
 
-      {/* --- Desktop/tablet view (hidden on mobile) --- */}
       <div className="hidden md:block bg-base-200 rounded-xl shadow-xl overflow-x-auto">
         {payments.length === 0 ? (
           <p className="p-6 text-base-content/70">No payment records found.</p>
@@ -172,7 +170,7 @@ const UserDashboardHome = () => {
   );
 };
 
-// --- Metric Card Component ---
+// Metric Card Component 
 const MetricCard = ({ icon, title, value, color }) => (
   <div className={`card bg-base-200 shadow-xl p-5 border-l-4 border-${color}`}>
     <div className="flex items-center">

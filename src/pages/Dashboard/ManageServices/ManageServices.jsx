@@ -3,7 +3,6 @@ import { FiEdit, FiLoader } from "react-icons/fi";
 import { IoMdEye } from "react-icons/io";
 import { FaTrashAlt, FaStar } from "react-icons/fa";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import toast from "react-hot-toast";
 import DeleteConfirmationModal from "../../../components/Shared/Modal/DeleteConfirmationModal";
 import EditServiceModal from "../../../components/Shared/Modal/EditServiceModal"; // import the edit modal
@@ -23,7 +22,6 @@ const ManageServices = () => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
 
-  // Fetch services
   const { data: services = [], isLoading } = useQuery({
     queryKey: ["services"],
     queryFn: async () => {
@@ -32,7 +30,6 @@ const ManageServices = () => {
     },
   });
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (id) => axiosSecure.delete(`/service/${id}`),
     onSuccess: () => {
@@ -55,11 +52,11 @@ const ManageServices = () => {
   };
 
   const handleEdit = (service) => {
-    setEditingService(service); // open edit modal
+    setEditingService(service); 
   };
 
   const handleCloseEditModal = () => {
-    setEditingService(null); // close edit modal
+    setEditingService(null); 
   };
 
   const handleView = (id) => {

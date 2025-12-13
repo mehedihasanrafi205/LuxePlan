@@ -24,7 +24,6 @@ const MyBookings = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
-  // Fetch user bookings
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["myBookings", user?.email],
     queryFn: async () => {
@@ -33,7 +32,6 @@ const MyBookings = () => {
     },
     enabled: !!user?.email,
   });
-  // Delete booking mutation
   const deleteMutation = useMutation({
     mutationFn: async (id) => axiosSecure.delete(`/bookings/${id}`),
     onSuccess: () => {

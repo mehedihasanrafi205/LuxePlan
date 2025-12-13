@@ -4,13 +4,13 @@ import { FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import ConfirmStatusChangeModal from "../../../components/Shared/Modal/ConfirmStatusChangeModal";
-import useAuth from "../../../hooks/useAuth"; // Assuming you have user info
+import useAuth from "../../../hooks/useAuth"; 
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const AssignedProjects = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-  const { user } = useAuth(); // Get the decorator's email
+  const { user } = useAuth();
 
   const [selectedProject, setSelectedProject] = useState(null);
   const [newStatus, setNewStatus] = useState("");
@@ -38,7 +38,6 @@ const AssignedProjects = () => {
 
   const format = (t) => (t ? t.replace(/_/g, " ") : "N/A");
 
-  // Fetch Assigned Projects for this decorator (exclude completed)
   const { data: projects = [], isLoading } = useQuery({
     queryKey: ["assignedProjects", user?.email],
     queryFn: async () => {
@@ -49,7 +48,6 @@ const AssignedProjects = () => {
     },
   });
 
-  // Update status
   const { mutateAsync } = useMutation({
     mutationFn: async ({ id, status, decoratorId }) =>
       await axiosSecure.patch(`/bookings/${id}/assigned`, {
@@ -76,7 +74,7 @@ const AssignedProjects = () => {
     mutateAsync({
       id: selectedProject._id,
       status: newStatus,
-      decoratorId: selectedProject.decoratorId, // make sure this field exists
+      decoratorId: selectedProject.decoratorId, 
     });
   };
 
