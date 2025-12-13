@@ -17,13 +17,14 @@ import {
   FiMoon,
   FiUserPlus,
 } from "react-icons/fi";
+import { LuLayoutDashboard } from "react-icons/lu";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import useAuth from "../hooks/useAuth";
 import { useTheme } from "../providers/ThemeContext";
 import useRole from "../hooks/useRole";
 import { VscRequestChanges } from "react-icons/vsc";
-import { MdOutlineManageAccounts } from "react-icons/md";
+import { MdOutlineDashboard, MdOutlineManageAccounts } from "react-icons/md";
 import logo from "/logo.png";
 import LoadingSpinner from "../components/LoadingSpinner";
 
@@ -34,9 +35,7 @@ const DashboardLayout = () => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  // ===============================
   // Role-based menu
-  // ===============================
   const getMenu = (role) => {
     const base = "/dashboard";
 
@@ -137,7 +136,7 @@ const DashboardLayout = () => {
           <div className="p-4 border-b border-base-300 flex items-center justify-between">
             <Link to={"/"} className="flex items-center gap-2">
               <img src={logo} alt="Logo" className="w-10 h-10 object-contain" />
-              <h1 className="text-xl md:text-2xl font-bold text-primary font-serif">
+              <h1 className="text-xl md:text-2xl font-bold! text-gold-gradient text-primary font-serif">
                 LuxePlan
               </h1>
             </Link>
@@ -151,6 +150,21 @@ const DashboardLayout = () => {
 
           <nav className="p-3 space-y-2 overflow-y-auto h-[calc(100%-5rem)]">
             <h2 className="text-sm text-gray-500 font-semibold px-2">Menu</h2>
+            <NavLink
+              to={"/dashboard"}
+              end
+              onClick={closeSidebar}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-3 rounded-lg transition-colors duration-150 
+                ${
+                  isActive
+                    ? "bg-primary text-white shadow font-semibold"
+                    : "hover:bg-base-300 hover:text-primary"
+                }`
+              }
+            >
+              <MdOutlineDashboard size={20} /> Dashboard
+            </NavLink>
 
             {menu.map((item) => (
               <NavLink

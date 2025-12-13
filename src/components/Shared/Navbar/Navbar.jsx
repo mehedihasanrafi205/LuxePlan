@@ -21,31 +21,42 @@ const Navbar = () => {
 
   const { theme, toggleTheme } = useTheme();
   // NAV LINKS
+  const navItems = [
+    ["Home", "/"],
+    ["Services", "/services"],
+    ["About", "/about"],
+    ["Contact", "/contact"],
+  ];
+
+  if (user) {
+    navItems.splice(2, 0, ["Dashboard", "/dashboard"]);
+  }
+
   const navLinks = (
     <>
-      {[
-        ["Home", "/"],
-        ["Services", "/services"],
-        ["Dashboard", "/dashboard"],
-        ["About", "/about"],
-        ["Contact", "/contact"],
-      ].map(([name, path]) => (
+      {navItems.map(([name, path]) => (
         <li key={path} className="group">
           <NavLink
             to={path}
-            className="relative px-3 py-2 text-[15px] font-light tracking-wide 
-              text-base-content/70 hover:text-primary
-              transition-all duration-300"
+            className={({ isActive }) =>
+              `relative px-3 py-2 text-[15px] font-light tracking-wide 
+             transition-all duration-300
+             ${
+               isActive
+                 ? "text-primary"
+                 : "text-base-content/70 hover:text-primary"
+             }`
+            }
           >
             {name}
 
             <span
               className="
-        absolute left-1/2 -translate-x-1/2 bottom-1 
-        w-0 h-[1.5px] bg-primary rounded-full
-        transition-all duration-300 group-hover:w-4/5
-      "
-            ></span>
+              absolute left-1/2 -translate-x-1/2 bottom-1 
+              w-0 h-[1.5px] bg-primary rounded-full
+              transition-all duration-300 group-hover:w-4/5
+            "
+            />
           </NavLink>
         </li>
       ))}
@@ -53,15 +64,15 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4">
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 ">
       <nav
         className="
           navbar container w-full 
           bg-base-200/80 backdrop-blur-xl 
-          border border-base-300/40 
+          border 
           shadow-[0_8px_30px_rgba(0,0,0,0.2)] 
           rounded-2xl transition-all duration-300
-          px-4 py-3
+          px-4 py-3 border-secondary/10
         "
       >
         {/* LEFT SIDE */}

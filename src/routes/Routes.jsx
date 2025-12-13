@@ -28,7 +28,9 @@ import TodaysSchedule from "../pages/Dashboard/TodaysSchedule/TodaysSchedule";
 import Error from "../components/Error";
 import LoadingSpinner from "../components/LoadingSpinner";
 import DecoratorDetail from "../components/DecoratorDetail";
- 
+import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
+import AdminAnalytics from "../pages/AdminAnalytics/AdminAnalytics";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -63,7 +65,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <p>Dashboard Home</p>,
+        element: <DashboardHome></DashboardHome>,
         errorElement: <Error />,
         hydrateFallbackElement: <LoadingSpinner />,
       },
@@ -137,6 +139,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <ManageBookings />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "analytics",
+        element: (
+          <AdminRoute>
+            <AdminAnalytics />
           </AdminRoute>
         ),
       },

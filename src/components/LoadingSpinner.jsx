@@ -18,7 +18,7 @@ const LoadingSpinner = () => {
             filter: "drop-shadow(0 0 8px rgba(212, 175, 55, 0.6))",
           }}
         />
-        
+
         {/* Secondary spinning circle - slower */}
         <motion.div
           className="absolute inset-1 rounded-full border-3 border-transparent border-b-primary/70"
@@ -30,9 +30,6 @@ const LoadingSpinner = () => {
           }}
         />
 
-
-        
-        
         {/* Center dot */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
@@ -49,7 +46,7 @@ const LoadingSpinner = () => {
           />
         </div>
       </div>
-      
+
       {/* Loading text */}
       <motion.div
         className="ml-4 text-primary font-medium"
