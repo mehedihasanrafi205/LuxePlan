@@ -36,16 +36,38 @@ const useAdminOverview = () => {
 
   const { data: allBookings = [], isLoading: isLoadingBookings } = useQuery({
     queryKey: ["allBookings"],
-    queryFn: async () => (await axiosSecure.get("/bookings")).data,
+    queryFn: async () => {
+      const res = await axiosSecure.get("/bookings");
+      return res?.data?.bookings;
+    },
   });
 
-  const { data: allDecorators = [], isLoading: isLoadingDecorators } =
-    useQuery({
+  const { data: allDecorators = [], isLoading: isLoadingDecorators } = useQuery(
+    {
       queryKey: ["allDecorators"],
-      queryFn: async () => (await axiosSecure.get("/decorators")).data,
-    });
+      queryFn: async () => {
+        const res = await axiosSecure.get("/decorators");
+        return res.data?.decorators;
+      },
+    }
+  );
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/users");
+      return res.data?.users;
+    },
+  });
+  const { data: services = [], isLoading: isLoadingServices } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/services");
+      console.log("services", services);
+      return res.data.services;
+    },
+  });
 
-  const totalUsers = 45;
+  const totalUsers = users.length;
   const totalServices = 12;
 
   const totalBookings = statusStats.reduce((s, i) => s + i.count, 0);
@@ -71,11 +93,13 @@ const useAdminOverview = () => {
       isLoadingStatus ||
       isLoadingRevenue ||
       isLoadingBookings ||
-      isLoadingDecorators,
+      isLoadingDecorators ||
+      isLoadingUsers ||
+      isLoadingServices,
   };
 };
 
-/* ===================== COMPONENT ===================== */
+/* COMPONENT  */
 const AdminDashboardHome = () => {
   const {
     totalRevenue,
@@ -173,10 +197,16 @@ const AdminDashboardHome = () => {
             <div key={b._id} className="card bg-base-200 p-4 shadow rounded-xl">
               <div className="flex justify-between items-center mb-2">
                 <p className="font-semibold">{b.service_name}</p>
-                <span className="text-warning font-bold">{b.cost.toLocaleString()} BDT</span>
+                <span className="text-warning font-bold">
+                  {b.cost.toLocaleString()} BDT
+                </span>
               </div>
-              <p className="text-xs text-base-content/70 truncate">{b.userEmail}</p>
-              <p className="text-xs text-base-content/70">{moment(b.date).format("MMM DD")}</p>
+              <p className="text-xs text-base-content/70 truncate">
+                {b.userEmail}
+              </p>
+              <p className="text-xs text-base-content/70">
+                {moment(b.date).format("MMM DD")}
+              </p>
               <Link
                 to="/dashboard/manage-bookings"
                 className="btn btn-xs btn-warning mt-2 w-full"

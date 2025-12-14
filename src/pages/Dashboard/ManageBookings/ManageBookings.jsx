@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiLoader, FiUserPlus } from "react-icons/fi";
+import { FiLoader, FiUserPlus, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // 👈 Import Chevron icons
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AssignDecoratorModal from "../../../components/Shared/Modal/AssignDecoratorModal";
@@ -10,19 +10,32 @@ const ManageBookings = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9; 
+
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedDecorator, setSelectedDecorator] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [assigning, setAssigning] = useState(false);
 
-  // Fetch Bookings 
-  const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ["bookings"],
+  const { data: bookingData = {}, isLoading, isFetching } = useQuery({
+    queryKey: ["bookings", currentPage, itemsPerPage], 
     queryFn: async () => {
-      const res = await axiosSecure("/bookings");
-      return res.data;
+      const res = await axiosSecure("/bookings", { 
+        params: {
+          page: currentPage,
+          size: itemsPerPage,
+        },
+      });
+      return res.data; 
     },
+    keepPreviousData: true, 
   });
+
+  // Extract data for clarity
+  const bookings = bookingData.bookings || [];
+  const totalCount = bookingData.count || 0;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const { data: decorators = [] } = useQuery({
     queryKey: ["decorators", "accepted", "available_or_assigned"],
@@ -30,7 +43,7 @@ const ManageBookings = () => {
       const res = await axiosSecure.get(
         "/decorators?status=accepted&workStatus=available,assigned"
       );
-      return res.data;
+      return res.data?.decorators;
     },
   });
 
@@ -44,6 +57,7 @@ const ManageBookings = () => {
     setSelectedBooking(null);
     setSelectedDecorator("");
   };
+
   const handleAssign = async () => {
     if (!selectedDecorator)
       return toast.error("Please select a decorator first");
@@ -58,8 +72,7 @@ const ManageBookings = () => {
 
       toast.success("Decorator assigned successfully!");
 
-      const res = await axiosSecure("/bookings");
-      queryClient.setQueryData(["bookings"], res.data);
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
 
       closeModal();
     } catch (err) {
@@ -70,10 +83,19 @@ const ManageBookings = () => {
     }
   };
 
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const pageNumbers = [...Array(totalPages).keys()].map(i => i + 1);
+
   if (isLoading)
     return (
       <LoadingSpinner/>
     );
+
   const statusStyles = {
     pending: "bg-yellow-500/20 text-yellow-400",
     assigned: "bg-blue-500/20 text-blue-400",
@@ -85,18 +107,25 @@ const ManageBookings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-dark  px-4 md:px-6 py-10">
+    <div className="min-h-screen bg-background-dark px-4 md:px-6 py-10">
       <div className="container mx-auto">
-        <h1 className="text-3xl text-primary font-bold mb-4">Manage Bookings</h1>
+        <h1 className="text-3xl text-primary font-bold mb-4">
+          Manage Bookings ({totalCount} Total) 
+        </h1>
+
+        {isFetching && (
+          <div className="text-center text-primary mb-4">
+            <FiLoader className="inline animate-spin mr-2" /> Fetching bookings...
+          </div>
+        )}
 
         {/* MOBILE CARD VIEW */}
         <div className="md:hidden space-y-4">
           {bookings.map((b) => (
             <div
               key={b._id}
-              className="bg-base-200 border border-primary/20 rounded-xl p-4 backdrop-blur-sm shadow-lg"
+              className={`bg-base-200 border border-primary/20 rounded-xl p-4 backdrop-blur-sm shadow-lg ${isFetching ? 'opacity-50' : ''}`}
             >
-              {/* Header */}
               <div className="flex justify-between items-center mb-3">
                 <h2 className="font-semibold text-lg">{b.service_name}</h2>
                 <p className="font-bold text-primary">{b.cost} ৳</p>
@@ -157,7 +186,7 @@ const ManageBookings = () => {
                     ? "bg-gray-500/40 cursor-not-allowed"
                     : "bg-primary hover:bg-primary/80"
                 }`}
-                disabled={b.status !== "pending"}
+                disabled={b.status !== "pending" || isFetching}
               >
                 <FiUserPlus />
                 {b.status !== "pending" ? "Assigned" : "Assign Decorator"}
@@ -196,7 +225,7 @@ const ManageBookings = () => {
             </thead>
             <tbody className="">
               {bookings.map((b) => (
-                <tr key={b._id}>
+                <tr key={b._id} className={isFetching ? 'opacity-50' : ''}>
                   <td className="px-6 py-4 ">{b.service_name}</td>
                   <td className="px-6 py-4 ">{b.userEmail}</td>
                   <td className="px-6 py-4 ">{b.date}</td>
@@ -233,7 +262,7 @@ const ManageBookings = () => {
                           ? "opacity-50 cursor-not-allowed"
                           : ""
                       }`}
-                      disabled={b.status !== "pending"}
+                      disabled={b.status !== "pending" || isFetching}
                     >
                       <FiUserPlus />{" "}
                       {b.status !== "pending" ? "Assigned" : "Assign"}
@@ -245,10 +274,46 @@ const ManageBookings = () => {
           </table>
         </div>        
          
+        {/* PAGINATION CONTROLS */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-8">
+            <div className="join shadow-md">
+              {/* Previous Button */}
+              <button
+                className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1 || isFetching}
+              >
+                <FiChevronLeft />
+              </button>
 
+              {/* Page Buttons */}
+              {pageNumbers.map((page) => (
+                <button
+                  key={page}
+                  className={`join-item btn btn-md ${
+                    currentPage === page
+                      ? "btn-primary shadow-xl"
+                      : "btn-ghost"
+                  }`}
+                  onClick={() => handlePageChange(page)}
+                  disabled={isFetching}
+                >
+                  {page}
+                </button>
+              ))}
 
-
-
+              {/* Next Button */}
+              <button
+                className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || isFetching}
+              >
+                <FiChevronRight />
+              </button>
+            </div>
+          </div>
+        )}
          
         {/* Modal */}
         <AssignDecoratorModal

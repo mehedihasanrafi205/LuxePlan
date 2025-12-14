@@ -2,22 +2,26 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import ServiceCard from "../../components/ServiceCard";
-import { FiFilter, FiSearch, FiDollarSign, FiZap } from "react-icons/fi";
+import { FiFilter, FiSearch, FiDollarSign, FiZap, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // Added Chevron icons
 
-// Skeleton Component Definitions
-const ServiceCardSkeleton = () => (
-  <div className="card bg-base-100 shadow-xl animate-pulse overflow-hidden">
-    <div className="h-48 bg-base-300"></div>
-    <div className="card-body p-6">
-      <div className="h-6 bg-base-300 rounded w-3/4 mb-3"></div>
-      <div className="h-4 bg-base-300 rounded w-full mb-2"></div>
-      <div className="h-4 bg-base-300 rounded w-5/6 mb-4"></div>
-      <div className="h-8 bg-primary/20 rounded w-1/3 mt-4"></div>
-    </div>
+// Skeleton Component 
+const ServiceCardSkeleton = ({ count }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[...Array(count)].map((_, idx) => (
+      <div key={idx} className="card bg-base-100 shadow-xl animate-pulse overflow-hidden">
+        <div className="h-48 bg-base-300"></div>
+        <div className="card-body p-6">
+          <div className="h-6 bg-base-300 rounded w-3/4 mb-3"></div>
+          <div className="h-4 bg-base-300 rounded w-full mb-2"></div>
+          <div className="h-4 bg-base-300 rounded w-5/6 mb-4"></div>
+          <div className="h-8 bg-primary/20 rounded w-1/3 mt-4"></div>
+        </div>
+      </div>
+    ))}
   </div>
 );
 
-// Filter Content Component
+// Filter Content Component 
 const FilterSidebarContent = ({
   search,
   setSearch,
@@ -113,13 +117,17 @@ const FilterSidebarContent = ({
   </>
 );
 
-//  Main Component 
+// Main Component
 const Services = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [minBudget, setMinBudget] = useState("");
   const [maxBudget, setMaxBudget] = useState("");
   const [openSidebar, setOpenSidebar] = useState(false);
+  
+  //  ADD PAGINATION STATE
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9; 
 
   const categories = [
     "all",
@@ -133,31 +141,45 @@ const Services = () => {
 
   // React Query fetch
   const {
-    data: services = [],
+    data: data = {}, 
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: ["services", search, category, minBudget, maxBudget],
+    queryKey: ["services", search, category, minBudget, maxBudget, currentPage, itemsPerPage],
     queryFn: async () => {
       const params = {
         ...(search && { search }),
         ...(category !== "all" && { category }),
         ...(minBudget && { minBudget }),
         ...(maxBudget && { maxBudget }),
+        page: currentPage, 
+        size: itemsPerPage,
       };
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/services`, {
         params,
       });
-      return res.data;
+      return res.data; 
     },
+    keepPreviousData: true, 
   });
+  
+  // Extract data for clarity
+  const services = data.services || [];
+  const totalCount = data.count || 0;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  const itemsPerSkeleton = 9;
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const pageNumbers = [...Array(totalPages).keys()].map(i => i + 1);
 
   return (
     <section className="bg-base-200 min-h-screen">
       <div className="container mx-auto px-4 py-16 md:py-24">
-        {/* PAGE TITLE */}
+        {/* PAGE TITLE (Unchanged) */}
         <div className="mb-12 text-center mt-18">
           <h1 className="text-4xl md:text-5xl font-extrabold font-serif text-primary">
             LuxePlan's Elite Portfolio
@@ -168,7 +190,7 @@ const Services = () => {
           </p>
         </div>
 
-        {/* MOBILE FILTER BUTTON */}
+        {/* MOBILE FILTER BUTTON (Unchanged) */}
         <button
           className="btn btn-primary md:hidden mb-6 flex items-center gap-2 shadow-lg w-full"
           onClick={() => setOpenSidebar(true)}
@@ -177,7 +199,7 @@ const Services = () => {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          {/* --- MOBILE SIDEBAR --- */}
+          {/* MOBILE SIDEBAR */}
           <div
             className={`md:hidden fixed top-0 ${
               openSidebar ? "left-0" : "-left-full"
@@ -215,15 +237,7 @@ const Services = () => {
             />
           )}
 
-          {/* Overlay backdrop for mobile */}
-          {openSidebar && (
-            <div
-              className="fixed inset-0 bg-black/50 md:hidden z-40"
-              onClick={() => setOpenSidebar(false)}
-            />
-          )}
-
-          {/* --- DESKTOP SIDEBAR --- */}
+          {/* DESKTOP SIDEBAR */}
           <aside className="hidden md:block md:col-span-3">
             <div
               className="
@@ -245,15 +259,11 @@ const Services = () => {
               />
             </div>
           </aside>
+          {/* --- END SIDEBARS --- */}
 
-          {/* SERVICES GRID - Use col-span-9 to match sidebar */}
           <main className="md:col-span-9">
             {isFetching ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(itemsPerSkeleton)].map((_, idx) => (
-                  <ServiceCardSkeleton key={idx} />
-                ))}
-              </div>
+                <ServiceCardSkeleton count={itemsPerPage} /> 
             ) : services.length === 0 ? (
               <div className="p-10 bg-base-100 rounded-xl shadow-xl text-center">
                 <p className="text-xl text-primary font-semibold mb-2">
@@ -265,11 +275,55 @@ const Services = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {services.map((item) => (
-                  <ServiceCard key={item._id} service={item} />
-                ))}
-              </div>
+              <>
+                {/* Service Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {services.map((item) => (
+                    <ServiceCard key={item._id} service={item} />
+                  ))}
+                </div>
+
+                {/*  PAGINATION CONTROLS */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-10">
+                    <div className="join shadow-md">
+                      {/* Previous Button */}
+                      <button
+                        className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1 || isFetching}
+                      >
+                        <FiChevronLeft />
+                      </button>
+
+                      {/* Page Buttons */}
+                      {pageNumbers.map((page) => (
+                        <button
+                          key={page}
+                          className={`join-item btn btn-md ${
+                            currentPage === page
+                              ? "btn-primary shadow-xl"
+                              : "btn-ghost"
+                          }`}
+                          onClick={() => handlePageChange(page)}
+                          disabled={isFetching}
+                        >
+                          {page}
+                        </button>
+                      ))}
+
+                      {/* Next Button */}
+                      <button
+                        className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages || isFetching}
+                      >
+                        <FiChevronRight />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </main>
         </div>

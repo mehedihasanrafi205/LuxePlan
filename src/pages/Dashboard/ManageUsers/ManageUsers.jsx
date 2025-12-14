@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiLoader } from "react-icons/fi";
+import { FiLoader, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // Added Chevron icons
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -14,13 +14,33 @@ const ManageUsers = () => {
   const [newRole, setNewRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: users = [], isLoading } = useQuery({
-    queryKey: ["allUsers"],
+  //  ADD PAGINATION STATE
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
+  // React Query fetch
+  const {
+    data: userData = {},
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["allUsers", currentPage, itemsPerPage],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users`);
+      const res = await axiosSecure.get(`/users`, {
+        params: {
+          page: currentPage,
+          size: itemsPerPage,
+        },
+      });
       return res.data;
     },
+    keepPreviousData: true,
   });
+
+  // Extract data for clarity
+  const users = userData.users || [];
+  const totalCount = userData.count || 0;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const { mutateAsync } = useMutation({
     mutationFn: async ({ id, role }) =>
@@ -37,7 +57,7 @@ const ManageUsers = () => {
   });
 
   const handleRoleChangeClick = (user, role) => {
-    if (user.role === role) return; 
+    if (user.role === role) return;
 
     setSelectedUser(user);
     setNewRole(role);
@@ -48,18 +68,24 @@ const ManageUsers = () => {
     mutateAsync({ id: selectedUser._id, role: newRole });
   };
 
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const pageNumbers = [...Array(totalPages).keys()].map((i) => i + 1);
+
   if (isLoading) {
-    return (
-      <LoadingSpinner/>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
     <div className="min-h-screen px-4 md:px-6 py-10 bg-background-dark ">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl text-primary font-bold mb-4">Manage Users</h1>
-        
-        {/* Mobile Cards */}
+
+        {/* Mobile Cards (Used the existing mapping logic) */}
         <div className="space-y-4 md:hidden">
           {users.map((user) => (
             <div
@@ -101,6 +127,7 @@ const ManageUsers = () => {
           ))}
         </div>
 
+        {/* Desktop Table */}
         <div className="hidden md:block bg-white/5 backdrop-blur-md rounded-xl shadow-xl border border-base-300 overflow-x-auto">
           <table className="w-full table min-w-[900px]">
             <thead>
@@ -115,13 +142,15 @@ const ManageUsers = () => {
 
             <tbody className="">
               {users.map((user, index) => (
-                <tr key={user._id}>
-                  <td className="px-6 py-4">{index + 1}</td>
+                <tr key={user._id} className={isFetching ? "opacity-50" : ""}>
+                  <td className="px-6 py-4">
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                  </td>
 
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <img
-                        src={user?.image}
+                        src={user?.image || "https://i.ibb.co/V3NqB0F/user.png"}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <span>{user.name}</span>
@@ -139,10 +168,11 @@ const ManageUsers = () => {
                   <td className="px-6 py-4">
                     <select
                       defaultValue={user.role}
-                      className="select select-bordered select-sm bg-gray-700/98"
+                      className="select select-bordered select-sm text-white bg-gray-700/98"
                       onChange={(e) =>
                         handleRoleChangeClick(user, e.target.value)
                       }
+                      disabled={isFetching}
                     >
                       <option value="user">User</option>
                       <option value="decorator">Decorator</option>
@@ -154,9 +184,48 @@ const ManageUsers = () => {
             </tbody>
           </table>
         </div>
+
+        {/* PAGINATION CONTROLS */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-8">
+            <div className="join shadow-md">
+              {/* Previous Button */}
+              <button
+                className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1 || isFetching}
+              >
+                <FiChevronLeft />
+              </button>
+
+              {/* Page Buttons */}
+              {pageNumbers.map((page) => (
+                <button
+                  key={page}
+                  className={`join-item btn btn-md ${
+                    currentPage === page ? "btn-primary shadow-xl" : "btn-ghost"
+                  }`}
+                  onClick={() => handlePageChange(page)}
+                  disabled={isFetching}
+                >
+                  {page}
+                </button>
+              ))}
+
+              {/* Next Button */}
+              <button
+                className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || isFetching}
+              >
+                <FiChevronRight />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* MODAL */}
+      {/* MODAL (Unchanged) */}
       <ConfirmRoleChangeModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
