@@ -41,7 +41,7 @@ const DecoratorDetail = () => {
         <p className="text-xl mb-4">Something went wrong!</p>
         <Link
           to="/"
-          className="px-5 py-2 rounded-lg bg-yellow-500 text-black font-medium hover:bg-yellow-400 transition"
+          className="px-5 py-2 rounded-lg bg-yellow-500  font-medium hover:bg-yellow-400 transition"
         >
           Back to Home
         </Link>
@@ -56,7 +56,7 @@ const DecoratorDetail = () => {
         {/* Back Button */}
         <Link
           to="/dashboard/manage-decorators"
-          className="flex items-center gap-2 mb-8 text-gray-300 hover:text-yellow-400 transition"
+          className="flex items-center gap-2 mb-8  hover:text-yellow-400 transition"
         >
           <FiArrowLeft /> Back To Manage Decorator
         </Link>
@@ -78,7 +78,7 @@ const DecoratorDetail = () => {
               {decorator.fullName}
             </h1>
 
-            <p className="text-gray-400 mt-2">{decorator.description}</p>
+            <p className=" mt-2">{decorator.description}</p>
 
             {/* Status Badges */}
             <div className="flex gap-3 mt-5">
@@ -91,7 +91,7 @@ const DecoratorDetail = () => {
             </div>
 
             {/* Contact */}
-            <div className="mt-6 space-y-3 text-gray-300">
+            <div className="mt-6 space-y-3 ">
               <p className="flex items-center gap-2">
                 <FiMail className="text-yellow-400" /> {decorator.email}
               </p>
