@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { FiLoader, FiEdit, FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { IoMdEye } from "react-icons/io";
+import {
+  FiLoader,
+  FiEdit,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
+import { IoMdAdd, IoMdEye } from "react-icons/io";
 import { FaTrashAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import DeleteConfirmationModal from "../../../components/Shared/Modal/DeleteConfirmationModal";
 import EditBookingModal from "../../../components/Shared/Modal/EditBookingModal";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -21,17 +26,17 @@ const MyBookings = () => {
 
   // ADD PAGINATION STATE
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9; 
+  const itemsPerPage = 9;
 
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
-  const { 
-    data: bookingData = {}, 
-    isLoading, 
-    isFetching 
+  const {
+    data: bookingData = {},
+    isLoading,
+    isFetching,
   } = useQuery({
     queryKey: ["myBookings", user?.email, currentPage, itemsPerPage],
     queryFn: async () => {
@@ -42,7 +47,7 @@ const MyBookings = () => {
           size: itemsPerPage,
         },
       });
-      return res.data; 
+      return res.data;
     },
     enabled: !!user?.email,
     keepPreviousData: true,
@@ -52,16 +57,15 @@ const MyBookings = () => {
   const totalCount = bookingData.count || 0;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-
   const deleteMutation = useMutation({
     mutationFn: async (id) => axiosSecure.delete(`/bookings/${id}`),
     onSuccess: () => {
       toast.success("Booking deleted");
       queryClient.invalidateQueries(["myBookings", user.email]);
       setIsDeleteOpen(false);
-      
+
       if (bookings.length === 1 && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
+        setCurrentPage(currentPage - 1);
       }
     },
     onError: () => toast.error("Failed to delete booking"),
@@ -121,7 +125,7 @@ const MyBookings = () => {
     setup_in_progress: "bg-orange-500/20 text-orange-400",
     completed: "bg-green-500/20 text-green-400",
   };
-  
+
   //  PAGINATION HANDLERS
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -129,33 +133,45 @@ const MyBookings = () => {
     }
   };
 
-  const pageNumbers = [...Array(totalPages).keys()].map(i => i + 1);
+  const pageNumbers = [...Array(totalPages).keys()].map((i) => i + 1);
 
   if (isLoading) {
-    return (
-      <LoadingSpinner/>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
     <div className="min-h-screen px-4 md:px-6 py-10">
       <div className="container mx-auto">
-        <h1 className="text-3xl text-primary font-bold mb-2">My Bookings ({totalCount} Total)</h1>
-        
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl text-primary font-bold ">
+            My Bookings ({totalCount} Total)
+          </h1>
+          <Link to={"/services"} className="btn btn-primary flex gap-2">
+            <IoMdAdd /> Add New Bookings
+          </Link>
+        </div>
+
         {isFetching && (
           <div className="text-center text-primary mb-4">
-            <FiLoader className="inline animate-spin mr-2" /> Fetching bookings...
+            <FiLoader className="inline animate-spin mr-2" /> Fetching
+            bookings...
           </div>
         )}
 
         {bookings.length === 0 && !isFetching ? (
           <div className="p-10 bg-base-100/50 rounded-xl shadow-xl text-center mt-6">
-            <p className="text-xl font-semibold">You have no active bookings.</p>
+            <p className="text-xl font-semibold">
+              You have no active bookings.
+            </p>
           </div>
         ) : (
           <>
             {/* Mobile Cards */}
-            <div className={`space-y-4 md:hidden ${isFetching ? 'opacity-50' : ''}`}>
+            <div
+              className={`space-y-4 md:hidden ${
+                isFetching ? "opacity-50" : ""
+              }`}
+            >
               {bookings.map((b) => (
                 <div
                   key={b._id}
@@ -211,7 +227,11 @@ const MyBookings = () => {
             </div>
 
             {/* Desktop Table */}
-            <div className={`hidden md:block rounded-xl backdrop-blur-sm overflow-x-auto shadow-xl border border-base-300 ${isFetching ? 'opacity-50' : ''}`}>
+            <div
+              className={`hidden md:block rounded-xl backdrop-blur-sm overflow-x-auto shadow-xl border border-base-300 ${
+                isFetching ? "opacity-50" : ""
+              }`}
+            >
               <table className="w-full table min-w-[1050px]">
                 <thead>
                   <tr className="border-b border-b-white/10">
@@ -250,7 +270,9 @@ const MyBookings = () => {
                   {bookings.map((b, index) => (
                     <tr key={b._id}>
                       {/* Calculate index based on current page */}
-                      <td className="px-6 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                      <td className="px-6 py-4">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
                       <td className="px-6 py-4">{b.service_name}</td>
                       <td className="px-6 py-4">{b.date}</td>
                       <td className="px-6 py-4">{b.time}</td>

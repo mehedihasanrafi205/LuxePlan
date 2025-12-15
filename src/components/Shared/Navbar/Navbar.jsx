@@ -171,7 +171,7 @@ const Navbar = () => {
                 tabIndex={0}
                 className="
         dropdown-content mt-3 p-4 w-56 rounded-2xl
-        bg-base-100/70 backdrop-blur-xl
+        bg-base-100/95 backdrop-blur-xl
         shadow-[0_8px_35px_rgba(212,175,55,0.35)]
         border border-primary/30
         space-y-2 animate-fadeIn
