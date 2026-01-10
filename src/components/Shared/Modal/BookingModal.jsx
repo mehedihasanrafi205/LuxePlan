@@ -29,6 +29,11 @@ const BookingModal = ({ service, user, onClose }) => {
   const [selectedTime, setSelectedTime] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState(service?.type || "on_site");
+  
+  // Coupon State
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discount, setDiscount] = useState(0);
 
   const queryClient = useQueryClient();
   const API_URL = import.meta.env.VITE_API_URL;
@@ -66,6 +71,26 @@ const BookingModal = ({ service, user, onClose }) => {
       toast.error(err.response?.data?.message || "Booking failed!"),
   });
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode) return toast.error("Enter a coupon code!");
+    try {
+      const res = await axios.post(`${API_URL}/coupons/validate`, {
+        code: couponCode,
+        serviceCost: service.cost,
+      });
+      console.log(res.data)
+      if (res.data.success) {
+        setAppliedCoupon(res.data); // { code, amount, type, discountAmount }
+        setDiscount(res.data.discountAmount);
+        toast.success(`Coupon Applied! Saved ৳${res.data.discountAmount}`);
+      }
+    } catch (err) {
+      setAppliedCoupon(null);
+      setDiscount(0);
+      toast.error(err.response?.data?.message || "Invalid Coupon");
+    }
+  };
+
   const handleBooking = () => {
     if (!selectedTime || !type) {
       return toast.error("Please fill all fields!");
@@ -74,6 +99,8 @@ const BookingModal = ({ service, user, onClose }) => {
     if (type === "on_site" && !location) {
       return toast.error("Venue location is required for On-Site service!");
     }
+    
+    const finalCost = service.cost - discount;
 
     mutation.mutate({
       serviceId: service._id,
@@ -83,7 +110,10 @@ const BookingModal = ({ service, user, onClose }) => {
       date: formattedDate,
       time: selectedTime,
       location: type === "on_site" ? location : "In-Studio Consultation",
-      cost: service.cost,
+      cost: finalCost,
+      originalCost: service.cost,
+      couponCode: appliedCoupon ? appliedCoupon.code : null,
+      discount: discount,
       service_category: service.service_category,
       type,
     });
@@ -215,10 +245,62 @@ const BookingModal = ({ service, user, onClose }) => {
               </>
             )}
 
-            {/* Cost */}
-            <div className="mt-2 text-white/80 font-semibold">
-              Cost:{" "}
-              <span className="text-[#d4af37] font-bold">৳ {service.cost}</span>
+            {/* Coupon Input */}
+            <div className="mt-4">
+               <div className="flex items-center gap-2 text-white/80 font-semibold mb-2">
+                  <FiLayers /> Apply Coupon
+               </div>
+               {!appliedCoupon ? (
+                 <div className="flex gap-2">
+                   <input 
+                     type="text" 
+                     placeholder="Enter Code" 
+                     className="input input-bordered w-full bg-[#2a2a2a] text-white"
+                     value={couponCode}
+                     onChange={(e) => setCouponCode(e.target.value)}
+                   />
+                   <button 
+                     onClick={handleApplyCoupon}
+                     className="btn btn-primary text-black"
+                   >
+                     Apply
+                   </button>
+                 </div>
+               ) : (
+                 <div className="flex items-center justify-between bg-green-900/30 border border-green-500/50 p-3 rounded-lg">
+                   <span className="text-green-400 font-semibold">
+                     Coupon <b>{appliedCoupon.code}</b> applied!
+                   </span>
+                   <button 
+                     onClick={() => {
+                       setAppliedCoupon(null);
+                       setDiscount(0);
+                       setCouponCode("");
+                     }}
+                     className="btn btn-xs btn-ghost text-red-400"
+                   >
+                     Remove
+                   </button>
+                 </div>
+               )}
+            </div>
+
+            {/* Cost Display */}
+            <div className="mt-4 p-4 bg-[#2a2a2a] rounded-xl space-y-2">
+               <div className="flex justify-between text-white/70">
+                 <span>Subtotal:</span>
+                 <span>৳ {service.cost}</span>
+               </div>
+               {discount > 0 && (
+                 <div className="flex justify-between text-green-400">
+                   <span>Discount:</span>
+                   <span>- ৳ {discount}</span>
+                 </div>
+               )}
+               <div className="border-t border-white/10 pt-2 flex justify-between text-lg font-bold text-[#d4af37]">
+                 <span>Total:</span>
+                 <span>৳ {service.cost - discount}</span>
+               </div>
             </div>
 
             <motion.button

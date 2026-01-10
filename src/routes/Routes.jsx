@@ -22,6 +22,7 @@ import ManageBookings from "../pages/Dashboard/ManageBookings/ManageBookings";
 import DecoratorRoute from "./DecoratorRoute";
 import AdminRoute from "./AdminRoute";
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
+import ManageCoupons from "../pages/Dashboard/ManageCoupons/ManageCoupons";
 import Earnings from "../pages/Dashboard/Earnings/Earnings";
 import TodaysSchedule from "../pages/Dashboard/TodaysSchedule/TodaysSchedule";
 import Error from "../components/Error";
@@ -139,6 +140,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AdminAnalytics />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-coupons",
+        element: (
+          <AdminRoute>
+            <ManageCoupons />
           </AdminRoute>
         ),
       },

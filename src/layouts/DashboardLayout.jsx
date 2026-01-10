@@ -16,6 +16,7 @@ import {
   FiSun,
   FiMoon,
   FiUserPlus,
+  FiTag,
 } from "react-icons/fi";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -66,6 +67,11 @@ const DashboardLayout = () => {
           label: "Manage Bookings",
           icon: FiCalendar,
           path: `${base}/manage-bookings`,
+        },
+        {
+          label: "Manage Coupons",
+          icon: FiTag,
+          path: `${base}/manage-coupons`,
         },
         { label: "Analytics", icon: FiBarChart2, path: `${base}/analytics` },
       ];
