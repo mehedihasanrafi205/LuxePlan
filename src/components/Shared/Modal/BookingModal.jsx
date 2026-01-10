@@ -35,6 +35,9 @@ const BookingModal = ({ service, user, onClose }) => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discount, setDiscount] = useState(0);
 
+  // Add-ons State
+  const [selectedAddOns, setSelectedAddOns] = useState([]);
+
   const queryClient = useQueryClient();
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
@@ -71,6 +74,14 @@ const BookingModal = ({ service, user, onClose }) => {
       toast.error(err.response?.data?.message || "Booking failed!"),
   });
 
+  const handleAddOnToggle = (addOn) => {
+    if (selectedAddOns.find((a) => a.name === addOn.name)) {
+      setSelectedAddOns(selectedAddOns.filter((a) => a.name !== addOn.name));
+    } else {
+      setSelectedAddOns([...selectedAddOns, addOn]);
+    }
+  };
+
   const handleApplyCoupon = async () => {
     if (!couponCode) return toast.error("Enter a coupon code!");
     try {
@@ -93,29 +104,31 @@ const BookingModal = ({ service, user, onClose }) => {
 
   const handleBooking = () => {
     if (!selectedTime || !type) {
-      return toast.error("Please fill all fields!");
+        return toast.error("Please fill all fields!");
     }
-
+  
     if (type === "on_site" && !location) {
-      return toast.error("Venue location is required for On-Site service!");
+        return toast.error("Venue location is required for On-Site service!");
     }
-    
-    const finalCost = service.cost - discount;
-
+      
+    const addOnsCost = selectedAddOns.reduce((sum, item) => sum + item.price, 0);
+    const finalCost = (service.cost + addOnsCost) - discount;
+  
     mutation.mutate({
-      serviceId: service._id,
-      service_name: service.service_name,
-      userEmail: user.email,
-      userName: user.displayName,
-      date: formattedDate,
-      time: selectedTime,
-      location: type === "on_site" ? location : "In-Studio Consultation",
-      cost: finalCost,
-      originalCost: service.cost,
-      couponCode: appliedCoupon ? appliedCoupon.code : null,
-      discount: discount,
-      service_category: service.service_category,
-      type,
+        serviceId: service._id,
+        service_name: service.service_name,
+        userEmail: user.email,
+        userName: user.displayName,
+        date: formattedDate,
+        time: selectedTime,
+        location: type === "on_site" ? location : "In-Studio Consultation",
+        cost: finalCost,
+        originalServiceCost: service.cost,
+        addOns: selectedAddOns,
+        couponCode: appliedCoupon ? appliedCoupon.code : null,
+        discount: discount,
+        service_category: service.service_category,
+        type,
     });
   };
 
@@ -245,6 +258,31 @@ const BookingModal = ({ service, user, onClose }) => {
               </>
             )}
 
+            {/* Add-ons Selection */}
+            {service.addOns && service.addOns.length > 0 && (
+              <div className="mt-2">
+                 <div className="flex items-center gap-2 text-white/80 font-semibold mb-2">
+                   <FiCheck /> Recommended Add-ons
+                 </div>
+                 <div className="space-y-2">
+                   {service.addOns.map((addOn, idx) => (
+                      <label key={idx} className="flex items-center justify-between bg-[#2a2a2a] p-3 rounded-lg border border-[#d4af37]/10 cursor-pointer hover:border-[#d4af37]/40">
+                         <div className="flex items-center gap-2">
+                            <input 
+                              type="checkbox"
+                              checked={!!selectedAddOns.find(a => a.name === addOn.name)}
+                              onChange={() => handleAddOnToggle(addOn)}
+                              className="checkbox checkbox-primary checkbox-sm"
+                            />
+                            <span className="text-white/90">{addOn.name}</span>
+                         </div>
+                         <span className="text-[#d4af37] font-semibold">+ ৳{addOn.price}</span>
+                      </label>
+                   ))}
+                 </div>
+              </div>
+            )}
+
             {/* Coupon Input */}
             <div className="mt-4">
                <div className="flex items-center gap-2 text-white/80 font-semibold mb-2">
@@ -288,9 +326,15 @@ const BookingModal = ({ service, user, onClose }) => {
             {/* Cost Display */}
             <div className="mt-4 p-4 bg-[#2a2a2a] rounded-xl space-y-2">
                <div className="flex justify-between text-white/70">
-                 <span>Subtotal:</span>
+                 <span>Base Price:</span>
                  <span>৳ {service.cost}</span>
                </div>
+               {selectedAddOns.length > 0 && (
+                 <div className="flex justify-between text-white/70">
+                    <span>Add-ons:</span>
+                    <span>+ ৳ {selectedAddOns.reduce((sum, i) => sum + i.price, 0)}</span>
+                 </div>
+               )}
                {discount > 0 && (
                  <div className="flex justify-between text-green-400">
                    <span>Discount:</span>
@@ -299,7 +343,7 @@ const BookingModal = ({ service, user, onClose }) => {
                )}
                <div className="border-t border-white/10 pt-2 flex justify-between text-lg font-bold text-[#d4af37]">
                  <span>Total:</span>
-                 <span>৳ {service.cost - discount}</span>
+                 <span>৳ {(service.cost + selectedAddOns.reduce((sum, i) => sum + i.price, 0)) - discount}</span>
                </div>
             </div>
 

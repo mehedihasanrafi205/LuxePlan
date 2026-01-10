@@ -47,6 +47,15 @@ const AddService = () => {
     name: "key_feature",
   });
 
+  const {
+    fields: addOnFields,
+    append: appendAddOn,
+    remove: removeAddOn,
+  } = useFieldArray({
+    control,
+    name: "addOns",
+  });
+
   const categories = [
     "home",
     "wedding",
@@ -93,6 +102,7 @@ const AddService = () => {
         createdByEmail: user?.email || "admin@gmail.com",
         createdAt: new Date(),
         key_feature: data.key_feature.map((f) => f.name).filter(Boolean),
+        addOns: data.addOns?.map(a => ({ name: a.name, price: Number(a.price) })).filter(a => a.name && a.price) || [],
       };
 
       await mutateAsync(serviceData);
