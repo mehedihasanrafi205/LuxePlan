@@ -325,6 +325,28 @@ const ManageBookings = () => {
           onClose={closeModal}
           onAssign={handleAssign}
           loading={assigning}
+          onAutoRecommend={async () => {
+              try {
+                  const res = await axiosSecure.post("/decorators/recommend", {
+                      category: selectedBooking.service_category || "", 
+                      // Try to match category from service name if category missing?
+                      // Assuming service_category exists on booking or derived. 
+                      // Booking object has service_category (checked schema/BookingModal).
+                  });
+                  if (res.data && res.data.length > 0) {
+                      // Automatically select the recommended ones
+                      // Filter out those already selected? Or just replace?
+                      // Let's replace for "Smart Recommendation"
+                      setSelectedDecorator(res.data);
+                      toast.success(`Found ${res.data.length} recommended decorators!`);
+                  } else {
+                      toast.error("No specific recommendations found (Try manual selection).");
+                  }
+              } catch(e) {
+                  console.error(e);
+                  toast.error("Failed to fetch recommendations.");
+              }
+          }}
         />
       </div>
     </div>

@@ -30,7 +30,33 @@ const AssignDecoratorModal = ({
           <span className="text-primary">{booking?.service_name}</span>
         </h3>
 
-        <label className="text-white/70 mb-2 block">Select Decorators:</label>
+        <div className="flex justify-between items-center mb-2">
+            <label className="text-white/70 block">Select Decorators:</label>
+            <button 
+                className="btn btn-xs btn-accent text-white"
+                onClick={async () => {
+                    const toastId = toast.loading("Finding best matches...");
+                    try {
+                         // Import axios if not available in props, but assuming we can pass handleRecommend or use useAxiosSecure inside component? 
+                         // Component doesn't have useAxiosSecure hook call inside. 
+                         // I should probably pass a function or add the logic here.
+                         // Let's assume we need to fetch it.
+                         // Since I cannot add imports easily at top without full replace, I'll assume props or use global axios if possible? 
+                         // Actually, this component is a presentational modal. 
+                         // Better to move the logic to ManageBookings.jsx and pass `onRecommend`.
+                         // But for now, I'll add a simple button that emits an event "onAutoRecommend".
+                         // Wait, I can't emit event easily without changing parent.
+                         // Let's try to add the logic here if I can use fetch or axios.
+                         // Or better: Update ManageBookings to pass `recommendations` or `handleRecommend`.
+                         // I will make this button trigger `onAutoRecommend` prop.
+                         onAutoRecommend && onAutoRecommend();
+                         toast.dismiss(toastId);
+                    } catch(e) { toast.error("Failed"); toast.dismiss(toastId); }
+                }}
+            >
+                ✨ Auto Recommend
+            </button>
+        </div>
 
         <div className="max-h-60 overflow-y-auto bg-[#2a2a2a] border border-white/10 rounded-lg p-2 mb-4 space-y-2">
             {decorators.map((d) => {
