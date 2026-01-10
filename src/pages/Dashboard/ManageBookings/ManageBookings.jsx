@@ -14,7 +14,7 @@ const ManageBookings = () => {
   const itemsPerPage = 9; 
 
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [selectedDecorator, setSelectedDecorator] = useState("");
+  const [selectedDecorator, setSelectedDecorator] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [assigning, setAssigning] = useState(false);
 
@@ -55,19 +55,19 @@ const ManageBookings = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedBooking(null);
-    setSelectedDecorator("");
+    setSelectedDecorator([]);
   };
 
   const handleAssign = async () => {
-    if (!selectedDecorator)
-      return toast.error("Please select a decorator first");
+    if (selectedDecorator.length === 0)
+      return toast.error("Please select at least one decorator");
 
     setAssigning(true);
     try {
       await axiosSecure.patch(`/bookings/${selectedBooking._id}/assign`, {
-        decoratorEmail: selectedDecorator.email,
-        decoratorId: selectedDecorator._id,
-        decoratorName: selectedDecorator.fullName,
+        decoratorEmails: selectedDecorator.map(d => d.email),
+        decoratorIds: selectedDecorator.map(d => d._id),
+        decoratorNames: selectedDecorator.map(d => d.fullName),
       });
 
       toast.success("Decorator assigned successfully!");
