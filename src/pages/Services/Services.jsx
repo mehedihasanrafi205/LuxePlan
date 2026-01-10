@@ -32,6 +32,8 @@ const FilterSidebarContent = ({
   setMinBudget,
   maxBudget,
   setMaxBudget,
+  sort,
+  setSort,
   refetch,
 }) => (
   <>
@@ -49,6 +51,26 @@ const FilterSidebarContent = ({
         onBlur={refetch}
         onKeyDown={(e) => e.key === "Enter" && refetch()}
       />
+    </div>
+
+    {/* SORT */}
+    <div className="mb-6">
+        <label className="font-semibold text-white/90 flex items-center mb-2">
+            Sort By
+        </label>
+        <select 
+            className="select select-bordered select-primary w-full bg-base-200"
+            value={sort}
+            onChange={(e) => {
+                setSort(e.target.value);
+                setTimeout(refetch, 0);
+            }}
+        >
+            <option value="">Default (Newest)</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="rating_desc">Highest Rated</option>
+        </select>
     </div>
 
     {/* CATEGORY */}
@@ -109,6 +131,7 @@ const FilterSidebarContent = ({
         setCategory("all");
         setMinBudget("");
         setMaxBudget("");
+        setSort("");
         setTimeout(refetch, 0);
       }}
     >
@@ -123,6 +146,7 @@ const Services = () => {
   const [category, setCategory] = useState("all");
   const [minBudget, setMinBudget] = useState("");
   const [maxBudget, setMaxBudget] = useState("");
+  const [sort, setSort] = useState("");
   const [openSidebar, setOpenSidebar] = useState(false);
   
   //  ADD PAGINATION STATE
@@ -145,13 +169,14 @@ const Services = () => {
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: ["services", search, category, minBudget, maxBudget, currentPage, itemsPerPage],
+    queryKey: ["services", search, category, minBudget, maxBudget, sort, currentPage, itemsPerPage],
     queryFn: async () => {
       const params = {
         ...(search && { search }),
         ...(category !== "all" && { category }),
         ...(minBudget && { minBudget }),
         ...(maxBudget && { maxBudget }),
+        ...(sort && { sort }),
         page: currentPage, 
         size: itemsPerPage,
       };
@@ -225,6 +250,8 @@ const Services = () => {
               setMinBudget={setMinBudget}
               maxBudget={maxBudget}
               setMaxBudget={setMaxBudget}
+              sort={sort}
+              setSort={setSort}
               refetch={refetch}
             />
           </div>
@@ -242,7 +269,7 @@ const Services = () => {
             <div
               className="
               bg-base-100 border border-base-200 rounded-xl shadow-md p-5
-              md:sticky md:top-30 md:max-h-[425px] overflow-y-auto
+              md:sticky md:top-30 md:max-h-[500px] overflow-y-auto
               "
             >
               <FilterSidebarContent
@@ -255,6 +282,8 @@ const Services = () => {
                 setMinBudget={setMinBudget}
                 maxBudget={maxBudget}
                 setMaxBudget={setMaxBudget}
+                sort={sort}
+                setSort={setSort}
                 refetch={refetch}
               />
             </div>
