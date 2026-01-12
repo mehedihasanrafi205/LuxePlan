@@ -62,7 +62,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-300 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full p-10 bg-base-100 rounded-3xl shadow-2xl border border-base-300">
-        {/* Header */}
         <div className="text-center mb-6">
           <Link to={"/"}>
             <img className="w-15 mx-auto" src={logo} alt="" />
@@ -73,6 +72,31 @@ const Login = () => {
           <p className="mt-2 text-sm text-base-content/70">
             Login to your LuxePlan account.
           </p>
+
+          {/* DEMO LOGIN SECTION */}
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+               onClick={() => handleLogin({ email: 'user@gmail.com', password: 'Pa$$w0rd!' })}
+               className="btn btn-xs sm:btn-sm btn-outline btn-info rounded-full capitalize"
+               disabled={loading}
+            >
+              User Demo
+            </button>
+            <button
+               onClick={() => handleLogin({ email: 'decorator@gmail.com', password: 'Pa$$w0rd!' })}
+               className="btn btn-xs sm:btn-sm btn-outline btn-warning rounded-full capitalize"
+               disabled={loading}
+            >
+              Decorator Demo
+            </button>
+            <button
+               onClick={() => handleLogin({ email: 'admin@gmail.com', password: 'Pa$$w0rd!' })}
+               className="btn btn-xs sm:btn-sm btn-outline btn-error rounded-full capitalize"
+               disabled={loading}
+            >
+              Admin Demo
+            </button>
+          </div>
         </div>
 
         {/* Form */}

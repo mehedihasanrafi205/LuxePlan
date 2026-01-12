@@ -26,6 +26,7 @@ const Navbar = () => {
     ["Services", "/services"],
     ["About", "/about"],
     ["Contact", "/contact"],
+    ["Join Team", "/dashboard/apply-decorator"],
   ];
 
   if (user) {

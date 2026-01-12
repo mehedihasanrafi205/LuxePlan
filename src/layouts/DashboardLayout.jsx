@@ -17,6 +17,7 @@ import {
   FiMoon,
   FiUserPlus,
   FiTag,
+  FiSettings, // Added FiSettings
 } from "react-icons/fi";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -120,56 +121,56 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Mobile overlay */}
+      {/* Sidebar Overlay for Mobile/Tablet */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0  bg-opacity-50 z-20 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
           onClick={closeSidebar}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar Navigation */}
       <aside
         className={`
-          fixed md:static z-30 top-0 left-0 h-full bg-base-100 border-r border-base-300
-          transition-all duration-300
-          ${sidebarOpen ? "w-64" : "w-0"} md:w-64
-          flex flex-col justify-between
-          overflow-hidden
+          fixed top-0 left-0 z-50 h-[100dvh] w-72 bg-base-100/95 backdrop-blur-xl border-r border-base-200
+          flex flex-col transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-sm
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+          lg:translate-x-0 lg:static lg:h-[100dvh]
         `}
       >
-        <div>
-          <div className="p-4 border-b border-base-300 flex items-center justify-between">
-            <Link to={"/"} className="flex items-center gap-2">
+        <div className="flex-none">
+          <div className="h-20 flex items-center gap-3 px-6 border-b border-base-200/50">
+            <Link to={"/"} className="flex items-center gap-2  transition-transform">
               <img src={logo} alt="Logo" className="w-10 h-10 object-contain" />
-              <h1 className="text-xl md:text-2xl font-bold! text-gold-gradient text-primary font-serif">
+              <h1 className="text-2xl font-bold text-primary font-serif tracking-tight">
                 LuxePlan
               </h1>
             </Link>
             <button
-              className="btn btn-ghost btn-sm md:hidden"
+              className="btn btn-ghost btn-sm btn-circle lg:hidden ml-auto"
               onClick={() => setSidebarOpen(false)}
             >
               ✕
             </button>
           </div>
+        </div>
 
-          <nav className="p-3 space-y-2 overflow-y-auto h-[calc(100%-5rem)]">
-            <h2 className="text-sm text-gray-500 font-semibold px-2">Menu</h2>
+        <nav className="p-4 space-y-2 overflow-y-auto flex-1 custom-scrollbar">
+            <p className="text-xs font-bold text-base-content/40 uppercase tracking-widest px-4 mb-2 mt-2">Menu</p>
             <NavLink
               to={"/dashboard"}
               end
               onClick={closeSidebar}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-3 rounded-lg transition-colors duration-150 
+                `flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 font-medium
                 ${
                   isActive
-                    ? "bg-primary text-white shadow font-semibold"
-                    : "hover:bg-base-300 hover:text-primary"
+                    ? "bg-primary text-white shadow-lg shadow-primary/30 translate-x-1"
+                    : "text-base-content/70 hover:bg-base-200 hover:text-primary hover:translate-x-1"
                 }`
               }
             >
-              <MdOutlineDashboard size={20} /> Dashboard
+              <MdOutlineDashboard size={22} /> Dashboard
             </NavLink>
 
             {menu.map((item) => (
@@ -178,98 +179,136 @@ const DashboardLayout = () => {
                 to={item.path}
                 onClick={closeSidebar}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-3 rounded-lg 
-                  transition-colors duration-150
+                  `flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 font-medium
                   ${
                     isActive
-                      ? "bg-primary text-white font-semibold shadow"
-                      : "hover:bg-base-300 hover:text-primary"
+                      ? "bg-primary text-white shadow-lg shadow-primary/30 translate-x-1"
+                      : "text-base-content/70 hover:bg-base-200 hover:text-primary hover:translate-x-1"
                   }`
                 }
               >
-                <item.icon size={20} /> {item.label}
+                <item.icon size={22} /> {item.label}
               </NavLink>
             ))}
 
-            <div className="divider" />
+            <div className="divider opacity-50 my-6" />
 
             <NavLink
               to="/"
-              className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-base-300 hover:text-primary"
+              className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-base-content/70 hover:bg-base-200 hover:text-primary transition-all font-medium"
             >
-              <FiHome size={20} />
-              Back to Site
+              <FiHome size={22} />
+              Back to Website
             </NavLink>
-          </nav>
-        </div>
+        </nav>
 
         {/* Logout & Theme Switch at bottom */}
-        <div className="p-4 border-t border-base-300 space-y-3">
-          <button
-            className="btn  w-full flex items-center justify-center gap-2 mt-2"
-            onClick={toggleTheme}
-          >
-            {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
-            {theme === "light" ? "Dark Mode" : "Light Mode"}
-          </button>
-          <button
-            className="btn btn-error w-full flex items-center gap-2"
-            onClick={() =>
-              toast.promise(logOut(), {
-                loading: "Logging out...",
-                success: "Logged out!",
-                error: "Logout failed",
-              })
-            }
-          >
-            <FiLogOut size={20} /> Log Out
-          </button>
+        <div className="p-4 border-t border-base-200/50 bg-base-100/50 flex-none pb- safe-area-bottom">
+          <div className="flex flex-col gap-3">
+            <button
+                className="btn btn-outline w-full justify-start gap-3 text-base-content/70 hover:text-primary transition-all group"
+                onClick={toggleTheme}
+            >
+                {theme === "light" ? <FiMoon size={20} className="group-hover:rotate-12 transition-transform" /> : <FiSun size={20} className="group-hover:rotate-90 transition-transform" />}
+                <span className="font-medium">{theme === "light" ? "Dark Mode" : "Light Mode"}</span>
+            </button>
+            <button
+                className="btn btn-error btn-outline w-full justify-start gap-3"
+                onClick={() =>
+                toast.promise(logOut(), {
+                    loading: "Logging out...",
+                    success: "Logged out!",
+                    error: "Logout failed",
+                })
+                }
+            >
+                <FiLogOut size={20} /> <span className="font-medium">Log Out</span>
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col relative">
+      <div className="flex-1 flex flex-col relative w-full h-screen overflow-hidden bg-base-200/20">
         {/* Blur Overlay When Sidebar Open */}
         {sidebarOpen && (
-          <div className="fixed inset-0  backdrop-blur-sm z-10 md:hidden"></div>
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/20 z-40 lg:hidden" onClick={closeSidebar}></div>
         )}
 
-        <header className="flex items-center justify-between p-4 bg-base-100 border-b border-base-300 shadow-sm relative z-20">
-          <button
-            className="btn btn-ghost md:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <FiMenu size={22} />
-          </button>
-          <h1 className="text-2xl md:text-3xl font-bold text-primary ">
-            {role?.toUpperCase()} Dashboard
-          </h1>
-
-          <div className="flex items-center gap-3">
-            <button className="btn btn-ghost btn-circle relative">
-              <FiBell size={20} />
-              <span className="badge badge-xs badge-primary absolute -top-1 -right-1"></span>
+        <header className="flex items-center justify-between px-6 py-4 bg-base-100/80 backdrop-blur-md border-b border-base-200/50 sticky top-0 z-30 shadow-sm h-20 transition-all">
+          <div className="flex items-center gap-4">
+            <button
+                className="btn btn-ghost btn-square lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+            >
+                <FiMenu size={24} />
             </button>
-            <div className="hidden md:flex items-center gap-2">
-              <div className="avatar">
-                <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img
-                    src={
-                      user?.photoURL ||
-                      `https://api.dicebear.com/7.x/initials/svg?seed=${
-                        user?.displayName || user?.email
-                      }`
-                    }
-                    alt="User"
-                  />
+            <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hidden sm:block">
+                {role === 'admin' ? 'Admin Control' : role === 'decorator' ? 'Decorator Portal' : 'User Dashboard'}
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Notifications */}
+            <button className="btn btn-ghost btn-circle btn-sm relative hover:bg-base-200 transaction-colors">
+              <FiBell size={20} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full ring-2 ring-base-100 animate-pulse"></span>
+            </button>
+            
+            {/* Profile Dropdown */}
+            <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="flex items-center gap-3 pl-2 sm:pl-4 border-l border-base-200 cursor-pointer group">
+                    <div className="text-right hidden md:block leading-tight group-hover:opacity-80 transition-opacity">
+                        <p className="font-bold text-sm truncate max-w-[150px]">{user?.displayName || "User"}</p>
+                        <p className="text-xs text-base-content/60 uppercase font-mono tracking-wider">{role}</p>
+                    </div>
+                    <div className="avatar ring-2 ring-primary ring-offset-2 ring-offset-base-100 rounded-full transition-shadow duration-300 group-hover:ring-offset-4">
+                        <div className="w-10 h-10 rounded-full overflow-hidden">
+                        <img
+                            src={
+                            user?.photoURL ||
+                            `https://api.dicebear.com/7.x/initials/svg?seed=${
+                                user?.displayName || user?.email
+                            }`
+                            }
+                            alt="User"
+                            className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
+                        />
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <span>{user?.displayName || user?.email}</span>
+                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow-2xl bg-base-100 rounded-box w-60 mt-4 border border-base-200 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <li className="px-4 py-2 pointer-events-none opacity-60 text-xs uppercase font-bold tracking-wider border-b border-base-200/50 mb-2 pb-2">
+                        Account Info
+                    </li>
+                    <li>
+                        <Link to="/dashboard/profile" className="py-3 font-medium">
+                            <FiUser size={16} /> My Profile
+                        </Link>
+                    </li>
+                    <li>
+                         <Link to="/dashboard/profile" className="py-3 font-medium">
+                            <FiSettings size={16} /> Settings
+                        </Link>
+                    </li>
+                    <div className="divider my-0"></div>
+                    <li>
+                        <button 
+                            onClick={() => {
+                                toast.dismiss(); // Dismiss any existing toasts
+                                logOut();
+                            }}
+                            className="py-3 text-error font-medium hover:bg-error/10 hover:text-error"
+                        >
+                            <FiLogOut size={16} /> Logout
+                        </button>
+                    </li>
+                </ul>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto relative z-20">
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto scroll-smooth">
           <Outlet />
         </main>
       </div>

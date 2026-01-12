@@ -6,9 +6,15 @@ import {
   FiEdit,
   FiChevronLeft,
   FiChevronRight,
+  FiTrash2,
+  FiCalendar,
+  FiMapPin,
+  FiDollarSign,
+  FiClock
 } from "react-icons/fi";
 import { IoMdAdd, IoMdEye } from "react-icons/io";
 import { FaTrashAlt } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router";
@@ -117,13 +123,26 @@ const MyBookings = () => {
   };
 
   const statusColors = {
-    pending: "bg-yellow-500/20 text-yellow-400",
-    assigned: "bg-blue-500/20 text-blue-400",
-    planning: "bg-purple-500/20 text-purple-400",
-    materials_prepared: "bg-amber-500/20 text-amber-400",
-    on_the_way: "bg-sky-500/20 text-sky-400",
-    setup_in_progress: "bg-orange-500/20 text-orange-400",
-    completed: "bg-green-500/20 text-green-400",
+    pending: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
+    assigned: "text-blue-400 bg-blue-400/10 border-blue-400/20",
+    planning: "text-purple-400 bg-purple-400/10 border-purple-400/20",
+    materials_prepared: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+    on_the_way: "text-sky-400 bg-sky-400/10 border-sky-400/20",
+    setup_in_progress: "text-orange-400 bg-orange-400/10 border-orange-400/20",
+    completed: "text-green-400 bg-green-400/10 border-green-400/20",
+  };
+  
+  const getStatusBorder = (status) => {
+     const styles = {
+        pending: "border-l-yellow-400",
+        assigned: "border-l-blue-400",
+        planning: "border-l-purple-400",
+        materials_prepared: "border-l-amber-400",
+        on_the_way: "border-l-sky-400",
+        setup_in_progress: "border-l-orange-400",
+        completed: "border-l-green-400"
+     };
+     return styles[status] || "border-l-base-300";
   };
 
   //  PAGINATION HANDLERS
@@ -135,132 +154,151 @@ const MyBookings = () => {
 
   const pageNumbers = [...Array(totalPages).keys()].map((i) => i + 1);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
   return (
-    <div className="min-h-screen px-4 md:px-6 py-10">
-      <div className="container mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl text-primary font-bold ">
-            My Bookings ({totalCount} Total)
-          </h1>
-          <Link to={"/services"} className="btn btn-primary flex gap-2">
-            <IoMdAdd /> Add New Bookings
+    <div className="min-h-screen px-4 md:px-8 py-10 bg-base-100/50">
+      <div className="max-w-7xl mx-auto">
+        <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+             className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+        >
+          <div>
+              <h1 className="text-3xl md:text-4xl text-primary font-bold mb-2">My Bookings</h1>
+              <p className="text-base-content/70">
+                Track your requested services and payment status. <span className="badge badge-neutral ml-2">{totalCount} Total</span>
+              </p>
+          </div>
+          <Link to={"/services"} className="btn btn-primary rounded-full px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all font-bold gap-2">
+            <IoMdAdd size={20} /> New Booking
           </Link>
-        </div>
+        </motion.div>
 
-        {isFetching && (
-          <div className="text-center text-primary mb-4">
-            <FiLoader className="inline animate-spin mr-2" /> Fetching
-            bookings...
+        {isFetching && !isLoading && (
+          <div className="fixed top-4 right-4 z-50">
+              <span className="loading loading-spinner text-primary"></span>
           </div>
         )}
 
-        {bookings.length === 0 && !isFetching ? (
-          <div className="p-10 bg-base-100/50 rounded-xl shadow-xl text-center mt-6">
-            <p className="text-xl font-semibold">
-              You have no active bookings.
-            </p>
+        {bookings.length === 0 && !isFetching && !isLoading ? (
+          <div className="p-12 bg-base-100 rounded-2xl shadow-sm text-center border border-dashed border-base-300">
+            <h3 className="text-xl font-bold text-base-content mb-2">No active bookings</h3>
+            <p className="text-base-content/60 mb-6 font-medium">Browse our services and make your first booking today!</p>
+             <Link to="/services" className="btn btn-outline btn-primary">Browse Services</Link>
           </div>
         ) : (
           <>
             {/* Mobile Cards */}
-            <div
-              className={`space-y-4 md:hidden ${
-                isFetching ? "opacity-50" : ""
-              }`}
-            >
-              {bookings.map((b) => (
-                <div
+            <div className="space-y-4 md:hidden">
+            {isLoading ? (
+                <LoadingSpinner type="card" count={itemsPerPage} />
+            ) : (
+             <AnimatePresence>
+              {bookings.map((b, index) => (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
                   key={b._id}
-                  className="bg-base-200 border border-[#d4af37]/20 rounded-xl p-4 backdrop-blur-sm"
+                  className={`bg-base-100 border border-base-200 rounded-2xl p-5 shadow-lg relative overflow-hidden text-left border-l-[6px] ${getStatusBorder(b.status)}`}
                 >
-                  <h2 className="text-lg font-semibold">{b.service_name}</h2>
-                  <p className="text-sm mt-1">Date: {b.date}</p>
-                  <p className="text-sm mt-1">Time: {b.time}</p>
-                  <p className="text-sm mt-1">Location: {b.location}</p>
-                  <p className="text-sm mt-1">Category: {b.service_category}</p>
-                  <p className="text-sm mt-1">Cost: {b.cost} BDT</p>
+                  <div className="flex justify-between items-start mb-3">
+                     <div>
+                        <h2 className="text-xl font-bold text-base-content">{b.service_name}</h2>
+                        <span className="text-xs font-mono text-base-content/50 uppercase">{b.service_category}</span>
+                     </div>
+                     <span
+                        className={`badge badge-sm font-bold uppercase tracking-wider py-2.5 ${
+                        statusColors[b.status]
+                        }`}
+                    >
+                        {b.status.replace(/_/g, " ")}
+                    </span>
+                  </div>
 
-                  <span
-                    className={`inline-block mt-3 rounded-full px-3 py-1 text-xs font-semibold ${
-                      statusColors[b.status]
-                    }`}
-                  >
-                    {b.status.replace(/_/g, " ")}
-                  </span>
+                  <div className="space-y-2 text-sm text-base-content/70 mb-4">
+                     <div className="flex items-center gap-2">
+                         <FiCalendar className="text-primary" /> {b.date}
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <FiClock className="text-primary" /> {b.time}
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <FiMapPin className="text-primary" /> <span className="truncate">{b.location}</span>
+                     </div>
+                     <div className="flex items-center gap-2 font-bold text-base-content">
+                        <FiDollarSign className="text-primary" /> {b.cost} BDT
+                     </div>
+                  </div>
 
-                  <div className="mt-4">
+                  <div className="divider my-0"></div>
+
+                  <div className="flex justify-between items-center pt-3">
+                     <div className="flex gap-2">
+                        {/* Actions */}
+                        <button onClick={() => handleView(b.serviceId)} className="btn btn-sm btn-ghost btn-circle text-base-content/60 hover:text-primary hover:bg-transparent">
+                            <IoMdEye size={18} />
+                        </button>
+                        <button onClick={() => handleEdit(b)} className="btn btn-sm btn-ghost btn-circle text-info hover:bg-info/10">
+                            <FiEdit size={16} />
+                        </button>
+                        <button onClick={() => handleDelete(b)} className="btn btn-sm btn-ghost btn-circle text-error hover:bg-error/10">
+                            <FiTrash2 size={16} />
+                        </button>
+                     </div>
+
                     {b.paymentStatus === "paid" ? (
-                      <span className="inline-block bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-xs">
-                        Paid
+                      <span className="badge badge-success gap-1 bg-success/10 text-success border-none font-bold py-3 px-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-success"></span> Paid
                       </span>
                     ) : (
                       <button
                         onClick={() => handlePayment(b)}
-                        className="bg-[#d4af37] text-black px-3 py-2 rounded-lg font-semibold text-sm w-full mt-2"
+                        className="btn btn-sm btn-primary rounded-full px-5"
                         disabled={isFetching}
                       >
                         Pay Now
                       </button>
                     )}
                   </div>
-
-                  <div className="flex justify-between mt-4">
-                    <IoMdEye
-                      onClick={() => handleView(b.serviceId)}
-                      className="text-xl cursor-pointer"
-                    />
-                    <FiEdit
-                      onClick={() => handleEdit(b)}
-                      className="text-blue-400 hover:text-blue-300 text-lg cursor-pointer"
-                    />
-                    <FaTrashAlt
-                      onClick={() => handleDelete(b)}
-                      className="text-red-400 hover:text-red-300 text-lg cursor-pointer"
-                    />
-                  </div>
-                </div>
+                </motion.div>
               ))}
+             </AnimatePresence>
+            )}
             </div>
 
             {/* Desktop Table */}
-            <div
-              className={`hidden md:block rounded-xl backdrop-blur-sm overflow-x-auto shadow-xl border border-base-300 ${
-                isFetching ? "opacity-50" : ""
-              }`}
-            >
+            <div className="hidden md:block">
+            {isLoading ? (
+                 <LoadingSpinner type="table" count={itemsPerPage} className="border-none" />
+             ) : (
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden"
+                >
               <table className="w-full table min-w-[1050px]">
-                <thead>
+                <thead className="bg-base-200/50">
                   <tr className="border-b border-b-white/10">
-                    <th className="px-6 py-4 text-left text-sm uppercase">#</th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
-                      Service
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50 pl-6">#</th>
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50">
+                      Service Details
                     </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
-                      Date
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50">
+                      Schedule
                     </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
-                      Time
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50">
                       Location
                     </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
-                      Category
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50">
                       Cost
                     </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50 text-center">
                       Payment
                     </th>
-                    <th className="px-6 py-4 text-left text-sm uppercase">
+                    <th className="px-6 py-4 text-left text-xs uppercase tracking-wider text-base-content/50 text-right pr-6">
                       Actions
                     </th>
                   </tr>
@@ -268,68 +306,85 @@ const MyBookings = () => {
 
                 <tbody>
                   {bookings.map((b, index) => (
-                    <tr key={b._id}>
+                    <tr key={b._id} className="hover:bg-base-200/30 transition-colors border-b border-base-100 last:border-none">
                       {/* Calculate index based on current page */}
-                      <td className="px-6 py-4">
+                      <td className="pl-6 font-mono text-base-content/40">
                         {(currentPage - 1) * itemsPerPage + index + 1}
                       </td>
-                      <td className="px-6 py-4">{b.service_name}</td>
-                      <td className="px-6 py-4">{b.date}</td>
-                      <td className="px-6 py-4">{b.time}</td>
-                      <td className="px-6 py-4">{b.location}</td>
-                      <td className="px-6 py-4">{b.service_category}</td>
-                      <td className="px-6 py-4">{b.cost} BDT</td>
-                      <td className="px-6 py-4">
+                      <td>
+                          <div className="font-bold text-base-content">{b.service_name}</div>
+                          <div className="text-xs text-base-content/50 uppercase">{b.service_category}</div>
+                      </td>
+                      <td>
+                          <div className="font-medium">{b.date}</div>
+                          <div className="text-xs text-base-content/50">{b.time}</div>
+                      </td>
+                      <td><div className="truncate max-w-[200px]" title={b.location}>{b.location}</div></td>
+                      <td className="font-mono font-medium">{b.cost} BDT</td>
+                      <td>
                         <span
-                          className={`inline-flex items-center rounded-full h-7 px-3 text-xs font-semibold ${
+                          className={`badge border badge-sm font-bold uppercase tracking-wider py-2.5 ${
                             statusColors[b.status]
                           }`}
                         >
                           {b.status.replace(/_/g, " ")}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm">
+                      <td className="text-center">
                         {b.paymentStatus === "paid" ? (
-                          <span className="inline-flex items-center rounded-full h-7 px-3 text-xs font-semibold bg-green-600/20 text-green-400">
+                          <span className="badge badge-ghost text-xs bg-green-500/10 text-green-500 font-bold border-none py-3">
                             Paid
                           </span>
                         ) : (
                           <button
                             onClick={() => handlePayment(b)}
-                            className="bg-[#d4af37] text-black font-semibold px-3 py-1.5 rounded-full hover:shadow-[0_0_10px_#d4af37] transition-all"
+                            className="btn btn-xs btn-primary rounded-full px-4"
                             disabled={isFetching}
                           >
                             Pay Now
                           </button>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-sm flex gap-3">
-                        <IoMdEye
-                          onClick={() => handleView(b.serviceId)}
-                          className="text-xl cursor-pointer"
-                        />
-                        <FiEdit
-                          onClick={() => handleEdit(b)}
-                          className="text-blue-400 hover:text-blue-300 text-lg cursor-pointer"
-                        />
-                        <FaTrashAlt
-                          onClick={() => handleDelete(b)}
-                          className="text-red-400 hover:text-red-300 text-lg cursor-pointer"
-                        />
+                      <td className="text-right pr-6">
+                        <div className="flex items-center justify-end gap-2">
+                            <button
+                                onClick={() => handleView(b.serviceId)}
+                                className="btn btn-sm btn-ghost btn-circle text-base-content/60 hover:text-primary tooltip tooltip-bottom"
+                                data-tip="View Service"
+                            >
+                                <IoMdEye size={18} />
+                            </button>
+                            <button
+                                onClick={() => handleEdit(b)}
+                                className="btn btn-sm btn-ghost btn-circle text-info hover:bg-info/10 tooltip tooltip-bottom"
+                                data-tip="Edit Booking"
+                            >
+                                <FiEdit size={16} />
+                            </button>
+                            <button
+                                onClick={() => handleDelete(b)}
+                                className="btn btn-sm btn-ghost btn-circle text-error hover:bg-error/10 tooltip tooltip-bottom"
+                                data-tip="Cancel Booking"
+                            >
+                                <FiTrash2 size={16} />
+                            </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              </motion.div>
+            )}
             </div>
 
             {/*  PAGINATION CONTROLS */}
             {totalPages > 1 && (
-              <div className="flex justify-center mt-8">
-                <div className="join shadow-md">
+              <div className="flex justify-center mt-12 mb-6">
+                <div className="join shadow-sm border border-base-300 bg-base-100 rounded-lg p-1">
                   {/* Previous Button */}
                   <button
-                    className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                    className="join-item btn btn-sm btn-ghost hover:bg-base-200"
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1 || isFetching}
                   >
@@ -340,10 +395,10 @@ const MyBookings = () => {
                   {pageNumbers.map((page) => (
                     <button
                       key={page}
-                      className={`join-item btn btn-md ${
+                      className={`join-item btn btn-sm ${
                         currentPage === page
-                          ? "btn-primary shadow-xl"
-                          : "btn-ghost"
+                          ? "btn-primary text-primary-content shadow-md"
+                          : "btn-ghost hover:bg-base-200"
                       }`}
                       onClick={() => handlePageChange(page)}
                       disabled={isFetching}
@@ -354,7 +409,7 @@ const MyBookings = () => {
 
                   {/* Next Button */}
                   <button
-                    className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                    className="join-item btn btn-sm btn-ghost hover:bg-base-200"
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages || isFetching}
                   >

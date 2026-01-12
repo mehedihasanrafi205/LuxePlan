@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiLoader, FiUserPlus, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // 👈 Import Chevron icons
+import { FiLoader, FiUserPlus, FiChevronLeft, FiChevronRight, FiCalendar, FiMapPin } from "react-icons/fi";
+import { HiUserGroup } from "react-icons/hi";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AssignDecoratorModal from "../../../components/Shared/Modal/AssignDecoratorModal";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -91,196 +93,198 @@ const ManageBookings = () => {
 
   const pageNumbers = [...Array(totalPages).keys()].map(i => i + 1);
 
-  if (isLoading)
-    return (
-      <LoadingSpinner/>
-    );
-
   const statusStyles = {
-    pending: "bg-yellow-500/20 text-yellow-400",
-    assigned: "bg-blue-500/20 text-blue-400",
-    planning: "bg-purple-500/20 text-purple-400",
-    materials_prepared: "bg-amber-500/20 text-amber-400",
-    on_the_way: "bg-sky-500/20 text-sky-400",
-    setup_in_progress: "bg-orange-500/20 text-orange-400",
-    completed: "bg-green-500/20 text-green-400",
+    pending: " badge-warning",
+    assigned: " badge-info",
+    planning: " badge-secondary",
+    materials_prepared: " badge-accent",
+    on_the_way: " badge-primary",
+    setup_in_progress: " badge-warning",
+    completed: " badge-success",
   };
 
   return (
-    <div className="min-h-screen bg-background-dark px-4 md:px-6 py-10">
-      <div className="container mx-auto">
-        <h1 className="text-3xl text-primary font-bold mb-4">
-          Manage Bookings ({totalCount} Total) 
-        </h1>
+    <div className="min-h-screen px-4 md:px-8 py-10 bg-base-100/50">
+      <div className="max-w-7xl mx-auto">
+        <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+             className="mb-8"
+        >
+             <h1 className="text-3xl md:text-4xl text-primary font-bold mb-2">Manage Bookings</h1>
+             <p className="text-base-content/70">
+                Oversee all service requests and assign decorators. <span className="badge badge-neutral ml-2">{totalCount} Total</span>
+            </p>
+        </motion.div>
 
-        {isFetching && (
-          <div className="text-center text-primary mb-4">
-            <FiLoader className="inline animate-spin mr-2" /> Fetching bookings...
+        {isFetching && !isLoading && (
+          <div className="fixed top-4 right-4 z-50">
+              <span className="loading loading-spinner text-primary"></span>
           </div>
         )}
 
         {/* MOBILE CARD VIEW */}
         <div className="md:hidden space-y-4">
-          {bookings.map((b) => (
-            <div
+         {isLoading ? (
+             <LoadingSpinner type="card" count={itemsPerPage} />
+         ) : (
+          <AnimatePresence>
+          {bookings.map((b, index) => (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.05 }}
               key={b._id}
-              className={`bg-base-200 border border-primary/20 rounded-xl p-4 backdrop-blur-sm shadow-lg ${isFetching ? 'opacity-50' : ''}`}
+              className="bg-base-100 border border-base-200 rounded-2xl p-5 shadow-lg relative overflow-hidden group"
             >
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="font-semibold text-lg">{b.service_name}</h2>
-                <p className="font-bold text-primary">{b.cost} ৳</p>
+              <div className="flex justify-between items-start mb-3">
+                 <div>
+                    <h2 className="font-bold text-lg text-base-content leading-tight mb-1">{b.service_name}</h2>
+                    <p className="text-xs text-base-content/50 uppercase tracking-wide">{b.service_category}</p>
+                 </div>
+                 <span className="font-bold text-primary">{b.cost} ৳</span>
               </div>
 
-              {/* Info */}
-              <div className="space-y-1  text-sm">
-                <p>
-                  <span className="font-medium">User:</span> {b.userEmail}
-                </p>
-                <p>
-                  <span className="font-medium">Date:</span> {b.date}
-                </p>
-                <p>
-                  <span className="font-medium">Location:</span> {b.location}
-                </p>
-                <p>
-                  <span className="font-medium">Assigned:</span>{" "}
+              <div className="space-y-2 text-sm text-base-content/70 mb-4">
+                  <div className="flex items-center gap-2">
+                     <span className="w-5 flex justify-center text-primary"><FiCalendar /></span>
+                     <span>{b.date} • {b.time}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                     <span className="w-5 flex justify-center text-primary"><FiMapPin /></span>
+                     <span className="truncate">{b.location}</span>
+                  </div>
+                   <div className="flex items-center gap-2">
+                     <span className="w-5 flex justify-center text-primary"><HiUserGroup /></span>
+                     <span className="truncate">{b.userEmail}</span>
+                  </div>
+              </div>
+
+             <div className="flex flex-wrap gap-2 mb-4">
+                <span className={`badge ${statusStyles[b.status] || "badge-ghost"}`}>
+                    {b.status.replace(/_/g, " ")}
+                </span>
+                {b.paymentStatus === "paid" ? (
+                    <span className="badge badge-success gap-1 bg-success/10 text-success border-none">Paid</span>
+                ) : (
+                    <span className="badge badge-error gap-1 bg-error/10 text-error border-none">Unpaid</span>
+                )}
+             </div>
+
+              <div className="bg-base-200/50 rounded-xl p-3 mb-4">
+                  <span className="text-xs font-bold text-base-content/40 uppercase block mb-1">Assigned Decorator</span>
                   {b.decoratorName ? (
-                    <span className="text-blue-300">{b.decoratorName}</span>
+                     <div className="font-medium text-base-content">{b.decoratorName}</div>
                   ) : (
-                    <span className="text-gray-400">None</span>
+                     <div className="text-base-content/40 italic text-sm">Not assigned yet</div>
                   )}
-                </p>
-
-                {/* Status */}
-                <p className="flex items-center gap-2 pt-1">
-                  <span className="font-medium">Status:</span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      statusStyles[b.status] || "bg-gray-500/20 text-gray-300"
-                    }`}
-                  >
-                    {b.status}
-                  </span>
-                </p>
-
-                {/* Payment */}
-                <p className="flex items-center gap-2">
-                  <span className="font-medium">Payment:</span>
-                  {b.paymentStatus === "unpaid" ? (
-                    <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">
-                      Unpaid
-                    </span>
-                  ) : (
-                    <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">
-                      Paid
-                    </span>
-                  )}
-                </p>
               </div>
 
               {/* Assign Button */}
               <button
                 onClick={() => openModal(b)}
-                className={`mt-4 w-full px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-white transition ${
+                className={`w-full btn btn-sm ${
                   b.status !== "pending"
-                    ? "bg-gray-500/40 cursor-not-allowed"
-                    : "bg-primary hover:bg-primary/80"
+                    ? "btn-disabled bg-base-300 text-base-content/40"
+                    : "btn-primary shadow-lg shadow-primary/20"
                 }`}
                 disabled={b.status !== "pending" || isFetching}
               >
                 <FiUserPlus />
                 {b.status !== "pending" ? "Assigned" : "Assign Decorator"}
               </button>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
+         )}
         </div>
 
         {/* TABLE VIEW */}
-        <div className="hidden md:block bg-white/5 shadow-xl border border-base-300 rounded-xl overflow-x-auto">
+        <div className="hidden md:block">
+         {isLoading ? (
+             <LoadingSpinner type="table" count={itemsPerPage} className="border-none" />
+         ) : (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden"
+          >
           <table className="w-full table min-w-[900px]">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Service
-                </th>
-                <th className="px-6 py-4 text-left text-sm uppercase">
-                  User
-                </th>
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Date
-                </th>
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Assigned
-                </th>
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Payment
-                </th>
-                <th className="px-6 py-4 text-left  text-sm uppercase">
-                  Action
-                </th>
+            <thead className="bg-base-200/50">
+              <tr>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50 pl-6">Service Info</th>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Customer</th>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Schedule</th>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Assigned To</th>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Status</th>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Payment</th>
+                <th className="font-bold text-xs uppercase tracking-wider text-base-content/50 text-right pr-6">Action</th>
               </tr>
             </thead>
-            <tbody className="">
+            <tbody>
               {bookings.map((b) => (
-                <tr key={b._id} className={isFetching ? 'opacity-50' : ''}>
-                  <td className="px-6 py-4 ">{b.service_name}</td>
-                  <td className="px-6 py-4 ">{b.userEmail}</td>
-                  <td className="px-6 py-4 ">{b.date}</td>
-                  <td className="px-6 py-4 ">
-                    {b.decoratorName || (
-                      <span className="text-white/40">None</span>
+                <tr key={b._id} className="hover:bg-base-200/30 transition-colors border-b border-base-100 last:border-none">
+                  <td className="pl-6">
+                      <div className="font-bold text-base-content">{b.service_name}</div>
+                      <div className="text-xs text-base-content/50">{b.cost} ৳</div>
+                  </td>
+                  <td className="text-base-content/70 font-medium text-sm">{b.userEmail}</td>
+                  <td>
+                      <div className="font-medium text-sm">{b.date}</div>
+                      <div className="text-xs text-base-content/50">{b.time}</div>
+                  </td>
+                  <td>
+                    {b.decoratorName ? (
+                        <span className="font-medium text-primary bg-primary/10 px-2 py-1 rounded-md text-xs">{b.decoratorName}</span>
+                    ) : (
+                      <span className="text-base-content/40 text-sm italic">Pending</span>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        statusStyles[b.status] || "bg-gray-500/20 text-gray-400"
+                      className={`badge badge-sm font-bold uppercase tracking-wider py-2.5 ${
+                        statusStyles[b.status] || "badge-ghost"
                       }`}
                     >
-                      {b.status}
+                      {b.status.replace(/_/g, " ")}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td>
                     {b.paymentStatus === "unpaid" ? (
-                      <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs rounded">
-                        Unpaid
-                      </span>
+                      <span className="badge badge-error badge-sm bg-error/10 text-error border-none font-bold">Unpaid</span>
                     ) : (
-                      <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">
-                        Paid
-                      </span>
+                      <span className="badge badge-success badge-sm bg-success/10 text-success border-none font-bold">Paid</span>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="text-right pr-6">
                     <button
                       onClick={() => openModal(b)}
-                      className={`btn btn-primary btn-sm flex items-center gap-1 ${
+                      className={`btn btn-primary btn-sm rounded-full px-4 shadow-md ${
                         b.status !== "pending"
-                          ? "opacity-50 cursor-not-allowed"
+                          ? "btn-disabled"
                           : ""
                       }`}
                       disabled={b.status !== "pending" || isFetching}
                     >
                       <FiUserPlus />{" "}
-                      {b.status !== "pending" ? "Assigned" : "Assign"}
+                      {b.status !== "pending" ? "Done" : "Assign"}
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </motion.div>
+         )}
         </div>        
          
         {/* PAGINATION CONTROLS */}
         {totalPages > 1 && (
-          <div className="flex justify-center mt-8">
-            <div className="join shadow-md">
+          <div className="flex justify-center mt-12 mb-6">
+            <div className="join shadow-sm border border-base-300 bg-base-100 rounded-lg p-1">
               {/* Previous Button */}
               <button
-                className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                className="join-item btn btn-sm btn-ghost hover:bg-base-200"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1 || isFetching}
               >
@@ -291,10 +295,10 @@ const ManageBookings = () => {
               {pageNumbers.map((page) => (
                 <button
                   key={page}
-                  className={`join-item btn btn-md ${
+                  className={`join-item btn btn-sm ${
                     currentPage === page
-                      ? "btn-primary shadow-xl"
-                      : "btn-ghost"
+                      ? "btn-primary text-primary-content shadow-md"
+                      : "btn-ghost hover:bg-base-200"
                   }`}
                   onClick={() => handlePageChange(page)}
                   disabled={isFetching}
@@ -305,7 +309,7 @@ const ManageBookings = () => {
 
               {/* Next Button */}
               <button
-                className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+                className="join-item btn btn-sm btn-ghost hover:bg-base-200"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages || isFetching}
               >
@@ -329,14 +333,8 @@ const ManageBookings = () => {
               try {
                   const res = await axiosSecure.post("/decorators/recommend", {
                       category: selectedBooking.service_category || "", 
-                      // Try to match category from service name if category missing?
-                      // Assuming service_category exists on booking or derived. 
-                      // Booking object has service_category (checked schema/BookingModal).
                   });
                   if (res.data && res.data.length > 0) {
-                      // Automatically select the recommended ones
-                      // Filter out those already selected? Or just replace?
-                      // Let's replace for "Smart Recommendation"
                       setSelectedDecorator(res.data);
                       toast.success(`Found ${res.data.length} recommended decorators!`);
                   } else {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiLoader, FiChevronLeft, FiChevronRight } from "react-icons/fi"; 
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -28,8 +29,6 @@ const AssignedProjects = () => {
     "setup_in_progress",
     "completed",
   ];
-  
-
 
   const statusStyles = {
     pending: "bg-yellow-500/20 text-yellow-400", 
@@ -107,127 +106,148 @@ const AssignedProjects = () => {
 
   const pageNumbers = [...Array(totalPages).keys()].map(i => i + 1);
 
-  if (isLoading) {
-    return (
-      <LoadingSpinner/>
-    );
-  }
+
   
-  if (projects.length === 0 && !isFetching) {
+  if (projects.length === 0 && !isFetching && !isLoading) {
     return (
-        <div className="min-h-screen px-4 md:px-6 py-10">
-            <h1 className="text-3xl font-bold mb-6">Assigned Projects</h1>
-            <div className="p-10 bg-base-100/50 rounded-xl shadow-xl text-center">
-                <p className="text-xl font-semibold">You have no active projects assigned.</p>
+        <div className="min-h-screen px-4 md:px-8 py-10 bg-base-100/50">
+           <div className="max-w-7xl mx-auto">
+                <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6">Assigned Projects</h1>
+                <div className="p-12 bg-base-100 rounded-2xl shadow-sm text-center border border-dashed border-base-300">
+                    <p className="text-xl font-semibold text-base-content/60">You have no active projects assigned.</p>
+                </div>
             </div>
         </div>
     );
   }
 
   return (
-    <div className="min-h-screen px-4 md:px-6 py-10 ">
-      <h1 className="text-3xl font-bold mb-6">Assigned Projects ({totalCount} Total)</h1>
+    <div className="min-h-screen px-4 md:px-8 py-10 bg-base-100/50">
+      <div className="max-w-7xl mx-auto">
+        <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+        >
+            <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Assigned Projects</h1>
+            <p className="text-base-content/70">
+               Manage status and progress. <span className="badge badge-neutral ml-2">{totalCount} Active</span>
+            </p>
+        </motion.div>
       
-      {isFetching && (
-        <div className="text-center text-primary mb-4">
-          <FiLoader className="inline animate-spin mr-2" /> Fetching projects...
+      {isFetching && !isLoading && (
+        <div className="fixed top-4 right-4 z-50">
+             <span className="loading loading-spinner text-primary"></span>
         </div>
       )}
 
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4 mt-6">
-        {projects.map((project, index) => (
-          <div
-            key={project._id}
-            className={`bg-[#fdfbf7] border border-primary/20 rounded-xl p-4 backdrop-blur-sm shadow-lg ${isFetching ? 'opacity-50' : ''}`}
-          >
-            {/* Title + Cost */}
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="font-semibold text-lg">{project.service_name}</h2>
-              {/* Calculate index based on current page */}
-              <span className="text-sm ">#{(currentPage - 1) * itemsPerPage + index + 1}</span> 
-            </div>
-
-            {/* Client Info */}
-            <div className=" text-sm space-y-1">
-              <p>
-                <span className="font-medium">Client:</span> {project.userEmail}
-              </p>
-              <p>
-                <span className="font-medium">Date:</span>{" "}
-                {project.date || "N/A"}
-              </p>
-              <p>
-                <span className="font-medium">Time:</span>{" "}
-                {project.time || "N/A"}
-              </p>
-              <p>
-                <span className="font-medium">Location:</span>{" "}
-                {project.location}
-              </p>
-            </div>
-
-            {/* Status */}
-            <div className="mt-3">
-              <span
-                className={`px-3 py-1 rounded-lg text-xs ${
-                  statusStyles[project.status]
-                }`}
+        {isLoading ? (
+            <LoadingSpinner type="card" count={itemsPerPage} />
+        ) : (
+            <AnimatePresence>
+            {projects.map((project, index) => (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                key={project._id}
+                className={`bg-base-100 border border-base-200 rounded-2xl p-5 shadow-md relative overflow-hidden`}
               >
-                {format(project.status)}
-              </span>
-            </div>
+                 <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl ${statusStyles[project.status]?.split(' ')[0].replace('/20', '') || 'bg-gray-400'}`}></div>
 
-            {/* Status Update Select */}
-            <div className="mt-4">
-              <select
-                defaultValue={project.status}
-                className="w-full select select-bordered bg-gray-800 text-sm"
-                onChange={(e) =>
-                  handleStatusChangeClick(project, e.target.value)
-                }
-                disabled={isFetching}
-              >
-                {statuses.map((status) => (
-                  <option key={status} value={status}>
-                    {format(status)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        ))}
+                {/* Title + Cost */}
+                <div className="flex justify-between items-center mb-3 pl-3">
+                  <h2 className="font-bold text-lg text-base-content">{project.service_name}</h2>
+                  {/* Calculate index based on current page */}
+                  <span className="text-xs font-mono opacity-50">#{(currentPage - 1) * itemsPerPage + index + 1}</span> 
+                </div>
+
+                {/* Client Info */}
+                <div className="pl-3 text-sm space-y-2 text-base-content/70">
+                  <p>
+                    <span className="font-medium text-base-content">Client:</span> {project.userEmail}
+                  </p>
+                  <div className="flex gap-4">
+                      <p>
+                        <span className="font-medium text-base-content">Date:</span>{" "}
+                        {project.date || "N/A"}
+                      </p>
+                      <p>
+                        <span className="font-medium text-base-content">Time:</span>{" "}
+                        {project.time || "N/A"}
+                      </p>
+                  </div>
+                  <p className="truncate">
+                    <span className="font-medium text-base-content">Location:</span>{" "}
+                    {project.location}
+                  </p>
+                </div>
+
+                <div className="divider my-3"></div>
+
+                {/* Status Update Select */}
+                <div className="pl-3">
+                  <label className="label pt-0"><span className="label-text-alt font-bold uppercase tracking-wider text-base-content/50">Update Status</span></label>
+                  <select
+                    defaultValue={project.status}
+                    className={`w-full select select-bordered select-sm font-medium ${statusStyles[project.status]}`}
+                    onChange={(e) =>
+                      handleStatusChangeClick(project, e.target.value)
+                    }
+                    disabled={isFetching}
+                  >
+                    {statuses.map((status) => (
+                      <option key={status} value={status} className="bg-base-100 text-base-content">
+                        {format(status)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </motion.div>
+            ))}
+            </AnimatePresence>
+        )}
       </div>
 
       {/* Desktop Table */}
-      <div className="bg-white/5 hidden md:block rounded-xl shadow-xl border border-base-300 overflow-x-auto">
-        <table className="table w-full min-w-[900px]">
-          <thead>
-            <tr className="border-b border-white/10 ">
-              <th>#</th>
-              <th>Project</th>
-              <th>Client</th>
-              <th>Status</th>
-              <th>Update</th>
+      <div className="hidden md:block mt-6">
+        {isLoading ? (
+             <LoadingSpinner type="table" count={itemsPerPage} className="border-none" />
+        ) : (
+        <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden"
+        >
+        <table className="table table-lg w-full min-w-[900px]">
+          <thead className="bg-base-200/50">
+            <tr>
+              <th className="font-bold text-xs uppercase tracking-wider text-base-content/50 pl-6">#</th>
+              <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Project</th>
+              <th className="font-bold text-xs uppercase tracking-wider text-base-content/50">Client</th>
+              <th className="font-bold text-xs uppercase tracking-wider text-base-content/50 text-center">Current Status</th>
+              <th className="font-bold text-xs uppercase tracking-wider text-base-content/50 text-right pr-6">Update Action</th>
             </tr>
           </thead>
 
           <tbody>
             {projects.map((project, index) => (
-              <tr key={project._id} className={isFetching ? 'opacity-50' : ''}>
+              <tr key={project._id} className="hover:bg-base-200/30 transition-colors border-b border-base-100 last:border-none">
                 {/* Calculate index based on current page */}
-                <td>{(currentPage - 1) * itemsPerPage + index + 1}</td> 
-                <td>{project.service_name}</td>
+                <td className="pl-6 font-mono text-base-content/40">{(currentPage - 1) * itemsPerPage + index + 1}</td> 
+                <td className="font-bold">{project.service_name}</td>
                 <td>{project.userEmail}</td>
-                <td>
-                  <span className={`badge ${statusStyles[project.status]}`}>
+                <td className="text-center">
+                  <span className={`badge border-none font-bold uppercase tracking-wider text-[10px] py-3 ${statusStyles[project.status]}`}>
                     {format(project.status)}
                   </span>
                 </td>
-                <td>
+                <td className="text-right pr-6">
                   <select
                     defaultValue={project.status}
-                    className="select select-bordered select-sm bg-gray-700/98 text-white"
+                    className="select select-bordered select-sm w-44 font-medium focus:border-primary"
                     onChange={(e) =>
                       handleStatusChangeClick(project, e.target.value)
                     }
@@ -244,15 +264,17 @@ const AssignedProjects = () => {
             ))}
           </tbody>
         </table>
+        </motion.div>
+        )}
       </div>
       
       {/* PAGINATION CONTROLS */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-8">
-          <div className="join shadow-md">
+        <div className="flex justify-center mt-12 mb-8">
+          <div className="join shadow-sm border border-base-300 bg-base-100 rounded-lg p-1">
             {/* Previous Button */}
             <button
-              className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+              className="join-item btn btn-sm btn-ghost hover:bg-base-200"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1 || isFetching}
             >
@@ -263,10 +285,10 @@ const AssignedProjects = () => {
             {pageNumbers.map((page) => (
               <button
                 key={page}
-                className={`join-item btn btn-md ${
+                className={`join-item btn btn-sm ${
                   currentPage === page
-                    ? "btn-primary shadow-xl"
-                    : "btn-ghost"
+                    ? "btn-primary text-primary-content shadow-md"
+                    : "btn-ghost hover:bg-base-200"
                 }`}
                 onClick={() => handlePageChange(page)}
                 disabled={isFetching}
@@ -277,7 +299,7 @@ const AssignedProjects = () => {
 
             {/* Next Button */}
             <button
-              className="join-item btn btn-md btn-primary/80 disabled:bg-base-300"
+              className="join-item btn btn-sm btn-ghost hover:bg-base-200"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages || isFetching}
             >
@@ -293,6 +315,7 @@ const AssignedProjects = () => {
         onConfirm={confirmStatusUpdate}
         newStatus={newStatus}
       />
+    </div>
     </div>
   );
 };
