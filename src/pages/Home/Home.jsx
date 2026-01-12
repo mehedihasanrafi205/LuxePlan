@@ -11,20 +11,53 @@ import Newsletter from "../../components/Home/Newsletter";
 
 import "leaflet/dist/leaflet.css";
 import CoverageMap from "../../components/Home/CoverageMap";
+import useGSAPAnimations from "../../hooks/useGSAPAnimations";
 
 const Home = () => {
+  const { fadeUp } = useGSAPAnimations();
+
+  // Initialize animations
+  fadeUp(".gsap-section");
+
   return (
-    <div>
+    <div className="overflow-hidden">
       <Hero />
-      <Stats />
-      <WhyChooseUs />
-      <TopServices />
-      <Gallery />
-      <TopDecorators />
-      <Testimonials />
-      <FAQ />
-      <CoverageMap />
-      <Newsletter />
+      
+      <div className="gsap-section">
+        <Stats />
+      </div>
+      
+      <div className="gsap-section">
+        <WhyChooseUs />
+      </div>
+
+      <div className="gsap-section">
+        <TopServices />
+      </div>
+
+      <div className="gsap-section">
+        <Gallery />
+      </div>
+
+      <div className="gsap-section">
+        <TopDecorators />
+      </div>
+
+      <div className="gsap-section">
+        <Testimonials />
+      </div>
+
+      <div className="gsap-section">
+        <FAQ />
+      </div>
+
+      <div className="gsap-section">
+        <CoverageMap />
+      </div>
+
+      <div className="gsap-section">
+        <Newsletter />
+      </div>
     </div>
   );
 };

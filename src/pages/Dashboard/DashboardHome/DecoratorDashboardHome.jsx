@@ -82,12 +82,12 @@ const colorMap = {
     purple: "bg-purple-500/10 text-purple-500",
 };
 
-const MetricCard = ({ icon, title, value, color, gradient, borderColor }) => (
+const MetricCard = ({ icon, title, value, color, gradient, borderColor, delay = 0 }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className={`card bg-gradient-to-br ${gradient} backdrop-blur-md shadow-xl p-6 border ${borderColor} hover:shadow-2xl transition-all duration-300 group`}
+    transition={{ duration: 0.6, delay, ease: "easeOut" }}
+    className={`card bg-gradient-to-br ${gradient} backdrop-blur-md shadow-xl p-6 border ${borderColor} hover:shadow-2xl transition-all duration-300 group will-change-transform`}
   >
     <div className="flex items-start justify-between">
       <div>
@@ -133,8 +133,9 @@ const DecoratorDashboardHome = () => {
   return (
     <div className="p-4 md:p-8 min-h-screen bg-base-100/50">
       <motion.div
-         initial={{ opacity: 0, x: -20 }}
-         animate={{ opacity: 1, x: 0 }}
+         initial={{ opacity: 0, y: 20 }}
+         animate={{ opacity: 1, y: 0 }}
+         transition={{ duration: 0.6, ease: "easeOut" }}
          className="mb-8"
       >
         <h2 className="text-3xl font-extrabold text-primary mb-2">
@@ -152,7 +153,7 @@ const DecoratorDashboardHome = () => {
       </h3>
       
       {isLoading ? (
-          <LoadingSpinner type="stats" count={3} />
+          <LoadingSpinner type="stats" count={3} className="!grid-cols-1 !sm:grid-cols-2 !lg:grid-cols-3 !gap-6" />
       ) : (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -163,6 +164,7 @@ const DecoratorDashboardHome = () => {
                 color="success"
                 gradient="from-green-500/10 to-green-500/5"
                 borderColor="border-green-500/30"
+                delay={0.1}
                 />
                 <MetricCard
                 icon={<FiCalendar />}
@@ -171,6 +173,7 @@ const DecoratorDashboardHome = () => {
                 color="primary"
                 gradient="from-blue-500/10 to-blue-500/5"
                 borderColor="border-blue-500/30"
+                delay={0.2}
                 />
                 <MetricCard
                 icon={<FiCheckCircle />}
@@ -179,6 +182,7 @@ const DecoratorDashboardHome = () => {
                 color="purple"
                 gradient="from-purple-500/10 to-purple-500/5"
                 borderColor="border-purple-500/30"
+                delay={0.3}
                 />
             </div>
 
@@ -186,8 +190,8 @@ const DecoratorDashboardHome = () => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-base-100 p-6 rounded-2xl shadow-xl border border-base-200 mb-8"
+                transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                className="bg-base-100 p-6 rounded-2xl shadow-xl border border-base-200 mb-8 will-change-transform"
             >
                 <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                     <FiTrendingUp className="text-success" /> Monthly Earnings History
@@ -225,8 +229,8 @@ const DecoratorDashboardHome = () => {
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col"
+            transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+            className="flex flex-col will-change-transform"
         >
           <div className="flex justify-between items-center mb-4">
              <h3 className="text-xl font-bold flex items-center gap-2">
@@ -287,8 +291,8 @@ const DecoratorDashboardHome = () => {
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col"
+            transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+            className="flex flex-col will-change-transform"
         >
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-bold flex items-center gap-2">
@@ -341,5 +345,5 @@ const DecoratorDashboardHome = () => {
     </div>
   );
 };
-
+  
 export default DecoratorDashboardHome;

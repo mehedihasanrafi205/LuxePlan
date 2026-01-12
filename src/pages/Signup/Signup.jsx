@@ -79,8 +79,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-300 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full p-10 bg-base-100 rounded-3xl shadow-2xl border border-base-300">
+    <div className="min-h-screen flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 bg-[url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat relative">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px]"></div>
+      <div className="max-w-md w-full p-10 bg-base-100/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-base-200/50 relative z-10 transition-all duration-300">
         {/* Header */}
         <div className="text-center mb-6">
           <Link to={"/"}>

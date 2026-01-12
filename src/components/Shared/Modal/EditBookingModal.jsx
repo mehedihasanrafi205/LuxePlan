@@ -84,121 +84,158 @@ const EditBookingModal = ({ booking, onClose }) => {
   );
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
-      <div className="bg-[#1A1A1A]/80 backdrop-blur-xl border border-[#d4af37]/40 rounded-xl shadow-2xl max-w-4xl w-full overflow-hidden flex flex-col lg:flex-row relative">
-        {/* Left Side */}
-        <div className="flex-1 p-6 lg:p-8 flex flex-col gap-4">
-          {/* Service */}
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiCheck /> Service
-          </div>
-          <input
-            type="text"
-            readOnly
-            value={booking.service_name}
-            className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
-          />
-
-          {/* Service Type */}
-          <div className="flex items-center gap-2 text-white/80 font-semibold mt-4">
-            <FiLayers /> Service Type
-          </div>
-          <div className="flex flex-col gap-2 mt-1 text-white">
-            <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
-              <input
-                type="radio"
-                name="serviceType"
-                value="in_studio"
-                checked={type === "in_studio"}
-                onChange={(e) => setType(e.target.value)}
-                className="accent-[#d4af37] w-4 h-4"
-              />
-              <span>In-Studio Consultation</span>
-            </label>
-
-            <label className="flex items-center gap-3 bg-[#2a2a2a] border border-[#d4af37]/20 p-3 rounded-lg cursor-pointer hover:border-[#d4af37]/40 transition">
-              <input
-                type="radio"
-                name="serviceType"
-                value="on_site"
-                checked={type === "on_site"}
-                onChange={(e) => setType(e.target.value)}
-                className="accent-[#d4af37] w-4 h-4"
-              />
-              <span>On-Site Decoration</span>
-            </label>
-          </div>
-
-          {/* Venue — only for on_site */}
-          {type === "on_site" && (
-            <>
-              <div className="flex items-center gap-2 text-white/80 font-semibold">
-                <FiMapPin /> Venue Address
-              </div>
-              <input
-                type="text"
-                placeholder="Enter venue address"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="bg-[#2a2a2a] border border-[#d4af37]/20 rounded-lg p-3 text-white"
-              />
-            </>
-          )}
-
-          <button
-            onClick={handleUpdate}
-            className="mt-auto bg-[#d4af37] text-[#1A1A1A] p-4 rounded-lg font-bold hover:brightness-110 active:scale-[0.98]"
-          >
-            Update Booking
-          </button>
+    <div className="fixed inset-0 flex items-start justify-center bg-black/80 z-[150] p-4 pt-20 md:pt-28 backdrop-blur-sm cursor-pointer">
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="
+        bg-base-100/90 
+        backdrop-blur-xl
+        text-base-content
+        border border-primary/20 
+        rounded-2xl 
+        shadow-2xl 
+        w-full 
+        max-w-5xl 
+        h-[85vh] 
+        flex 
+        flex-col 
+        lg:flex-row 
+        relative
+        overflow-hidden
+        cursor-default
+      ">
+        
+        {/* Mobile Header (Sticky) */}
+        <div className="lg:hidden p-4 border-b border-base-200 bg-base-100 flex justify-between items-center shrink-0">
+             <h3 className="font-serif font-bold text-lg text-primary">Edit Booking</h3>
+             <button onClick={onClose} className="btn btn-ghost btn-circle btn-sm cursor-pointer">
+                <FiX size={20} />
+             </button>
         </div>
 
-        {/* Right Side */}
-        <div className="flex-1 p-6 lg:p-8 border-t lg:border-t-0 lg:border-l border-[#d4af37]/20 flex flex-col gap-4">
-          <div className="flex items-center gap-2 text-white/80 font-semibold">
-            <FiCalendar /> Select Date
-          </div>
-          <DayPicker
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="bg-[#2a2a2a] rounded-lg p-2"
-            classNames={{
-              today: `text-[#e9c03c]`,
-              selected: `bg-[#e9c03c] rounded-full text-white`,
-            }}
-          />
+        {/* Left Side (Form) - Scrollable */}
+        <div className="flex-1 p-5 lg:p-6 overflow-y-auto custom-scrollbar flex flex-col gap-5">
+            <div className="hidden lg:block shrink-0">
+                <h3 className="font-serif font-bold text-2xl text-primary">Edit Reservation</h3>
+                <p className="text-base-content/60 text-xs mt-1">Modify your booking details.</p>
+            </div>
 
-          <div className="flex items-center gap-2 text-white/80 font-semibold mt-4">
-            <FiClock /> Select Time
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {ALL_SLOTS.map((slot) => (
-              <button
-                key={slot}
-                disabled={!availableSlots.includes(slot)}
-                onClick={() => setSelectedTime(slot)}
-                className={`p-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1 ${
-                  selectedTime === slot
-                    ? "bg-[#d4af37] text-black"
-                    : !availableSlots.includes(slot)
-                    ? "bg-[#2a2a2a] text-white/40 cursor-not-allowed"
-                    : "bg-[#2a2a2a] text-white hover:bg-[#d4af37]/20"
-                }`}
-              >
-                <FiClock /> {slot}
-              </button>
-            ))}
-          </div>
+            {/* Service & Type */}
+            <div className="p-4 bg-base-200/40 rounded-xl border border-base-200 shrink-0">
+                 <div className="flex items-center justify-between mb-3">
+                     <span className="font-bold flex items-center gap-2 text-sm md:text-base"><FiCheck className="text-primary"/> {booking.service_name}</span>
+                 </div>
+                 
+                 <div className="divider my-0"></div>
+
+                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-3">
+                    <span className="font-semibold flex items-center gap-2 text-sm w-28 shrink-0"><FiLayers className="text-primary"/> Type:</span>
+                    <div className="flex gap-4">
+                         <label className="cursor-pointer flex items-center gap-2 hover:text-primary transition-colors">
+                            <input type="radio" name="serviceType" value="in_studio" checked={type === "in_studio"} onChange={(e) => setType(e.target.value)} className="radio radio-primary radio-xs cursor-pointer" />
+                            <span className="text-sm font-medium">In-Studio</span>
+                        </label>
+                        <label className="cursor-pointer flex items-center gap-2 hover:text-primary transition-colors">
+                            <input type="radio" name="serviceType" value="on_site" checked={type === "on_site"} onChange={(e) => setType(e.target.value)} className="radio radio-primary radio-xs cursor-pointer" />
+                            <span className="text-sm font-medium">On-Site</span>
+                        </label>
+                    </div>
+                 </div>
+                 
+                 {/* Venue Address */}
+                 {type === "on_site" && (
+                    <div className="mt-3 animate-pulse-once">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/40">
+                            <FiMapPin size={14} />
+                        </div>
+                        <input
+                        type="text"
+                        placeholder="Enter detailed venue address..."
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="input input-sm input-bordered w-full pl-9 focus:border-primary focus:ring-1 focus:ring-primary/20 bg-base-100 text-sm"
+                        />
+                    </div>
+                    </div>
+                 )}
+            </div>
         </div>
 
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-white/70 hover:text-white"
-        >
-          <FiX size={20} />
-        </button>
+        {/* Right Side (Scheduler & Action) */}
+        <div className="lg:w-[380px] bg-base-200/50 flex flex-col border-t lg:border-t-0 lg:border-l border-base-300 relative h-full">
+            <button onClick={onClose} className="hidden lg:flex absolute top-3 right-3 btn btn-circle btn-ghost btn-sm hover:bg-base-300 z-10 cursor-pointer">
+                <FiX size={18} />
+            </button>
+
+             {/* Scrollable Content (Date & Time) */}
+             <div className="overflow-y-auto custom-scrollbar flex-1 p-5 lg:p-6 pb-0">
+                 {/* Date Picker */}
+                 <div className="mb-6">
+                     <h4 className="flex items-center gap-2 font-bold text-sm mb-3 text-primary font-serif">
+                       <FiCalendar/> Select Date
+                     </h4>
+                     <div className="bg-base-100 p-2 rounded-xl shadow-sm border border-base-200 flex justify-center transform scale-95 origin-top-left sm:scale-100 sm:origin-center">
+                        <DayPicker
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        className="rdp-custom !m-0"
+                        modifiersClassNames={{
+                            selected: "bg-primary text-primary-content font-bold rounded-full",
+                            today: "text-primary font-bold"
+                        }}
+                        styles={{
+                            caption: { color: 'var(--color-primary)', fontSize: '0.9rem' },
+                            head_cell: { color: 'var(--color-base-content)', opacity: 0.6, fontSize: '0.8rem' },
+                            cell: { fontSize: '0.9rem' }
+                        }}
+                        />
+                     </div>
+                 </div>
+
+                 {/* Time Picker */}
+                 <div className="mb-4">
+                     <h4 className="flex items-center gap-2 font-bold text-sm mb-3 text-primary font-serif">
+                       <FiClock/> Available Slots
+                     </h4>
+                     <div className="grid grid-cols-2 gap-2">
+                        {ALL_SLOTS.map((slot) => {
+                            const isAvailable = availableSlots.includes(slot);
+                            const isSelected = selectedTime === slot;
+                            return (
+                                <button
+                                key={slot}
+                                disabled={!isAvailable}
+                                onClick={() => setSelectedTime(slot)}
+                                className={`
+                                    py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-300 border cursor-pointer
+                                    ${isSelected 
+                                        ? "bg-primary text-black border-primary shadow-lg shadow-primary/20 scale-105" 
+                                        : isAvailable 
+                                            ? "bg-base-100 border-base-200 hover:border-primary/50 hover:shadow-md" 
+                                            : "bg-base-200/50 text-base-content/30 border-transparent cursor-not-allowed decoration-slice"}
+                                `}
+                                >
+                                {slot}
+                                </button>
+                            )
+                        })}
+                     </div>
+                 </div>
+             </div>
+             
+             {/* Sticky Footer Action */}
+             <div className="p-5 lg:p-6 border-t border-base-300 bg-base-100/80 backdrop-blur-md shrink-0">
+                  <button
+                    onClick={handleUpdate}
+                    className="btn btn-primary w-full rounded-xl shadow-lg shadow-primary/20 font-bold text-black cursor-pointer"
+                  >
+                    Update Booking
+                  </button>
+             </div>
+        </div>
+
       </div>
     </div>
   );

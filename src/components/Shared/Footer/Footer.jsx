@@ -4,6 +4,7 @@ import {
   FiFacebook,
   FiInstagram,
   FiTwitter,
+  FiLinkedin,
   FiMail,
   FiPhone,
   FiMapPin,
@@ -20,40 +21,36 @@ const Footer = () => {
     {
       id: "facebook",
       Icon: FiFacebook,
-      href: "#",
+      href: "https://www.facebook.com/mehedihasanrafi205",
       label: "Facebook",
-      color: "from-yellow-400 to-yellow-500",
     },
     {
       id: "instagram",
       Icon: FiInstagram,
       href: "#",
       label: "Instagram",
-      color: "from-yellow-400 to-orange-400",
+    },
+    {
+      id: "linkedin",
+      Icon: FiLinkedin,
+      href: "https://linkedin.com/in/mehedihasanrafi205",
+      label: "LinkedIn",
     },
     {
       id: "twitter",
       Icon: FiTwitter,
       href: "#",
       label: "Twitter",
-      color: "from-yellow-300 to-yellow-500",
-    },
-    {
-      id: "email",
-      Icon: FiMail,
-      href: "mailto:info@luxeplan.com",
-      label: "Email",
-      color: "from-yellow-400 to-yellow-500",
     },
   ];
 
   const quickLinks = [
     { id: "home", name: "Home", path: "/" },
     { id: "services", name: "Services", path: "/services" },
-    { id: "decorators", name: "Decorators", path: "/decorators" },
+    { id: "dashboard", name: "Dashboard", path: "/dashboard" },
+    { id: "gallery", name: "Gallery", path: "/gallery" },
     { id: "about", name: "About Us", path: "/about" },
     { id: "contact", name: "Contact", path: "/contact" },
-    { id: "faq", name: "FAQ", path: "/faq" },
   ];
 
   const services = [
@@ -107,20 +104,17 @@ const Footer = () => {
             </p>
 
             {/* Social Links */}
-            <div className="flex gap-3 mt-5">
-              {socialLinks.map(({ id, Icon, href, label, color }) => (
+            <div className="flex gap-5 mt-6">
+              {socialLinks.map(({ id, Icon, href, label }) => (
                 <motion.a
                   key={id}
                   href={href}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className={`relative group bg-gradient-to-br ${color} p-3 rounded-xl shadow-lg hover:shadow-xl transition-all`}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-12 h-12 flex items-center justify-center rounded-full border border-primary/40 text-primary shadow-[0_0_10px_rgba(212,175,55,0.1)] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:bg-primary hover:text-white transition-all duration-300"
                   aria-label={label}
                 >
-                  <Icon size={20} className="text-white" />
-                  <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {label}
-                  </span>
+                  <Icon size={22} />
                 </motion.a>
               ))}
             </div>
@@ -190,21 +184,25 @@ const Footer = () => {
               Get In Touch
             </h3>
             <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
-                <FiMail size={18} />
-                info@luxeplan.com
+              <li>
+                <a href="mailto:mehedihasanrafi205@gmail.com" className="flex items-start gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
+                  <FiMail size={18} className="mt-1" />
+                  <span className="group-hover:translate-x-1 transition-transform">mehedihasanrafi205@gmail.com</span>
+                </a>
               </li>
-              <li className="flex items-start gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
-                <FiPhone size={18} />
-                +880 123 456 7890
+              <li>
+                <a href="tel:+8801234567890" className="flex items-start gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
+                  <FiPhone size={18} className="mt-1" />
+                  <span className="group-hover:translate-x-1 transition-transform">+880 123 456 7890</span>
+                </a>
               </li>
               <li className="flex items-start gap-3 text-gray-400">
-                <FiMapPin size={18} />
-                Gulshan, Dhaka, Bangladesh
+                <FiMapPin size={18} className="mt-1" />
+                <span>Gulshan, Dhaka, Bangladesh</span>
               </li>
               <li className="flex items-start gap-3 text-gray-400">
-                <FiClock size={18} />
-                Mon - Sat: 9:00 AM - 8:00 PM
+                <FiClock size={18} className="mt-1" />
+                <span>Mon - Sat: 9:00 AM - 8:00 PM</span>
               </li>
             </ul>
           </motion.div>

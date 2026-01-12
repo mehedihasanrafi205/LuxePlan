@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const MainLayout = () => {
   return (
-    <div className="flex flex-col bg-base-200 min-h-screen relative overflow-hidden">
+    <div className="flex flex-col bg-base-200 min-h-screen relative">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Main large gold blob */}

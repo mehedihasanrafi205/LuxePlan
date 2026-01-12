@@ -195,6 +195,76 @@ const SkeletonLoader = ({ type, count = 1, className = "" }) => {
     );
   }
 
+  // Dashboard Layout Skeleton
+  if (type === "dashboard") {
+    return (
+      <div className={`flex h-screen overflow-hidden ${className}`}>
+        {/* Sidebar Skeleton */}
+        <div className="w-72 bg-base-100 border-r border-base-200 hidden lg:flex flex-col h-full shrink-0">
+            <div className="h-20 flex items-center px-6 border-b border-base-200/50">
+                <div className="w-10 h-10 rounded-full bg-base-300 animate-pulse"></div>
+                <div className="h-6 w-32 bg-base-300 rounded ml-3 animate-pulse"></div>
+            </div>
+            <div className="p-4 space-y-4 flex-1">
+                 <div className="h-4 w-20 bg-base-300 rounded animate-pulse mb-6"></div>
+                 {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="h-12 w-full bg-base-300 rounded-xl animate-pulse"></div>
+                 ))}
+            </div>
+             <div className="p-4 border-t border-base-200/50">
+                <div className="h-12 w-full bg-base-300 rounded-xl animate-pulse mb-2"></div>
+                <div className="h-12 w-full bg-base-300 rounded-xl animate-pulse"></div>
+            </div>
+        </div>
+        
+        {/* Main Content Skeleton */}
+        <div className="flex-1 flex flex-col h-full relative">
+            {/* Header Skeleton */}
+            <div className="h-20 bg-base-100 border-b border-base-200/50 px-6 flex items-center justify-between shrink-0">
+                 <div className="h-8 w-48 bg-base-300 rounded animate-pulse hidden sm:block"></div>
+                 <div className="flex items-center gap-4">
+                     <div className="w-10 h-10 rounded-full bg-base-300 animate-pulse"></div>
+                     <div className="w-40 h-10 rounded-full bg-base-300 animate-pulse hidden md:block"></div>
+                 </div>
+            </div>
+            
+            {/* Page Content Placeholder */}
+            <div className="p-8 flex-1 bg-base-200/20">
+                 <div className="h-8 w-64 bg-base-300 rounded animate-pulse mb-8"></div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                          <div key={i} className="h-32 bg-base-100 rounded-2xl border border-base-200 animate-pulse shadow-sm"></div>
+                      ))}
+                 </div>
+            </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Navbar Skeleton
+  if (type === "navbar") {
+      return (
+         <div className={`fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 ${className}`}>
+            <div className="navbar container w-full bg-base-200/80 backdrop-blur-xl border border-secondary/10 shadow-lg rounded-2xl px-4 py-3 h-[76px] animate-pulse">
+                <div className="navbar-start flex items-center gap-3">
+                     <div className="w-10 h-10 rounded-full bg-base-300"></div>
+                     <div className="h-8 w-32 bg-base-300 rounded hidden sm:block"></div>
+                </div>
+                <div className="navbar-center hidden lg:flex gap-4">
+                     {Array.from({ length: 5 }).map((_, i) => (
+                         <div key={i} className="h-4 w-20 bg-base-300 rounded"></div>
+                     ))}
+                </div>
+                <div className="navbar-end flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full bg-base-300"></div>
+                    <div className="h-10 w-28 bg-base-300 rounded-full"></div>
+                </div>
+            </div>
+         </div>
+      );
+  }
+
   return null;
 };
 

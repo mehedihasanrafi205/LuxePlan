@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router";
-import { FiArrowLeft, FiStar } from "react-icons/fi";
+import { FiArrowLeft, FiStar, FiCheck, FiMapPin, FiClock, FiDollarSign } from "react-icons/fi";
 import { FaCheckCircle } from "react-icons/fa";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import BookingModal from "../../components/Shared/Modal/BookingModal";
 import useAuth from "../../hooks/useAuth";
@@ -28,14 +29,48 @@ const ServiceDetail = () => {
 
   if (isLoading)
     return (
-     <LoadingSpinner/>
+      <div className="min-h-screen bg-base-100 pb-20 pt-32 animate-pulse">
+        {/* Skeleton Header */}
+        <div className="flex flex-col items-center gap-4 mb-12">
+            <div className="h-6 w-32 bg-base-300 rounded-full"></div>
+            <div className="h-16 w-3/4 max-w-2xl bg-base-300 rounded-xl"></div>
+            <div className="h-4 w-64 bg-base-300 rounded-full"></div>
+        </div>
+
+        <div className="container mx-auto px-6 max-w-7xl">
+            {/* Skeleton Hero Image */}
+            <div className="w-full h-[350px] md:h-[500px] bg-base-300 rounded-[32px] mb-20"></div>
+
+            <div className="flex flex-col lg:flex-row gap-16">
+                {/* Skeleton Left Content */}
+                <div className="flex-1 space-y-12">
+                    <div className="space-y-4">
+                        <div className="h-8 w-40 bg-base-300 rounded-lg"></div>
+                        <div className="h-4 w-full bg-base-300 rounded"></div>
+                        <div className="h-4 w-full bg-base-300 rounded"></div>
+                        <div className="h-4 w-5/6 bg-base-300 rounded"></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="h-20 bg-base-300 rounded-xl"></div>
+                        <div className="h-20 bg-base-300 rounded-xl"></div>
+                    </div>
+                     <div className="h-64 bg-base-300 rounded-2xl"></div>
+                </div>
+
+                {/* Skeleton Right Sidebar */}
+                <div className="lg:w-[400px]">
+                    <div className="h-[400px] bg-base-300 rounded-3xl"></div>
+                </div>
+            </div>
+        </div>
+      </div>
     );
 
   if (isError || !service)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center text-red-500">
-        <p>Service not found or failed to load.</p>
-        <Link to="/services" className="text-primary underline mt-2">
+      <div className="min-h-screen flex flex-col items-center justify-center text-center text-error bg-base-100">
+        <p className="text-xl font-bold mb-4">Service not found or failed to load.</p>
+        <Link to="/services" className="btn btn-outline btn-primary">
           Back to Services
         </Link>
       </div>
@@ -50,112 +85,190 @@ const ServiceDetail = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pb-15 pt-35 font-sans text-white dark:text-white">
-      {/* BACK BUTTON */}
-      <Link
-        to="/services"
-        className="inline-flex items-center gap-2 text-primary font-semibold mb-5"
-      >
-        <FiArrowLeft /> Back to Services
-      </Link>
-
-      {/* HERO IMAGE */}
-      <div className="w-full h-80 md:h-[480px] relative rounded-xl overflow-hidden shadow-lg">
-        <img
-          referrerPolicy="no-referrer"
-          src={service.image}
-          alt={service.service_name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent"></div>
-      </div>
-
-      <div className="mt-8 flex flex-col lg:flex-row gap-12">
-        {/* LEFT CONTENT */}
-        <div className="flex-1 space-y-6">
-          {/* CATEGORY & TITLE */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="px-4 py-1 rounded-full bg-primary/20 text-primary font-medium text-sm">
-              {service.service_category}
-            </span>
-          </div>
-
-          <h1 className="text-4xl md:text-5xl font-display font-black">
-            {service.service_name}
-          </h1>
-          <p className="text-primary text-2xl font-bold">
-            ৳ {service.cost} / {service.unit}
-          </p>
-
-          {/* RATINGS */}
-          <div className="flex items-center gap-2 text-yellow-400">
-            <FiStar /> <span className="font-semibold">{service.ratings}</span>
-          </div>
-
-          {/* DESCRIPTION */}
-          <div>
-            <h2 className="text-2xl font-display font-bold border-b border-primary/20 pb-2 mb-3">
-              About This Service
-            </h2>
-            <p className="text-white/80 leading-relaxed">{service.description}</p>
-          </div>
-
-          {/* KEY FEATURES */}
-          {service.key_feature?.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-display font-bold border-b border-primary/20 pb-2 mb-3">
-                Key Features
-              </h2>
-              <ul className="space-y-2 list-disc list-inside text-white/80">
-                {service.key_feature.map((feat, idx) => (
-                  <li key={idx}>{feat}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* GALLERY */}
-          {service.gallery_image?.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-display font-bold border-b border-primary/20 pb-2 mb-3">
-                Gallery
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {service.gallery_image.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="aspect-square w-full rounded-lg bg-cover bg-center shadow-md"
-                    style={{ backgroundImage: `url(${img})` }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+    <div className="min-h-screen bg-base-100 font-sans text-base-content selection:bg-primary/30 pb-20">
+      
+      {/* === HERO SECTION === */}
+      <div className="relative h-[60vh] md:h-[70vh] w-full overflow-hidden">
+        {/* Parallax-like Background Image */}
+        <div className="absolute inset-0">
+             <img
+                src={service.image}
+                alt={service.service_name}
+                className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-base-100 via-base-100/50 to-transparent md:via-black/40" />
+            <div className="absolute inset-0 bg-black/30" />
         </div>
 
-        {/* RIGHT SIDEBAR */}
-        <div className="lg:w-1/3 lg:sticky lg:top-28 self-start">
-          <div className="flex flex-col gap-4 p-6 rounded-xl border border-primary/20 bg-black/50 backdrop-blur-md">
-            <h3 className="font-display text-xl font-bold text-white">
-              Service at a Glance
-            </h3>
-            <ul className="space-y-3">
-              {service.key_feature?.map((feat, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="material-symbols-outlined text-primary mt-1 text-base">
-                    <FaCheckCircle />
-                  </span>
-                  <span className="text-white/80">{feat}</span>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={handleBookingClick}
-              className="mt-4 w-full h-12 bg-primary text-black font-bold rounded-full hover:shadow-[0_0_20px_0_rgba(212,175,55,0.7)] transition-shadow"
+        {/* Content Overlay */}
+        <div className="absolute bottom-0 left-0 w-full z-10 pb-12 md:pb-20 pt-32 bg-gradient-to-t from-base-100 to-transparent">
+            <div className="container mx-auto px-6">
+                <Link to="/services" className="inline-flex items-center gap-2 text-white/80 hover:text-primary transition-colors mb-6 backdrop-blur-md bg-black/20 px-4 py-2 rounded-full border border-white/10 uppercase tracking-widest text-xs font-bold">
+                    <FiArrowLeft /> Back to Services
+                </Link>
+
+                <div className="flex flex-col md:flex-row items-end justify-between gap-6">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="space-y-4 max-w-3xl"
+                    >
+                         <div className="flex items-center gap-3">
+                            <span className="badge badge-primary badge-lg text-primary-content font-bold uppercase tracking-widest rounded-sm">
+                                {service.service_category}
+                            </span>
+                            <div className="flex items-center gap-1 text-yellow-400 bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full border border-yellow-500/30">
+                                <FiStar fill="currentColor" />
+                                <span className="font-bold text-sm tracking-wide">{service.ratings} (Premium)</span>
+                            </div>
+                        </div>
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-black text-white leading-tight drop-shadow-2xl">
+                            {service.service_name}
+                        </h1>
+                    </motion.div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      {/* === MAIN CONTENT === */}
+      <div className="container mx-auto px-6 -mt-10 relative z-20">
+        <div className="flex flex-col lg:flex-row gap-12">
+            
+            {/* LEFT COLUMN: Details & Gallery */}
+            <motion.div 
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="flex-1 space-y-16"
             >
-              Book This Service
-            </button>
-          </div>
+                {/* Description */}
+                <section>
+                    <h2 className="text-2xl font-serif font-bold text-primary mb-6 flex items-center gap-3">
+                        <span className="h-px w-12 bg-primary/50"></span>
+                        About This Experience
+                    </h2>
+                    <p className="text-lg text-base-content/80 leading-loose border-l-4 border-primary/30 pl-6 italic">
+                        {service.description}
+                    </p>
+                </section>
+
+                {/* Key Features Grid */}
+                {service.key_feature?.length > 0 && (
+                    <section>
+                         <h2 className="text-2xl font-serif font-bold text-primary mb-8 flex items-center gap-3">
+                            <span className="h-px w-12 bg-primary/50"></span>
+                            Curated Features
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {service.key_feature.map((feat, idx) => (
+                                <div key={idx} className="flex items-start gap-4 p-5 rounded-xl bg-base-200/50 border border-base-300 hover:border-primary/40 transition-colors group">
+                                    <div className="p-2 bg-primary/10 rounded-full text-primary group-hover:bg-primary group-hover:text-black transition-colors">
+                                        <FiCheck size={18} />
+                                    </div>
+                                    <span className="text-base-content/80 font-medium pt-1">{feat}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                 {/* Gallery Section */}
+                  {service.gallery_image?.length > 0 && (
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-primary mb-8 flex items-center gap-3">
+                            <span className="h-px w-12 bg-primary/50"></span>
+                            Visual Showcase
+                        </h2>
+                        <div className="grid grid-cols-2 gap-4 md:h-[500px]">
+                            {/* Main Large Image */}
+                             <div 
+                                className="col-span-2 md:col-span-1 h-64 md:h-full rounded-2xl bg-cover bg-center shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.01]"
+                                style={{ backgroundImage: `url(${service.gallery_image[0]})` }} 
+                             />
+                             {/* Smaller Grid */}
+                             <div className="col-span-2 md:col-span-1 grid grid-cols-2 gap-4 h-full">
+                                {service.gallery_image.slice(1, 5).map((img, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="w-full h-32 md:h-full rounded-xl bg-cover bg-center shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                                        style={{ backgroundImage: `url(${img})` }}
+                                    />
+                                ))}
+                             </div>
+                        </div>
+                    </section>
+                  )}
+            </motion.div>
+
+
+            {/* RIGHT COLUMN: Sticky Booking Card */}
+            <motion.div 
+                 initial={{ opacity: 0, x: 20 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 transition={{ duration: 0.8, delay: 0.4 }}
+                 className="lg:w-[400px] relative mt-10 md:mt-0"
+            >
+                <div className="lg:sticky lg:top-32 space-y-6">
+                    <div className="p-8 rounded-3xl bg-base-100/80 backdrop-blur-xl border border-primary/20 shadow-[0_0_50px_-10px_rgba(0,0,0,0.2)] dark:shadow-[0_0_50px_-10px_rgba(255,215,0,0.1)] relative overflow-hidden">
+                        
+                        {/* Decorative Gradient Blob */}
+                        <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+
+                        <div className="relative z-10">
+                            <p className="text-center text-sm font-bold tracking-widest text-primary/70 uppercase mb-2">Starting From</p>
+                            <div className="text-center mb-8 pb-8 border-b border-dashed border-base-content/20">
+                                <h3 className="text-5xl font-black text-primary font-serif">
+                                    {service.cost}
+                                    <span className="text-lg font-sans font-medium text-base-content/50 ml-1">BDT</span>
+                                </h3>
+                                <p className="text-sm text-base-content/60 mt-2"> {service.unit}</p>
+                            </div>
+
+                            <div className="space-y-4 mb-8">
+                                <div className="flex items-center justify-between text-base-content/80 text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <FiClock className="text-primary"/> Duration
+                                    </div>
+                                    <span className="font-bold">Flexible</span>
+                                </div>
+                                <div className="flex items-center justify-between text-base-content/80 text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <FiMapPin className="text-primary"/> Location
+                                    </div>
+                                    <span className="font-bold">Anywhere</span>
+                                </div>
+                                <div className="flex items-center justify-between text-base-content/80 text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <FaCheckCircle className="text-primary"/> Consultant
+                                    </div>
+                                    <span className="font-bold">Expert Included</span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleBookingClick}
+                                className="w-full py-4 bg-primary text-black font-bold text-lg rounded-full shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 uppercase tracking-widest cursor-pointer"
+                            >
+                                Book Experience
+                            </button>
+                            
+                            <p className="text-center text-xs text-base-content/40 mt-4">
+                                No credit card required for initial inquiry.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Help Card */}
+                    <div className="p-6 rounded-2xl bg-base-200/50 border border-base-200 text-center">
+                        <h4 className="font-bold text-base-content mb-2">Need Customization?</h4>
+                        <p className="text-sm text-base-content/60 mb-4">We tailor every detail to your vision.</p>
+                        <Link to="/contact" className="text-primary text-sm font-bold hover:underline">Contact Support</Link>
+                    </div>
+                </div>
+            </motion.div>
+        
         </div>
       </div>
 

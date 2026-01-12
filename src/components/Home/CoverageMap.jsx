@@ -4,7 +4,7 @@ import { FiMapPin } from "react-icons/fi";
 
 const CoverageMap = () => {
   return (
-    <section className="bg-base-200 text-base-content py-20 md:py-32">
+    <section className="bg-base-200 text-base-content py-24 md:py-32">
       <div className="container mx-auto px-4 max-w-7xl">
         
         {/* Header */}

@@ -121,13 +121,12 @@ const colorMap = {
     error: "bg-error/10 text-error",
 };
 
-const MetricCard = ({ icon, title, value, color, gradient, borderColor }) => (
+const MetricCard = ({ icon, title, value, color, gradient, borderColor, delay = 0 }) => (
   <motion.div 
-    variants={{
-      hidden: { opacity: 0, y: 20 },
-      show: { opacity: 1, y: 0 }
-    }}
-    className={`card bg-gradient-to-br ${gradient} backdrop-blur-md shadow-xl p-6 border ${borderColor} hover:shadow-2xl transition-all duration-300 group`}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay, ease: "easeOut" }}
+    className={`card bg-gradient-to-br ${gradient} backdrop-blur-md shadow-xl p-6 border ${borderColor} hover:shadow-2xl transition-all duration-300 group will-change-transform`}
   >
     <div className="flex items-start justify-between">
       <div>
@@ -170,28 +169,14 @@ const AdminDashboardHome = () => {
     (b) => b.paymentStatus === "paid" && b.status === "pending"
   ).length;
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
-  
   const COLORS = ['#00C49F', '#FFBB28', '#FF8042', '#0088FE'];
 
   return (
     <div className="p-4 sm:p-6 md:p-8 min-h-screen bg-base-100/50">
       <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="mb-8"
       >
         <h2 className="text-3xl font-extrabold text-primary mb-2">
@@ -204,14 +189,9 @@ const AdminDashboardHome = () => {
 
       {/*  METRICS */}
       {isLoading ? (
-        <LoadingSpinner type="stats" count={4} />
+        <LoadingSpinner type="stats" count={4} className="!grid-cols-1 !sm:grid-cols-2 !lg:grid-cols-2 !xl:grid-cols-4 !gap-6" />
       ) : (
-        <motion.div 
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
           <MetricCard
             icon={<FiDollarSign />}
             title="Total Revenue"
@@ -219,6 +199,7 @@ const AdminDashboardHome = () => {
             color="success"
             gradient="from-green-500/10 to-green-500/5"
             borderColor="border-green-500/30"
+            delay={0.1}
           />
           <MetricCard
             icon={<FiCheckCircle />}
@@ -227,6 +208,7 @@ const AdminDashboardHome = () => {
             color="warning"
             gradient="from-yellow-500/10 to-yellow-500/5"
              borderColor="border-yellow-500/30"
+             delay={0.2}
           />
           <MetricCard
             icon={<FiUsers />}
@@ -235,6 +217,7 @@ const AdminDashboardHome = () => {
             color="info"
             gradient="from-blue-500/10 to-blue-500/5"
              borderColor="border-blue-500/30"
+             delay={0.3}
           />
           <MetricCard
             icon={<FiBarChart2 />}
@@ -243,8 +226,9 @@ const AdminDashboardHome = () => {
             color="error"
             gradient="from-red-500/10 to-red-500/5"
              borderColor="border-red-500/30"
+             delay={0.4}
           />
-        </motion.div>
+        </div>
       )}
 
       {/* CHARTS SECTION */}
@@ -252,8 +236,8 @@ const AdminDashboardHome = () => {
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12"
+            transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12 will-change-transform"
         >
             {/* User Distribution Chart */}
             <div className="lg:col-span-1 bg-base-100 p-6 rounded-3xl shadow-xl border border-base-200 flex flex-col items-center justify-center">
@@ -338,8 +322,8 @@ const AdminDashboardHome = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden"
+        transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+        className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden will-change-transform"
       >
         <div className="p-6 border-b border-base-200/50 flex items-center gap-3 bg-base-200/30">
            <div className="p-2 bg-warning/10 rounded-lg">
@@ -433,5 +417,5 @@ const AdminDashboardHome = () => {
     </div>
   );
 };
-
+  
 export default AdminDashboardHome;

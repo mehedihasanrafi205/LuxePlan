@@ -110,7 +110,7 @@ const Hero = () => {
         </div>
 
         <motion.div
-          className="relative hidden lg:block aspect-4/3 rounded-2xl"
+          className="relative hidden lg:block aspect-4/3 rounded-2xl will-change-transform"
           variants={imageGroup}
         >
           <motion.img

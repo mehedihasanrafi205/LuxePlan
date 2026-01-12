@@ -29,6 +29,7 @@ import { VscRequestChanges } from "react-icons/vsc";
 import { MdOutlineDashboard, MdOutlineManageAccounts } from "react-icons/md";
 import logo from "/logo.png";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { motion } from "framer-motion";
 
 const DashboardLayout = () => {
   const { user, logOut, loading } = useAuth();
@@ -113,8 +114,8 @@ const DashboardLayout = () => {
 
   const menu = useMemo(() => getMenu(role), [role]);
 
-  if (loading) {
-    return <LoadingSpinner />;
+  if (loading || isRoleLoading) {
+    return <LoadingSpinner type="dashboard" />;
   }
 
   const closeSidebar = () => setSidebarOpen(false);
@@ -124,7 +125,7 @@ const DashboardLayout = () => {
       {/* Sidebar Overlay for Mobile/Tablet */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity cursor-pointer"
           onClick={closeSidebar}
         />
       )}
@@ -243,7 +244,7 @@ const DashboardLayout = () => {
             >
                 <FiMenu size={24} />
             </button>
-            <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hidden sm:block">
+            <h1 className="text-2xl md:text-3xl font-bold text-gold-gradient hidden sm:block">
                 {role === 'admin' ? 'Admin Control' : role === 'decorator' ? 'Decorator Portal' : 'User Dashboard'}
             </h1>
           </div>
@@ -309,7 +310,14 @@ const DashboardLayout = () => {
         </header>
 
         <main className="flex-1 p-4 md:p-8 overflow-y-auto scroll-smooth">
-          <Outlet />
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
+            <Outlet />
+          </motion.div>
         </main>
       </div>
     </div>

@@ -4,7 +4,6 @@ import axios from "axios";
 import { FaStar } from "react-icons/fa";
 import { FiArrowRight, FiBriefcase } from "react-icons/fi";
 import { Link } from "react-router";
-import LoadingSpinner from "../LoadingSpinner";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -87,7 +86,7 @@ const TopDecorators = () => {
   }
 
   return (
-    <section className="bg-base-200 text-base-content pt-20 md:pt-32">
+    <section className="bg-base-200 text-base-content py-24 md:py-32">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-16">
@@ -104,69 +103,79 @@ const TopDecorators = () => {
         </div>
 
         {/* Card Grid */}
-        <div className="grid lg:grid-cols-4 gap-10">
+        <div className="grid lg:grid-cols-4 gap-8">
           {decorators.map((decorator) => (
             <div
               key={decorator._id}
-              className="card bg-base-100 shadow-xl border-t-4 border-primary/50 p-6 
-                         transition-all duration-300 hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 text-center"
+              className="group relative bg-base-100/50 backdrop-blur-sm rounded-[2rem] border border-primary/20 p-8 
+                         transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_-10px_rgba(212,175,55,0.15)] hover:-translate-y-2 overflow-hidden"
             >
-              <div className="card-body p-0 items-center">
+              {/* Decorative Gradient Blob */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-colors duration-500"></div>
+
+              <div className="relative flex flex-col items-center text-center">
                 {/* Profile Image */}
-                <div className="avatar mb-6 mt-4">
-                  <div className="w-32 rounded-full ring ring-primary ring-offset-base-200 ring-offset-4">
-                    <img
-                      src={decorator.profileImage}
-                      alt={decorator.fullName}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://via.placeholder.com/150?text=LuxePlan";
-                      }}
-                    />
+                <div className="relative mb-6">
+                  <div className="w-28 h-28 rounded-full p-1 border-2 border-dashed border-primary/30 group-hover:border-primary transition-colors duration-500">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-base-300">
+                        <img
+                        src={decorator.profileImage}
+                        alt={decorator.fullName}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                            "https://via.placeholder.com/150?text=LuxePlan";
+                        }}
+                        />
+                    </div>
                   </div>
+                   {/* Verification Badge (Optional Concept) */}
+                   <div className="absolute bottom-0 right-0 bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg">
+                      ELITE
+                   </div>
                 </div>
 
                 {/* Name */}
-                <h4 className="text-3xl font-bold mb-1">
+                <h4 className="text-2xl font-serif font-bold text-base-content group-hover:text-primary transition-colors duration-300 mb-1">
                   {decorator.fullName}
                 </h4>
 
                 {/* Role */}
-                <p className="text-lg font-medium text-primary mb-3">
+                <p className="text-sm uppercase tracking-widest text-primary/80 mb-6 font-medium">
                   {decorator.role}
                 </p>
 
-                <div className="divider my-2 opacity-10"></div>
+                {/* Divider */}
+                <div className="w-12 h-px bg-primary/20 mb-6 group-hover:w-24 transition-all duration-500"></div>
 
-                {/* Stats */}
-                <div className="flex justify-around w-full mb-4 text-base-content/70">
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center text-yellow-500 font-bold text-lg">
-                      <FaStar size={16} className="mr-1" />
-                      {(decorator.ratings || 4.8).toFixed(1)}
-                    </div>
-                    <span className="text-xs">Avg. Rating</span>
+                {/* Stats Row */}
+                <div className="flex items-center justify-center gap-4 w-full mb-6">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-base-200/50 border border-base-content/5 group-hover:border-primary/20 transition-colors">
+                      <FaStar className="text-yellow-500 text-xs" />
+                      <span className="text-sm font-bold">{(decorator.ratings || 4.8).toFixed(1)}</span>
                   </div>
-
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center text-info font-bold text-lg">
-                      <FiBriefcase size={16} className="mr-1" />
-                      {decorator.projects || 0}+
-                    </div>
-                    <span className="text-xs">Projects</span>
+                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-base-200/50 border border-base-content/5 group-hover:border-primary/20 transition-colors">
+                      <FiBriefcase className="text-primary text-xs" />
+                      <span className="text-sm font-bold">{decorator.projects || 0}+ Projects</span>
                   </div>
                 </div>
 
-                {/* Specialty */}
-                <p className="text-base-content/90 font-semibold mt-2 mb-6">
-                  Specialty:{" "}
-                  <span className="text-white/80 font-normal">
-                    {Array.isArray(decorator.specialties)
-                      ? decorator.specialties.join(", ")
-                      : decorator.specialties}
-                  </span>
-                </p>
+                {/* Specialty Tags */}
+                <div className="flex flex-wrap justify-center gap-2">
+                     <span className="text-xs text-base-content/60 font-medium w-full block mb-1">Specializes in:</span>
+                     {Array.isArray(decorator.specialties) ? (
+                        decorator.specialties.slice(0, 2).map((spec, idx) => (
+                          <span key={idx} className="text-xs px-2 py-1 rounded bg-primary/5 text-primary border border-primary/10">
+                            {spec}
+                          </span>
+                        ))
+                     ) : (
+                        <span className="text-xs px-2 py-1 rounded bg-primary/5 text-primary border border-primary/10">
+                            {decorator.specialties}
+                        </span>
+                     )}
+                </div>
               </div>
             </div>
           ))}
@@ -179,9 +188,13 @@ const TopDecorators = () => {
           </p>
           <Link
             to="/contact"
-            className="btn btn-lg btn-primary shadow-xl shadow-primary/40 hover:scale-[1.03] transition-transform"
+            className="btn btn-primary btn-lg shadow-2xl shadow-primary/50 transition-all duration-300 hover:scale-[1.05] hover:shadow-primary/70 mt-4 group"
           >
             Book a Consultation
+             <FiArrowRight
+                size={22}
+                className="ml-2 group-hover:translate-x-1 transition-transform"
+              />
           </Link>
         </div>
       </div>

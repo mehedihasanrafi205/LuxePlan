@@ -2,6 +2,7 @@ import React from "react";
 import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 import { FaFacebookF, FaInstagram, FaPinterestP, FaLinkedinIn } from "react-icons/fa";
 import Map from "../../components/Map";
+import { motion } from "framer-motion";
 
 const Contact = () => {
   const handleSubmit = (e) => {
@@ -11,28 +12,49 @@ const Contact = () => {
 
   return (
     // Use standard DaisyUI bg/text classes for dark theme consistency
-    <main className="bg-base-200 text-base-content flex flex-col items-center w-full px-4 py-16 md:py-24 space-y-24">
-      <div className="max-w-6xl w-full flex flex-col gap-16 mt-18">
+    <main className=" text-base-content flex flex-col items-center w-full px-4 pt-32 pb-24 space-y-24">
+      <div className="max-w-6xl w-full flex flex-col gap-16">
         
         {/* === 1. Hero Section === */}
         <section className="flex flex-col items-center text-center gap-6">
-          <div className="p-3 rounded-full bg-primary/20 text-primary">
+          <motion.div 
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="p-3 rounded-full bg-primary/20 text-primary"
+          >
             {/* Using a simple envelope icon from Feather for cleaner visual */}
             <FiMail size={36} />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-primary font-serif  leading-tight">
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl md:text-5xl font-extrabold text-primary font-serif  leading-tight"
+          >
             Begin Your LuxePlan Experience
-          </h1>
-          <p className="max-w-4xl text-base-content/70 text-lg">
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-4xl text-base-content/70 text-lg"
+          >
             Have questions, ideas, or complex project requests? We’re dedicated to crafting bespoke solutions. Reach out to our specialized team directly.
-          </p>
+          </motion.p>
         </section>
 
         {/* === 2. Contact Form & Info Grid === */}
         <section className="grid md:grid-cols-2 gap-12 items-start">
           
           {/* Contact Form - Enhanced DaisyUI Card */}
-          <div className="card bg-base-100 p-8 shadow-2xl border border-base-300/50 transition-shadow duration-300 hover:shadow-primary/30">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="card bg-base-100 p-8 shadow-2xl border border-base-300/50 transition-shadow duration-300 hover:shadow-primary/30 will-change-transform"
+          >
             <h2 className="text-3xl font-bold text-primary mb-6">Send Us a Message</h2>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               
@@ -77,10 +99,16 @@ const Contact = () => {
                 Send Message
               </button>
             </form>
-          </div>
+          </motion.div>
 
           {/* Contact Info & Socials - Structured for Visual Impact */}
-          <div className="flex flex-col gap-8 p-4">
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex flex-col gap-8 p-4 will-change-transform"
+          >
             
             <h2 className="text-3xl font-bold text-primary mb-4">Direct Information</h2>
             
@@ -88,38 +116,38 @@ const Contact = () => {
             <div className="space-y-6">
               
               {/* Email Card */}
-              <div className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300">
-                <FiMail size={24} className="text-primary mt-1 flex-shrink-0" />
+              <a href="mailto:info@luxeplan.com" className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-primary/10">
+                <FiMail size={24} className="text-primary mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <div>
                   <p className="font-semibold text-xl text-accent">Email</p>
-                  <a href="mailto:info@luxeplan.com" className="text-base-content/80 hover:text-primary transition-colors">
+                  <span className="text-base-content/80 group-hover:text-primary transition-colors">
                     info@luxeplan.com
-                  </a>
+                  </span>
                 </div>
-              </div>
+              </a>
               
               {/* Phone Card */}
-              <div className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300">
-                <FiPhone size={24} className="text-primary mt-1 flex-shrink-0" />
+              <a href="tel:+880123456789" className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-primary/10">
+                <FiPhone size={24} className="text-primary mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <div>
                   <p className="font-semibold text-xl text-accent">Phone</p>
-                  <a href="tel:+880123456789" className="text-base-content/80 hover:text-primary transition-colors">
-                    +880 123 456 789 (Bangladesh)
-                  </a>
+                  <span className="text-base-content/80 group-hover:text-primary transition-colors">
+                    +880 123 456 789 (BD)
+                  </span>
                 </div>
-              </div>
+              </a>
               
-              {/* Address Card */}
-              <div className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300">
-                <FiMapPin size={24} className="text-primary mt-1 flex-shrink-0" />
+              {/* Address Card - Links to Map */}
+              <a href="#location-map" className="flex items-start gap-4 p-4 bg-base-100 rounded-xl shadow-lg border border-base-300/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-primary/10">
+                <FiMapPin size={24} className="text-primary mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <div>
                   <p className="font-semibold text-xl text-accent">Visit Us</p>
-                  <p className="text-base-content/80">
-                    Banani DOHS, Dhaka, Bangladesh <br/>
+                  <p className="text-base-content/80 group-hover:text-primary transition-colors">
+                    Banani DOHS, Dhaka <br/>
                     (Appointment Required)
                   </p>
                 </div>
-              </div>
+              </a>
 
             </div>
 
@@ -141,11 +169,11 @@ const Contact = () => {
                 </a>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
 
         {/* === 3. Map Section (Placeholder) === */}
-        <section className="w-full pt-16">
+        <section id="location-map" className="w-full pt-16">
           <h2 className="text-4xl font-bold text-primary text-center mb-8">Our Location</h2>
             <Map></Map>
         </section>

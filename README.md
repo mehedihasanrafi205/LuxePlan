@@ -1,5 +1,5 @@
 
-# 🏡 LuxePlan - Smart Home & Ceremony Decoration Booking System
+# 💎 LuxePlan - Premium Event & Decor Management System
 
 🔗 **Live Site:** https://luxeplan-0.web.app/  
 💻 **Client Repo:** https://github.com/mehedihasanrafi205/LuxePlan  
@@ -11,137 +11,139 @@
 
 ## 📖 Overview
 
-**LuxePlan** is a full-stack MERN application designed for a modern decoration company offering **home, ceremony, and event decoration services**.
+**LuxePlan** is a sophisticated, full-stack MERN application redefining how users engage with premium event decoration services. It seamlessly blends high-end aesthetics with powerful functionality, offering a **luxury booking experience** for weddings, corporate events, and home transformations.
 
-The platform enables users to browse decoration packages, book services, make secure payments, and track bookings—while providing **role-based dashboards** for **Admins** and **Decorators** to manage operations efficiently.
-
-This project was developed to showcase advanced MERN stack capabilities, including authentication, role-based access control, Stripe payment integration, interactive dashboards, and analytics.
+Built with a focus on **User Experience (UX)** and **Performance**, LuxePlan leverages advanced animations (GSAP, Lenis), secure payments (Stripe), and role-based access control to provide a complete enterprise-grade solution.
 
 ---
 
-## 🚀 Core Features
+## ✨ Key Features
 
-### 👤 Client Features
-- Browse & search decoration services (category & budget filter)
-- Book consultation & on-site decoration services
-- Secure Stripe payment with history & receipts
-- Manage bookings (view, update, cancel)
-- Profile & booking statistics dashboard
-- Apply to become a decorator
+### 🌟 Immersive Frontend Experience
+- **Premium Glassmorphism UI:** A modern, frosted-glass aesthetic offering a high-end feel.
+- **Advanced Animations:**
+    - **GSAP ScrollTrigger:** Elements elegantly fade, slide, and reveal as you scroll.
+    - **Lenis Smooth Scroll:** A heavy, luxurious scrolling experience that feels app-like.
+    - **Framer Motion:** Smooth micro-interactions for modals and page transitions.
+- **Interactive Maps:** React Leaflet integration for visualizing service coverage areas.
 
-### 🧑‍💼 Admin Features
-- Full CRUD for services & packages
-- User & role management
-- Approve / reject decorator applications
-- Assign decorators to paid bookings
-- Analytics dashboard (revenue, bookings, service demand)
+### 👤 User Capabilities (Client)
+- **Smart Filtering:** Find services by budget, category, and popularity instantly.
+- **Seamless Booking:** 
+    - Real-time slot availability check.
+    - **Sticky Summary:** Booking details follow you as you scroll.
+    - **Compact Modals:** Redesigned, non-intrusive booking interfaces.
+- **Secure Payments:** Integrated Stripe Checkout for safe, instant transactions.
+- **Dashboard:** comprehensive view of booking history and detailed receipts.
 
-### 🎨 Decorator Features
-- View assigned projects
-- Daily work schedule
-- Update project status (workflow-based)
-- Earnings dashboard
-
-### 🌍 Public Features
-- Animated landing page (Framer Motion)
-- Featured services & decorators
-- Interactive service area map (React Leaflet)
-- Fully responsive, mobile-first UI
+### 🛡️ Admin & Decorator Tools
+- **Admin Dashboard:** Full control over users, services, and bookings with Recharts analytics.
+- **Decorator Portal:** Dedicated view for assigned projects and daily schedules.
+- **Role-Based Security:** Strict JWT-based route protection for different user tiers.
 
 ---
 
 ## 🧱 Tech Stack
 
-### Frontend
-- React 19 + Vite
-- React Router v7
-- Tailwind CSS + DaisyUI
-- TanStack React Query
-- Framer Motion & GSAP
-- React Hook Form
-- Recharts
-- React Leaflet
+### Frontend Engineering
+- **Core:** React 19, Vite, React Router v7
+- **Styling:** Tailwind CSS v4, DaisyUI v5 (Custom Gold/Dark Theme)
+- **Animations:** 
+  - **GSAP (GreenSock):** Complex scroll-driven animations and text reveals.
+  - **Lenis:** High-performance smooth scrolling.
+  - **Framer Motion:** Component-level gestures and transitions.
+- **State & Data:** TanStack React Query (Server State), Context API (Auth).
+- **Forms:** React Hook Form.
+- **Maps:** React Leaflet.
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB Atlas
-- Firebase Admin SDK
-- JWT (Firebase ID Tokens)
+### Backend Infrastructure
+- **Server:** Node.js, Express.js
+- **Database:** MongoDB Atlas (Mongoose ODM)
+- **Authentication:** Firebase Admin SDK (Verify ID Tokens), JWT
+- **Payments:** Stripe API
 
-### Payments & Auth
-- Firebase Authentication
-- Stripe Checkout (Test Mode)
-
-### Deployment
-- Client: Firebase Hosting  
-- Server: Vercel  
+### DevOps & Deployment
+- **Frontend:** Firebase Hosting
+- **Backend:** Vercel / Render
+- **CI/CD:** Manual triggers
 
 ---
 
-## 🔐 Authentication & Authorization
+## 🔐 Security & Auth
 
-- Firebase Authentication (Email/Password)
-- Role-based access control (Client, Admin, Decorator)
-- Protected frontend & backend routes
-- Secure API requests using JWT tokens
+- **Firebase Authentication:** Robust identity management (Email/Password, Social Auth).
+- **JWT Authorization:** Secure communication between client and server.
+- **HttpOnly Cookies:** Protection against XSS attacks.
+- **Role-Based Access Control (RBAC):** Granular permissions for Admin, Decorator, and User.
 
 ---
 
-## 💳 Payment System (Stripe)
+## 💳 Payment Integration
 
-- Secure Stripe Checkout
-- Booking auto-updated after payment
-- Transaction history stored in database
-- Duplicate payment prevention
+LuxePlan uses **Stripe** to handle real-world payments in a test environment.
+- **Instant Verification:** Webhooks ensure bookings are confirmed only after successful payment.
+- **Transaction History:** All payments are logged with transaction IDs for auditing.
 
-**Test Card:**  
-4242 4242 4242 4242 | Any future date | Any CVC
+**Test Card Credentials:**
+- **Card Number:** `4242 4242 4242 4242`
+- **Expiry:** Any future date
+- **CVC:** Any 3 digits
 
 ---
 
 ## 🗂 Project Structure
 
-```
-
-src/
-├── components/
-├── pages/
-│   ├── Home
-│   ├── Services
-│   ├── Dashboard
-├── hooks/
-├── routes/
-├── providers/
-├── firebase/
-└── main.jsx
-
+```bash
+LuxePlan/src
+├── components/         # Reusable UI components (Modals, Cards, Navbar)
+├── pages/              # Route-based page components
+│   ├── Home/           # Hero, Stats, Testimonials
+│   ├── Services/       # Service Listing, Filtering, Details
+│   ├── Dashboard/      # Admin & User Dashboards
+│   └── Shared/         # Layouts, Footer, Navbar
+├── hooks/              # Custom Hooks (useAxiosSecure, useGSAPAnimations)
+├── layouts/            # MainLayout (with Lenis), DashboardLayout
+├── providers/          # AuthProvider context
+└── routes/             # Router configuration (Private/Admin Routes)
 ```
 
 ---
 
 ## 🌱 Environment Variables
 
-Create a `.env.local` file:
+To run this project locally, create a `.env.local` file in the root directory:
 
-VITE_APIKEY=
-VITE_AUTHDOMAIN=
-VITE_PROJECTID=
-VITE_STORAGEBUCKET=
-VITE_MESSAGINGSENDERID=
-VITE_APPID=
-VITE_API_URL=[https://luxplan-server.vercel.app](https://luxplan-server.vercel.app)
+```env
+VITE_APIKEY=your_firebase_api_key
+VITE_AUTHDOMAIN=your_firebase_auth_domain
+VITE_PROJECTID=your_firebase_project_id
+VITE_STORAGEBUCKET=your_firebase_storage_bucket
+VITE_MESSAGINGSENDERID=your_firebase_messaging_sender_id
+VITE_APPID=your_firebase_app_id
+VITE_API_URL=http://localhost:5000 
+VITE_STRIPE_PUBLIC_KEY=your_stripe_pk
+```
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Installation & Run
 
-git clone [https://github.com/mehedihasanrafi205/LuxePlan.git](https://github.com/mehedihasanrafi205/LuxePlan.git)
-cd LuxePlan
-npm install
-npm run dev
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/mehedihasanrafi205/LuxePlan.git
+    cd LuxePlan
+    ```
 
-Runs at: http://localhost:5173
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Start Development Server**
+    ```bash
+    npm run dev
+    ```
+    The app will be available at `http://localhost:5173`
 
 ---
 
@@ -167,8 +169,8 @@ Runs at: http://localhost:5173
 ## 👨‍💻 Author
 
 **Mehedi Hasan Rafi**  
-GitHub: https://github.com/mehedihasanrafi205  
-Email: mehedihasanrafi205@gmail.com  
+- **GitHub:** [mehedihasanrafi205](https://github.com/mehedihasanrafi205)  
+- **Email:** mehedihasanrafi205@gmail.com  
 
 ---
 

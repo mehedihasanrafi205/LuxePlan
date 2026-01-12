@@ -6,6 +6,7 @@ import Login from "../pages/Login/login";
 import Services from "../pages/Services/Services";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
+import Gallery from "../pages/Gallery/Gallery";
 import PrivateRoute from "./PrivateRoute";
 import Profile from "../pages/Dashboard/Profile/Profile";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
       { path: "payment-success", element: <PaymentSuccess /> }, 
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
+      { path: "gallery", element: <Gallery /> },
       {
         path: "decorator/:id",
         element: (

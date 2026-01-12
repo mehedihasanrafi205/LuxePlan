@@ -1,9 +1,11 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { FiArrowRight, FiStar } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { fadeIn, slideIn, buttonHover } from "../utils/animations";
 
 const ServiceCard = ({ service, index = 0 }) => {
+  const navigate = useNavigate();
+
   return (
     <motion.div
       initial="hidden"
@@ -11,7 +13,8 @@ const ServiceCard = ({ service, index = 0 }) => {
       viewport={{ once: true, margin: "-50px" }}
       variants={slideIn('up', 30)}
       transition={{ delay: index * 0.1 }}
-      className="bg-base-100 border border-base-300 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
+      className="bg-base-100 border border-base-300 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer"
+      onClick={() => navigate(`/service/${service._id}`)}
     >
       {/* IMAGE */}
       <div className="relative overflow-hidden">
@@ -92,8 +95,8 @@ const ServiceCard = ({ service, index = 0 }) => {
           ))}
         </motion.ul>
 
-        {/* DETAILS BUTTON */}
-        <Link to={`/service/${service._id}`} className="block">
+        {/* DETAILS BUTTON - Kept as visual cue but redundant link */}
+        <div className="block">
           <motion.button
             variants={buttonHover}
             initial="rest"
@@ -104,7 +107,7 @@ const ServiceCard = ({ service, index = 0 }) => {
           >
             View Details <FiArrowRight className="text-lg" />
           </motion.button>
-        </Link>
+        </div>
       </div>
     </motion.div>
   );

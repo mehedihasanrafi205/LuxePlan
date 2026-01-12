@@ -14,20 +14,33 @@ import { Link, NavLink } from "react-router";
 import logo from "/logo.png";
 import useAuth from "../../../hooks/useAuth";
 import { useTheme } from "../../../providers/ThemeContext";
+import useRole from "../../../hooks/useRole";
+import LoadingSpinner from "../../LoadingSpinner";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth();
+  const { user, logOut, loading } = useAuth();
+  const { role } = useRole();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
+
+  if (loading) {
+    return <LoadingSpinner type="navbar" />;
+  }
+
   // NAV LINKS
   const navItems = [
     ["Home", "/"],
     ["Services", "/services"],
+    ["Gallery", "/gallery"],
     ["About", "/about"],
     ["Contact", "/contact"],
-    ["Join Team", "/dashboard/apply-decorator"],
   ];
+
+  // Show "Join Team" only for guests or standard users (excludes admins/decorators)
+  if (!user || (role !== "admin" && role !== "decorator")) {
+    navItems.push(["Join Team", "/dashboard/apply-decorator"]);
+  }
 
   if (user) {
     navItems.splice(2, 0, ["Dashboard", "/dashboard"]);
@@ -65,7 +78,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 ">
+    <div className="fixed top-0 left-0 right-0 z-[100] flex justify-center pt-5 px-4 ">
       <nav
         className="
           navbar container w-full 
@@ -200,7 +213,7 @@ const Navbar = () => {
                   </Link>
                 </li>
 
-                <li onClick={logOut}>
+                <li onClick={logOut} className="cursor-pointer">
                   <Link className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-all duration-300 text-error">
                     <FiLogOut size={16} /> Logout
                   </Link>

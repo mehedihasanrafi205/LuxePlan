@@ -3,6 +3,7 @@ import { FaStar } from "react-icons/fa";
 import { FiArrowRight, FiDollarSign } from "react-icons/fi";
 import { Link } from "react-router";
 import ServiceCard from "../ServiceCard";
+import { motion } from "framer-motion";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -83,25 +84,52 @@ const TopServices = () => {
   }
 
   return (
-    <section className="bg-base-200 text-base-content pt-20 md:pt-32">
+    <section className="bg-base-200 text-base-content py-24 md:py-32">
       <div className="container mx-auto px-4 ">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-lg font-semibold text-primary uppercase tracking-[0.2em] mb-3">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-lg font-semibold text-primary uppercase tracking-[0.2em] mb-3"
+          >
             Client Favorites
-          </h2>
-          <h3 className="text-4xl md:text-5xl font-extrabold! font-serif text-primary leading-tight">
+          </motion.h2>
+          <motion.h3 
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.6, delay: 0.1 }}
+             className="text-4xl md:text-5xl font-extrabold! font-serif text-primary leading-tight"
+          >
             Our Top-Rated Luxury Services
-          </h3>
-          <p className="max-w-3xl mx-auto text-base-content/70 mt-4 text-lg">
+          </motion.h3>
+          <motion.p 
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 0.6, delay: 0.2 }}
+             className="max-w-3xl mx-auto text-base-content/70 mt-4 text-lg"
+          >
             Experience the best of LuxePlan, as rated and loved by our esteemed
             clients.
-          </p>
+          </motion.p>
         </div>
 
         <div className="grid lg:grid-cols-4 gap-10">
-          {services.map((service) => (
-            <ServiceCard key={service._id} service={service}></ServiceCard>
+          {services.map((service, index) => (
+             <motion.div
+               key={service._id}
+               initial={{ opacity: 0, y: 30 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               transition={{ duration: 0.6, delay: index * 0.1 }}
+               className="will-change-transform"
+             >
+                <ServiceCard service={service}></ServiceCard>
+             </motion.div>
           ))}
         </div>
 
@@ -112,12 +140,12 @@ const TopServices = () => {
           </p>
           <Link
             to="/services"
-            className="btn btn-lg btn-primary shadow-xl shadow-primary/40 transition-all duration-300 hover:scale-[1.03] group"
+            className="btn btn-primary btn-lg shadow-2xl shadow-primary/50 transition-all duration-300 hover:scale-[1.05] hover:shadow-primary/70 group"
           >
             Explore All Services
             <FiArrowRight
-              size={20}
-              className="ml-1 group-hover:translate-x-1 transition-transform"
+              size={22}
+              className="ml-2 group-hover:translate-x-1 transition-transform"
             />
           </Link>
         </div>

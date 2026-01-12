@@ -3,6 +3,8 @@ import axios from "axios";
 import { useState } from "react";
 import ServiceCard from "../../components/ServiceCard";
 import { FiFilter, FiSearch, FiDollarSign, FiZap, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // Added Chevron icons
+import { motion } from "framer-motion";
+import useGSAPAnimations from "../../hooks/useGSAPAnimations";
 
 // Skeleton Component 
 const ServiceCardSkeleton = ({ count }) => (
@@ -153,6 +155,12 @@ const Services = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9; 
 
+  const { fadeUp, textReveal } = useGSAPAnimations();
+
+  // Trigger animations when services cards or title render
+  fadeUp(".gsap-service-card");
+  textReveal(".gsap-title");
+
   const categories = [
     "all",
     "home",
@@ -203,13 +211,17 @@ const Services = () => {
 
   return (
     <section className="bg-base-200 min-h-screen">
-      <div className="container mx-auto px-4 py-16 md:py-24">
-        {/* PAGE TITLE (Unchanged) */}
-        <div className="mb-12 text-center mt-18">
-          <h1 className="text-4xl md:text-5xl font-extrabold font-serif text-primary">
+      <div className="container mx-auto px-4 pt-32 pb-24">
+        {/* PAGE TITLE */}
+        <div className="text-center mb-16">
+          <h1 
+            className="text-4xl md:text-5xl font-extrabold font-serif text-primary mb-4 gsap-title opacity-0"
+          >
             LuxePlan's Elite Portfolio
           </h1>
-          <p className="text-base-content/70 mt-3 text-lg">
+          <p 
+            className="text-base-content/70 text-lg max-w-2xl mx-auto gsap-title opacity-0"
+          >
             Browse, filter, and discover services tailored to your exclusive
             needs.
           </p>
@@ -259,7 +271,7 @@ const Services = () => {
           {/* Overlay for mobile */}
           {openSidebar && (
             <div
-              className="fixed inset-0 bg-black/50 md:hidden z-40"
+              className="fixed inset-0 bg-black/50 md:hidden z-40 cursor-pointer"
               onClick={() => setOpenSidebar(false)}
             />
           )}
@@ -269,7 +281,7 @@ const Services = () => {
             <div
               className="
               bg-base-100 border border-base-200 rounded-xl shadow-md p-5
-              md:sticky md:top-30 md:max-h-[500px] overflow-y-auto
+              md:sticky md:top-32 md:max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar z-30
               "
             >
               <FilterSidebarContent
@@ -307,8 +319,13 @@ const Services = () => {
               <>
                 {/* Service Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {services.map((item) => (
-                    <ServiceCard key={item._id} service={item} />
+                  {services.map((item, index) => (
+                    <div
+                       key={item._id}
+                       className="gsap-service-card opacity-0" 
+                    >
+                        <ServiceCard service={item} />
+                    </div>
                   ))}
                 </div>
 

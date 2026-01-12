@@ -69,12 +69,12 @@ const colorMap = {
     error: "bg-error/10 text-error",
 };
 
-const MetricCard = ({ icon, title, value, color, gradient, borderColor }) => (
+const MetricCard = ({ icon, title, value, color, gradient, borderColor, delay = 0 }) => (
   <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5 }}
-    className={`card bg-gradient-to-br ${gradient} backdrop-blur-md shadow-xl p-6 border ${borderColor} hover:shadow-2xl transition-all duration-300 group`}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay, ease: "easeOut" }}
+    className={`card bg-gradient-to-br ${gradient} backdrop-blur-md shadow-xl p-6 border ${borderColor} hover:shadow-2xl transition-all duration-300 group will-change-transform`}
   >
     <div className="flex items-start justify-between">
       <div>
@@ -113,8 +113,9 @@ const UserDashboardHome = () => {
   return (
     <div className="p-4 md:p-8 min-h-screen bg-base-100/50">
       <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <h2 className="text-3xl font-extrabold text-primary mb-2">
             Welcome Back, {userName.split(" ")[0]} 👋
@@ -136,6 +137,7 @@ const UserDashboardHome = () => {
                 color="primary"
                 gradient="from-blue-500/10 to-blue-500/5"
                 borderColor="border-blue-500/30"
+                delay={0.1}
                 />
                 <MetricCard
                 icon={<FiCheckCircle />}
@@ -144,6 +146,7 @@ const UserDashboardHome = () => {
                 color="success"
                 gradient="from-green-500/10 to-green-500/5"
                 borderColor="border-green-500/30"
+                delay={0.2}
                 />
                 <MetricCard
                 icon={<FiXCircle />}
@@ -152,6 +155,7 @@ const UserDashboardHome = () => {
                 color="warning"
                 gradient="from-yellow-500/10 to-yellow-500/5"
                 borderColor="border-yellow-500/30"
+                delay={0.3}
                 />
             </div>
 
@@ -159,8 +163,8 @@ const UserDashboardHome = () => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-base-100 p-6 rounded-2xl shadow-xl border border-base-200 mb-8"
+                transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                className="bg-base-100 p-6 rounded-2xl shadow-xl border border-base-200 mb-8 will-change-transform"
             >
                 <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                     <FiTrendingUp className="text-primary" /> Monthly Spending Trends
@@ -200,10 +204,10 @@ const UserDashboardHome = () => {
 
       {/*  Recent Payments  */}
       <motion.div 
-         initial={{ opacity: 0, y: 30 }}
+         initial={{ opacity: 0, y: 20 }}
          animate={{ opacity: 1, y: 0 }}
-         transition={{ delay: 0.2 }}
-         className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden"
+         transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+         className="bg-base-100 rounded-2xl shadow-xl border border-base-200 overflow-hidden will-change-transform"
       >
         <div className="p-6 border-b border-base-200/50 bg-base-200/30">
             <h3 className="text-xl font-bold text-base-content/90 flex items-center gap-2">
