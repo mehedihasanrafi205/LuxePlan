@@ -157,9 +157,7 @@ const Services = () => {
 
   const { fadeUp, textReveal } = useGSAPAnimations();
 
-  // Trigger animations when services cards or title render
-  fadeUp(".gsap-service-card");
-  textReveal(".gsap-title");
+
 
   const categories = [
     "all",
@@ -200,6 +198,10 @@ const Services = () => {
   const services = data.services || [];
   const totalCount = data.count || 0;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  // Trigger animations when services cards or title render
+  fadeUp(".gsap-service-card", 0, [services]);
+  textReveal(".gsap-title");
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {

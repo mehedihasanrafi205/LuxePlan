@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router";
 import Navbar from "../components/Shared/Navbar/Navbar";
 import Footer from "../components/Shared/Footer/Footer";
 import { motion } from "framer-motion";
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 
 const MainLayout = () => {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <div className="flex flex-col bg-base-200 min-h-screen relative">
       {/* Animated Background */}

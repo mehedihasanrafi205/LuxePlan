@@ -6,7 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const useGSAPAnimations = () => {
   // Fade Up Animation (Standard Reveal)
-  const fadeUp = (selector, delay = 0) => {
+  const fadeUp = (selector, delay = 0, deps = []) => {
     useEffect(() => {
       const elements = document.querySelectorAll(selector);
       if (elements.length === 0) return;
@@ -31,11 +31,11 @@ const useGSAPAnimations = () => {
           },
         }
       );
-    }, [selector, delay]);
+    }, [selector, delay, ...deps]);
   };
 
   // Parallax Effect for Images
-  const parallax = (selector, speed = 20) => {
+  const parallax = (selector, speed = 20, deps = []) => {
     useEffect(() => {
         const elements = document.querySelectorAll(selector);
         if (elements.length === 0) return;
@@ -52,12 +52,12 @@ const useGSAPAnimations = () => {
             },
           });
         });
-      }, [selector, speed]);
+      }, [selector, speed, ...deps]);
   }
 
   // Text Reveal (Character by Character or Line)
   // Note: For simple implementation without SplitText (paid plugin), we'll do standard opacity/y stagger
-  const textReveal = (selector) => {
+  const textReveal = (selector, deps = []) => {
     useEffect(() => {
         const elements = document.querySelectorAll(selector);
         if (elements.length === 0) return;
@@ -77,7 +77,7 @@ const useGSAPAnimations = () => {
                }
             }
         )
-    }, [selector]);
+    }, [selector, ...deps]);
   };
 
   return { fadeUp, parallax, textReveal };
